@@ -109,10 +109,10 @@ public class Principal extends JDialog {
 		etPosicionMesa.setBounds(763, 82, 117, 24);
 		contentPanel.add(etPosicionMesa);
 		
-		JList list = new JList();
-		list.setBorder(new TitledBorder(new LineBorder(new Color(0, 128, 0)), "Posici\u00F3n", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 128, 0)));
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setModel(new AbstractListModel() {
+		JList listaPosicion = new JList();
+		listaPosicion.setBorder(new TitledBorder(new LineBorder(new Color(0, 128, 0)), "Posici\u00F3n", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 128, 0)));
+		listaPosicion.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listaPosicion.setModel(new AbstractListModel() {
 			String[] values = new String[] {"DEALER", "SB", "BB", "3", "4", "5", "6", "7", "8", "9"};
 			public int getSize() {
 				return values.length;
@@ -121,8 +121,8 @@ public class Principal extends JDialog {
 				return values[index];
 			}
 		});
-		list.setBounds(779, 111, 85, 206);
-		contentPanel.add(list);
+		listaPosicion.setBounds(779, 111, 85, 206);
+		contentPanel.add(listaPosicion);
 		
 		JLabel etCartasComunitarias = new JLabel("Cartas comunitarias");
 		etCartasComunitarias.setForeground(Color.WHITE);
@@ -149,14 +149,14 @@ public class Principal extends JDialog {
 		contentPanel.add(spinnerCarta3);
 		
 		JSpinner spinnerCarta4 = new JSpinner();
-		spinnerCarta4.setModel(new SpinnerListModel(new String[] {"AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		spinnerCarta4.setModel(new SpinnerListModel(new String[] {"NO", "AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
 		spinnerCarta4.setToolTipText("Carta comunitaria 4 (Turn)");
 		spinnerCarta4.setBounds(945, 204, 44, 20);
 		contentPanel.add(spinnerCarta4);
 		
 		JSpinner spinnerCarta5 = new JSpinner();
-		spinnerCarta5.setModel(new SpinnerListModel(new String[] {"AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
-		spinnerCarta5.setToolTipText("Carta comunitaria 5 (Rivern)");
+		spinnerCarta5.setModel(new SpinnerListModel(new String[] {"NO", "AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		spinnerCarta5.setToolTipText("Carta comunitaria 5 (River)");
 		spinnerCarta5.setBounds(945, 235, 44, 20);
 		contentPanel.add(spinnerCarta5);
 		
@@ -217,7 +217,7 @@ public class Principal extends JDialog {
 		contentPanel.add(campoProbCarta);
 		
 		JButton botonCalcular = new JButton("CALCULAR");
-		botonCalcular.setBounds(872, 585, 89, 23);
+		botonCalcular.setBounds(855, 585, 106, 23);
 		contentPanel.add(botonCalcular);
 		
 		JMenuBar barraMenu = new JMenuBar();
