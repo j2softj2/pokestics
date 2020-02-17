@@ -135,10 +135,55 @@ public class Calculo {
 		this.apuesta = apuesta;
 		this.bote = bote;
 	}
+	
+	public Calculo() {
+		
+	}
 
 	
-	public void CalculoProbabilidad() {
-		
+	public String CalculoProbabilidadMano() {
+		//variable en la que se especifica momento de la partida
+		String momento = "";
+		//variable en la que se especificara la mano
+		String pMano = "";
+		//comprueba si es preflop,turn o river
+			if(this.cartaComunitaria1 == null) {
+				momento = "preflop";
+			}
+			else if(this.cartaComunitaria4 == null) {
+				momento = "flop";
+			}
+			else if(this.cartaComunitaria5 == null) {
+				momento = "turn";
+			}
+			else {
+				momento = "river";
+			}
+		//comprueba probabilidades en preflop
+			if(momento.equals("preflop")) {
+				//si las cartas son pareja  y del mismo palo
+				if(this.cartaPropia1.getValor() == this.cartaPropia2.getValor() && this.cartaPropia1.getPalo() == this.cartaPropia2.getPalo()) {
+					pMano = "Color-0,84% / Trío-13% / Full 0,002%";
+				}
+				//pareja
+				else if(this.cartaPropia1.getValor() == this.cartaPropia2.getValor()) {
+					pMano = "Trío-13% / Full 0,002%";
+				}
+				//dos cartas del mismo palo
+				else if(this.cartaPropia1.getPalo() == this.cartaPropia2.getPalo()) {
+					pMano = "Color-0.84% - 4 cartas color-10,9%";
+				}
+				//cartas cualquiera
+				else {
+					pMano = "Pareja-32,4% / Doble P-2% / Trío 0,6%";
+				}
+			}
+			//comprueba probabilidades en flop
+			else if(momento.equals("flop")) {
+				//comprueba mano actual con las cartas del flop
+				
+			}
+		return pMano;	
 	}
 }
 		

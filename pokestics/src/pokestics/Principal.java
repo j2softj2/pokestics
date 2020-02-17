@@ -131,19 +131,19 @@ public class Principal extends JDialog {
 		contentPanel.add(etCartasComunitarias);
 		
 		JSpinner spinnerCarta1 = new JSpinner();
-		spinnerCarta1.setModel(new SpinnerListModel(new String[] {"AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		spinnerCarta1.setModel(new SpinnerListModel(new String[] {"NO", "AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
 		spinnerCarta1.setToolTipText("Carta comunitaria 1 (Flop)");
 		spinnerCarta1.setBounds(945, 111, 44, 20);
 		contentPanel.add(spinnerCarta1);
 		
 		JSpinner spinnerCarta2 = new JSpinner();
-		spinnerCarta2.setModel(new SpinnerListModel(new String[] {"AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		spinnerCarta2.setModel(new SpinnerListModel(new String[] {"NO", "AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
 		spinnerCarta2.setToolTipText("Carta comunitaria 2 (Flop)");
 		spinnerCarta2.setBounds(945, 142, 44, 20);
 		contentPanel.add(spinnerCarta2);
 		
 		JSpinner spinnerCarta3 = new JSpinner();
-		spinnerCarta3.setModel(new SpinnerListModel(new String[] {"AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		spinnerCarta3.setModel(new SpinnerListModel(new String[] {"NO", "AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
 		spinnerCarta3.setToolTipText("Carta comunitaria 3 (Flop)");
 		spinnerCarta3.setBounds(945, 173, 44, 20);
 		contentPanel.add(spinnerCarta3);
@@ -217,6 +217,15 @@ public class Principal extends JDialog {
 		contentPanel.add(campoProbCarta);
 		
 		JButton botonCalcular = new JButton("CALCULAR");
+		botonCalcular.addActionListener(new ActionListener() {
+			//boton calcular inicia el calculo de probabilidades
+			public void actionPerformed(ActionEvent e) {
+				Carta cp1 = new Carta("diamantes", "2");
+				Carta cp2 = new Carta("corazon", "2");
+				Calculo calculo = new Calculo(cp1,cp2,null,null,null,null,null,null,0,0);
+				campoProbMano.setText(calculo.CalculoProbabilidadMano());
+			}
+		});
 		botonCalcular.setBounds(855, 585, 106, 23);
 		contentPanel.add(botonCalcular);
 		
