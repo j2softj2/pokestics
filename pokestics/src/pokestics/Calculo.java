@@ -162,15 +162,15 @@ public class Calculo {
 		//comprueba probabilidades en preflop
 			if(momento.equals("preflop")) {
 				//si las cartas son pareja  y del mismo palo
-				if(this.cartaPropia1.getValor() == this.cartaPropia2.getValor() && this.cartaPropia1.getPalo() == this.cartaPropia2.getPalo()) {
+				if(this.cartaPropia1.getValor().equals(this.cartaPropia2.getValor()) && this.cartaPropia1.getPalo().equals(this.cartaPropia2.getPalo())) {
 					pMano = "Color-0,84% / Trío-13% / Full 0,002%";
 				}
 				//pareja
-				else if(this.cartaPropia1.getValor() == this.cartaPropia2.getValor()) {
+				else if(this.cartaPropia1.getValor().equals(this.cartaPropia2.getValor())) {
 					pMano = "Trío-13% / Full 0,002%";
 				}
 				//dos cartas del mismo palo
-				else if(this.cartaPropia1.getPalo() == this.cartaPropia2.getPalo()) {
+				else if(this.cartaPropia1.getPalo().equals(this.cartaPropia2.getPalo())) {
 					pMano = "Color-0.84% - 4 cartas color-10,9%";
 				}
 				//cartas cualquiera
@@ -179,12 +179,15 @@ public class Calculo {
 				}
 			}
 			//comprueba probabilidades en flop
-			else if(momento.equals("flop")) {
+			else if(momento.equals("flop")|momento.equals("turn")|momento.equals("river")) {
 				//comprueba mano actual con las cartas del flop
-				
+				Mano mano = new Mano(this.cartaPropia1,this.cartaPropia2,this.cartaComunitaria1,this.cartaComunitaria2,this.cartaComunitaria3);
+					pMano = mano.compruebaManoLigada();
 			}
 		return pMano;	
 	}
+	
+	
 }
 		
 	

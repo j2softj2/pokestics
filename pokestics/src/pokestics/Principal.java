@@ -218,11 +218,47 @@ public class Principal extends JDialog {
 		
 		JButton botonCalcular = new JButton("CALCULAR");
 		botonCalcular.addActionListener(new ActionListener() {
+			
 			//boton calcular inicia el calculo de probabilidades
 			public void actionPerformed(ActionEvent e) {
-				Carta cp1 = new Carta("diamantes", "2");
-				Carta cp2 = new Carta("corazon", "2");
-				Calculo calculo = new Calculo(cp1,cp2,null,null,null,null,null,null,0,0);
+				//obtiene el valor del spinner 1
+				String cartaSpinnerP1 = obtenerDatosCartaSpinner(spinnerCartaPropia1);
+					String paloP1 = obtenerPalo(cartaSpinnerP1);
+					String valorP1 = obtenerValor(cartaSpinnerP1);
+				//obtiene el valor del spinner 2
+				String cartaSpinnerP2 = obtenerDatosCartaSpinner(spinnerCartaPropia2);
+					String paloP2 = obtenerPalo(cartaSpinnerP2);
+					String valorP2 = obtenerValor(cartaSpinnerP2);
+				//obtiene el valor del spinner carta comunitaria 1
+				String cartaSpinner1 = obtenerDatosCartaSpinner(spinnerCarta1);
+					String palo1 = obtenerPalo(cartaSpinner1);
+					String valor1 = obtenerValor(cartaSpinner1);
+				//obtiene el valor del spinner carta comunitaria 2
+				String cartaSpinner2 = obtenerDatosCartaSpinner(spinnerCarta2);
+					String palo2 = obtenerPalo(cartaSpinner2);
+					String valor2 = obtenerValor(cartaSpinner2);
+				//obtiene el valor del spinner carta comunitaria 3
+				String cartaSpinner3 = obtenerDatosCartaSpinner(spinnerCarta3);
+					String palo3 = obtenerPalo(cartaSpinner3);
+					String valor3 = obtenerValor(cartaSpinner3);
+				//obtiene el valor del spinner carta comunitaria 4
+				String cartaSpinner4 = obtenerDatosCartaSpinner(spinnerCarta4);
+					String palo4 = obtenerPalo(cartaSpinner4);
+					String valor4 = obtenerValor(cartaSpinner4);
+				//obtiene el valor del spinner carta comunitaria 5
+				String cartaSpinner5 = obtenerDatosCartaSpinner(spinnerCarta5);
+					String palo5 = obtenerPalo(cartaSpinner5);
+					String valor5 = obtenerValor(cartaSpinner5);
+				//creacion de cartas
+				Carta cp1 = new Carta(paloP1,valorP1);
+				Carta cp2 = new Carta(paloP2,valorP2);
+				Carta c1 = new Carta(palo1,valor1);
+				Carta c2 = new Carta(palo2,valor2);
+				Carta c3 = new Carta(palo3,valor3);
+				Carta c4 = new Carta(palo4,valor4);
+				Carta c5 = new Carta(palo5,valor5);
+				//realiza calculo
+				Calculo calculo = new Calculo(cp1,cp2,c1,c2,c3,c4,c5,null,0,0);
 				campoProbMano.setText(calculo.CalculoProbabilidadMano());
 			}
 		});
@@ -283,5 +319,24 @@ public class Principal extends JDialog {
 	
 	private void cerrarAplicacion() {
 		this.dispose();
+	}
+	/**
+	 * Devuelve el texto de la carta en el jspinner
+	 * @param spinner
+	 * @return
+	 */
+	private String obtenerDatosCartaSpinner(JSpinner spinner) {
+		String textoSpinner = (String)spinner.getValue();
+			return textoSpinner;
+	}
+	
+	private String obtenerValor(String textoCarta) {
+		String valor = textoCarta.substring(0, 1);
+			return valor;
+	}
+	
+	private String obtenerPalo(String textoCarta) {
+		String palo = textoCarta.substring(1);
+			return palo;
 	}
 }
