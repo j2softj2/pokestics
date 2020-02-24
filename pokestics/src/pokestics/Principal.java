@@ -327,6 +327,9 @@ public class Principal extends JDialog {
 	 */
 	private String obtenerDatosCartaSpinner(JSpinner spinner) {
 		String textoSpinner = (String)spinner.getValue();
+			if(textoSpinner.contains("10")) {
+				textoSpinner = textoSpinner.substring(1,3);
+			}
 			return textoSpinner;
 	}
 	

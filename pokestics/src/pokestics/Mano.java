@@ -1,6 +1,7 @@
 package pokestics;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -160,6 +161,10 @@ public class Mano {
 			listaCartas.add(carta3);
 				if(this.carta4!=null)listaCartas.add(carta4);
 				if(this.carta5!=null)listaCartas.add(carta5);
+				
+				
+		
+		//comprueba repeticiones
 		
 		for(int i=0; i<listaCartas.size();i++) {
 			dato = listaCartas.get(i).getValor();
@@ -178,12 +183,60 @@ public class Mano {
 			for(int i=0; i<listaCartas.size();i++) {
 				if(listaCartas.get(i).getPalo().equals(palo)) color++;
 			}
-		//
-		
-		
-		
+		//comprobacion de escalera
+			
+		boolean consecutivo1 = false;
+		List<Integer> valoresCartas = new ArrayList<Integer>();
+			//pasa los valores de la lista de cartas a la lista valoresCartas convirtiendolos a integer
+			for(int i=0;i<listaCartas.size();i++) {
+				int valorNumerico = 0;
+					if(listaCartas.get(i).getValor().equals("A")) valorNumerico = 1;
+					else if(listaCartas.get(i).getValor().equals("K")) valorNumerico = 13;
+					else if(listaCartas.get(i).getValor().equals("Q")) valorNumerico = 12;
+					else if(listaCartas.get(i).getValor().equals("J")) valorNumerico = 11;
+					else if(listaCartas.get(i).getValor().equals("0")) valorNumerico = 10;
+					else if(listaCartas.get(i).getValor().equals("N")) valorNumerico = 0;
+					else valorNumerico = Integer.valueOf(listaCartas.get(i).getValor());
+					valoresCartas.add(i,valorNumerico);			
+			}
+			//ordena el listado
+			Collections.sort(valoresCartas);
+			
+			//en caso de ser escalera con A como mayor(el As puede ser tanto 1 como AS)
+			if(valoresCartas.contains(1)){
+				if(valoresCartas.contains(13)) {
+					if(valoresCartas.contains(12)) {
+						if(valoresCartas.contains(11)) {
+							if(valoresCartas.contains(10)) {
+								consecutivo1 = true;
+							}
+						}
+					}
+				}
+			}
+			//comprueba si son consecutivos
+			boolean consecutivo2 = false;
+			int aux = 0;
+			for(int i=1; i<valoresCartas.size();i++) {
+				if(valoresCartas.get(i)!=null) aux++;
+			}
+			//en caso de ser 5 numeros (al ordenarlos la lista omite los repetidos)
+			if(aux == 4) consecutivo2 = true;
+			//una vez comprueba que no se repite ningun numero comprobar que sean consecutivos
+			boolean consecutivo3 = false;
+			if(valoresCartas.get(0)==valoresCartas.get(1)-1 && valoresCartas.get(1)==valoresCartas.get(2)-1 && valoresCartas.get(2)==valoresCartas.get(3) -1 && 
+			valoresCartas.get(3)==valoresCartas.get(4) -1 && consecutivo2 == true){
+				consecutivo3 = true;
+			}
+		//comprueba escalera real
+		if(consecutivo1 == true && color == 5) {
+			mano = "Escalera Real";
+		}
+		else if(color == 5 && consecutivo3 == true) {
+			mano = "Escalera de color";
+		}
 		//comprobar poker
-		if(repetido == 17) {
+		else if(repetido == 17) {
 			mano="Póker";
 		}
 		//comprobar full
@@ -193,6 +246,10 @@ public class Mano {
 		//comprobar color
 		else if(color == 5) {
 			mano = "Color";
+		}
+		//comprueba escalera
+		else if(consecutivo1 == true | consecutivo3 == true) {
+			mano = "Escalera";
 		}
 		//comprobar trio
 		else if(repetido == 11) {
