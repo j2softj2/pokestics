@@ -147,13 +147,13 @@ public class Calculo {
 		//variable en la que se especificara la mano
 		String pMano = "";
 		//comprueba si es preflop,turn o river
-			if(this.cartaComunitaria1 == null) {
+			if(this.cartaComunitaria1.getPalo().equals("O")) {
 				momento = "preflop";
 			}
-			else if(this.cartaComunitaria4 == null) {
+			else if(this.cartaComunitaria4.getPalo().equals("O")) {
 				momento = "flop";
 			}
-			else if(this.cartaComunitaria5 == null) {
+			else if(this.cartaComunitaria5.getPalo().equals("O")) {
 				momento = "turn";
 			}
 			else {
@@ -163,26 +163,64 @@ public class Calculo {
 			if(momento.equals("preflop")) {
 				//si las cartas son pareja  y del mismo palo
 				if(this.cartaPropia1.getValor().equals(this.cartaPropia2.getValor()) && this.cartaPropia1.getPalo().equals(this.cartaPropia2.getPalo())) {
-					pMano = "Color-0,84% / Trío-13% / Full 0,002%";
+					pMano = "Color 118-1(0.84%)/Trío 7.5-1(13%)";
 				}
 				//pareja
 				else if(this.cartaPropia1.getValor().equals(this.cartaPropia2.getValor())) {
-					pMano = "Trío-13% / Full 0,002%";
+					pMano = "Trío 7.5-1(13%)/Full 15-1(0,002%)";
 				}
 				//dos cartas del mismo palo
 				else if(this.cartaPropia1.getPalo().equals(this.cartaPropia2.getPalo())) {
-					pMano = "Color-0.84% - 4 cartas color-10,9%";
+					pMano = "Color 118-1(0.84%)/4 cartas color 8.1-1(10,9%)";
 				}
 				//cartas cualquiera
 				else {
-					pMano = "Pareja-32,4% / Doble P-2% / Trío 0,6%";
+					pMano = "Pareja 2.1-1(32,4%)/Doble P 48.5-1(2%)/Trío 7.5-1(0,6%)";
 				}
 			}
-			//comprueba probabilidades en flop
-			else if(momento.equals("flop")|momento.equals("turn")|momento.equals("river")) {
+			//comprueba probabilidades de ligar manos en turn
+			else if(momento.equals("flop")) {
 				//comprueba mano actual con las cartas del flop
 				Mano mano = new Mano(this.cartaPropia1,this.cartaPropia2,this.cartaComunitaria1,this.cartaComunitaria2,this.cartaComunitaria3);
-					pMano = mano.compruebaManoLigada();
+					String manoActual = mano.compruebaManoLigada();
+					if(manoActual.equals("Trío")) {
+						pMano = "Full o Poker 5.7-1(14,8%)";
+					}
+					else if(manoActual.equals("Proyecto de color")) {
+						pMano = "Color 4.2-1(19,1%)";
+					}
+					else if(manoActual.equals("Doble Pareja")) {
+						pMano = "Full 10.8-1(8,5%)";
+					}
+					else if(manoActual.equals("Pareja")) {
+						pMano = "Trío 22.5-1(4,3%)";
+					}
+			}
+			//comprueba probabilidades de ligar mano en river
+			else if(momento.equals("turn")) {
+				//comprueba mano actual con las cartas del turn
+				Mano mano = new Mano(this.cartaPropia1,this.cartaPropia2,this.cartaComunitaria1,this.cartaComunitaria2,this.cartaComunitaria3,this.cartaComunitaria4);
+					String manoActual = mano.compruebaManoLigada();
+					if(manoActual.equals("Trío")) {
+						pMano = "Full o Poker 21,2%";
+					}
+					else if(manoActual.equals("Proyecto de color")) {
+						pMano = "Color 19,6%";
+					}
+					else if(manoActual.equals("Doble Pareja")) {
+						pMano = "Full 8,7%";
+					}
+					else if(manoActual.equals("Pareja")) {
+						pMano = "Trío 4,3%";
+					}
+			}
+			else if(momento.equals("river")) {
+				//comprueba mano actual con las cartas del turn
+				Mano mano = new Mano(this.cartaPropia1,this.cartaPropia2,this.cartaComunitaria1,this.cartaComunitaria2,this.cartaComunitaria3
+						,this.cartaComunitaria4,this.cartaComunitaria5);
+					String manoActual = mano.compruebaManoLigada();
+				
+					pMano = manoActual;
 			}
 		return pMano;	
 	}

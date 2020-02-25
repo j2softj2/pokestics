@@ -37,6 +37,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class Principal extends JDialog {
 
@@ -66,7 +68,7 @@ public class Principal extends JDialog {
 		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setMinimumSize(new Dimension(500, 500));
-		setBounds(100, 100, 1069, 685);
+		setBounds(100, 100, 1150, 762);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(60, 179, 113));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -74,14 +76,14 @@ public class Principal extends JDialog {
 		contentPanel.setLayout(null);
 		
 		JSeparator separadorCalculadora = new JSeparator();
-		separadorCalculadora.setBounds(751, 5, 2, 619);
+		separadorCalculadora.setBounds(751, 5, 2, 696);
 		separadorCalculadora.setBackground(new Color(255, 255, 255));
 		separadorCalculadora.setOrientation(SwingConstants.VERTICAL);
 		contentPanel.add(separadorCalculadora);
 		
 		JLabel etCalculadora = new JLabel("Calculadora");
 		etCalculadora.setForeground(new Color(255, 255, 255));
-		etCalculadora.setBounds(855, 5, 134, 24);
+		etCalculadora.setBounds(892, 5, 134, 24);
 		etCalculadora.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 20));
 		contentPanel.add(etCalculadora);
 		
@@ -168,52 +170,53 @@ public class Principal extends JDialog {
 		
 		campoApuesta = new JTextField();
 		campoApuesta.setToolTipText("Introduzca la cantidad a apostar");
-		campoApuesta.setBounds(839, 352, 60, 20);
+		campoApuesta.setBounds(839, 352, 85, 20);
 		contentPanel.add(campoApuesta);
 		campoApuesta.setColumns(10);
 		
 		JLabel etBote = new JLabel("Bote");
 		etBote.setForeground(Color.WHITE);
 		etBote.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
-		etBote.setBounds(926, 349, 44, 24);
+		etBote.setBounds(992, 349, 44, 24);
 		contentPanel.add(etBote);
 		
 		campoBote = new JTextField();
 		campoBote.setToolTipText("Introduzca el bote de la mesa");
 		campoBote.setColumns(10);
-		campoBote.setBounds(976, 352, 60, 20);
+		campoBote.setBounds(1049, 352, 85, 20);
 		contentPanel.add(campoBote);
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(773, 383, 263, 2);
+		separator.setBounds(773, 383, 361, 2);
 		contentPanel.add(separator);
 		
 		JLabel etResultado = new JLabel("Resultado");
 		etResultado.setForeground(Color.WHITE);
 		etResultado.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 20));
-		etResultado.setBounds(855, 396, 117, 24);
+		etResultado.setBounds(902, 396, 117, 24);
 		contentPanel.add(etResultado);
 		
 		JLabel etProbabilidadMano = new JLabel("Probabilidad de mano");
 		etProbabilidadMano.setForeground(Color.WHITE);
 		etProbabilidadMano.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
-		etProbabilidadMano.setBounds(833, 431, 144, 24);
+		etProbabilidadMano.setBounds(892, 431, 144, 24);
 		contentPanel.add(etProbabilidadMano);
 		
-		JLabel etProbabilidadCarta = new JLabel("Probabilidad de carta necesaria");
+		JLabel etProbabilidadCarta = new JLabel("Riesgo de la jugada");
 		etProbabilidadCarta.setForeground(Color.WHITE);
 		etProbabilidadCarta.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
-		etProbabilidadCarta.setBounds(822, 508, 197, 24);
+		etProbabilidadCarta.setBounds(899, 508, 137, 24);
 		contentPanel.add(etProbabilidadCarta);
 		
 		campoProbMano = new JTextField();
-		campoProbMano.setBounds(779, 466, 257, 31);
+		campoProbMano.setFont(new Font("Tahoma", Font.BOLD, 11));
+		campoProbMano.setBounds(779, 466, 355, 31);
 		contentPanel.add(campoProbMano);
 		campoProbMano.setColumns(10);
 		
 		campoProbCarta = new JTextField();
 		campoProbCarta.setColumns(10);
-		campoProbCarta.setBounds(779, 543, 257, 31);
+		campoProbCarta.setBounds(779, 543, 355, 31);
 		contentPanel.add(campoProbCarta);
 		
 		JButton botonCalcular = new JButton("CALCULAR");
@@ -262,7 +265,7 @@ public class Principal extends JDialog {
 				campoProbMano.setText(calculo.CalculoProbabilidadMano());
 			}
 		});
-		botonCalcular.setBounds(855, 585, 106, 23);
+		botonCalcular.setBounds(913, 585, 106, 23);
 		contentPanel.add(botonCalcular);
 		
 		JMenuBar barraMenu = new JMenuBar();
