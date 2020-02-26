@@ -22,22 +22,15 @@ import java.awt.event.KeyEvent;
 import javax.swing.KeyStroke;
 import java.awt.event.InputEvent;
 import javax.swing.JSeparator;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import javax.swing.SwingConstants;
 import javax.swing.JLabel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import java.awt.Insets;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerListModel;
+import javax.swing.JComboBox;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JTextField;
-import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
 public class Principal extends JDialog {
@@ -93,17 +86,17 @@ public class Principal extends JDialog {
 		etCartasPropias.setBounds(763, 47, 101, 24);
 		contentPanel.add(etCartasPropias);
 		
-		JSpinner spinnerCartaPropia1 = new JSpinner();
-		spinnerCartaPropia1.setToolTipText("Introduzca la primera carta de su mano : C-Corazones P-Picas T-Treboles D-Diamantes");
-		spinnerCartaPropia1.setModel(new SpinnerListModel(new String[] {"AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
-		spinnerCartaPropia1.setBounds(892, 50, 44, 20);
-		contentPanel.add(spinnerCartaPropia1);
+		JComboBox comboBoxCartaPropia1 = new JComboBox();
+		comboBoxCartaPropia1.setToolTipText("Introduzca la primera carta de su mano : C-Corazones P-Picas T-Treboles D-Diamantes");
+		comboBoxCartaPropia1.setModel(new DefaultComboBoxModel(new String[] {"AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		comboBoxCartaPropia1.setBounds(892, 50, 44, 20);
+		contentPanel.add(comboBoxCartaPropia1);
 		
-		JSpinner spinnerCartaPropia2 = new JSpinner();
-		spinnerCartaPropia2.setToolTipText("Introduzca la segunda carta de su mano : C-Corazones P-Picas T-Treboles D-Diamantes");
-		spinnerCartaPropia2.setModel(new SpinnerListModel(new String[] {"AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
-		spinnerCartaPropia2.setBounds(956, 50, 44, 20);
-		contentPanel.add(spinnerCartaPropia2);
+		JComboBox comboBoxCartaPropia2 = new JComboBox();
+		comboBoxCartaPropia2.setToolTipText("Introduzca la segunda carta de su mano : C-Corazones P-Picas T-Treboles D-Diamantes");
+		comboBoxCartaPropia2.setModel(new DefaultComboBoxModel(new String[] {"AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		comboBoxCartaPropia2.setBounds(956, 50, 44, 20);
+		contentPanel.add(comboBoxCartaPropia2);
 		
 		JLabel etPosicionMesa = new JLabel("Posici\u00F3n en mesa");
 		etPosicionMesa.setForeground(Color.WHITE);
@@ -132,35 +125,35 @@ public class Principal extends JDialog {
 		etCartasComunitarias.setBounds(902, 81, 134, 24);
 		contentPanel.add(etCartasComunitarias);
 		
-		JSpinner spinnerCarta1 = new JSpinner();
-		spinnerCarta1.setModel(new SpinnerListModel(new String[] {"NO", "AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
-		spinnerCarta1.setToolTipText("Carta comunitaria 1 (Flop)");
-		spinnerCarta1.setBounds(945, 111, 44, 20);
-		contentPanel.add(spinnerCarta1);
+		JComboBox comboBoxCarta1 = new JComboBox();
+		comboBoxCarta1.setModel(new DefaultComboBoxModel(new String[] {"NO","AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		comboBoxCarta1.setToolTipText("Carta comunitaria 1 (Flop)");
+		comboBoxCarta1.setBounds(945, 111, 44, 20);
+		contentPanel.add(comboBoxCarta1);
 		
-		JSpinner spinnerCarta2 = new JSpinner();
-		spinnerCarta2.setModel(new SpinnerListModel(new String[] {"NO", "AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
-		spinnerCarta2.setToolTipText("Carta comunitaria 2 (Flop)");
-		spinnerCarta2.setBounds(945, 142, 44, 20);
-		contentPanel.add(spinnerCarta2);
+		JComboBox comboBoxCarta2 = new JComboBox();
+		comboBoxCarta2.setModel(new DefaultComboBoxModel(new String[] {"NO","AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		comboBoxCarta2.setToolTipText("Carta comunitaria 2 (Flop)");
+		comboBoxCarta2.setBounds(945, 142, 44, 20);
+		contentPanel.add(comboBoxCarta2);
 		
-		JSpinner spinnerCarta3 = new JSpinner();
-		spinnerCarta3.setModel(new SpinnerListModel(new String[] {"NO", "AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
-		spinnerCarta3.setToolTipText("Carta comunitaria 3 (Flop)");
-		spinnerCarta3.setBounds(945, 173, 44, 20);
-		contentPanel.add(spinnerCarta3);
+		JComboBox comboBoxCarta3 = new JComboBox();
+		comboBoxCarta3.setModel(new DefaultComboBoxModel(new String[] {"NO","AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		comboBoxCarta3.setToolTipText("Carta comunitaria 3 (Flop)");
+		comboBoxCarta3.setBounds(945, 173, 44, 20);
+		contentPanel.add(comboBoxCarta3);
 		
-		JSpinner spinnerCarta4 = new JSpinner();
-		spinnerCarta4.setModel(new SpinnerListModel(new String[] {"NO", "AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
-		spinnerCarta4.setToolTipText("Carta comunitaria 4 (Turn)");
-		spinnerCarta4.setBounds(945, 204, 44, 20);
-		contentPanel.add(spinnerCarta4);
+		JComboBox comboBoxCarta4 = new JComboBox();
+		comboBoxCarta4.setModel(new DefaultComboBoxModel(new String[] {"NO","AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		comboBoxCarta4.setToolTipText("Carta comunitaria 4 (Turn)");
+		comboBoxCarta4.setBounds(945, 204, 44, 20);
+		contentPanel.add(comboBoxCarta4);
 		
-		JSpinner spinnerCarta5 = new JSpinner();
-		spinnerCarta5.setModel(new SpinnerListModel(new String[] {"NO", "AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
-		spinnerCarta5.setToolTipText("Carta comunitaria 5 (River)");
-		spinnerCarta5.setBounds(945, 235, 44, 20);
-		contentPanel.add(spinnerCarta5);
+		JComboBox comboBoxCarta5 = new JComboBox();
+		comboBoxCarta5.setModel(new DefaultComboBoxModel(new String[] {"NO","AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
+		comboBoxCarta5.setToolTipText("Carta comunitaria 5 (River)");
+		comboBoxCarta5.setBounds(945, 235, 44, 20);
+		contentPanel.add(comboBoxCarta5);
 		
 		JLabel etApuesta = new JLabel("Apuesta");
 		etApuesta.setForeground(Color.WHITE);
@@ -219,39 +212,42 @@ public class Principal extends JDialog {
 		campoProbCarta.setBounds(779, 543, 355, 31);
 		contentPanel.add(campoProbCarta);
 		
-		JButton botonCalcular = new JButton("CALCULAR");
+		JButton botonCalcular = new JButton("");
+		botonCalcular.setFocusable(false);
+		botonCalcular.setBackground(Color.WHITE);
+		botonCalcular.setIcon(new ImageIcon(Principal.class.getResource("/botones/calculadora.png")));
 		botonCalcular.addActionListener(new ActionListener() {
 			
 			//boton calcular inicia el calculo de probabilidades
 			public void actionPerformed(ActionEvent e) {
-				//obtiene el valor del spinner 1
-				String cartaSpinnerP1 = obtenerDatosCartaSpinner(spinnerCartaPropia1);
-					String paloP1 = obtenerPalo(cartaSpinnerP1);
-					String valorP1 = obtenerValor(cartaSpinnerP1);
-				//obtiene el valor del spinner 2
-				String cartaSpinnerP2 = obtenerDatosCartaSpinner(spinnerCartaPropia2);
-					String paloP2 = obtenerPalo(cartaSpinnerP2);
-					String valorP2 = obtenerValor(cartaSpinnerP2);
-				//obtiene el valor del spinner carta comunitaria 1
-				String cartaSpinner1 = obtenerDatosCartaSpinner(spinnerCarta1);
-					String palo1 = obtenerPalo(cartaSpinner1);
-					String valor1 = obtenerValor(cartaSpinner1);
-				//obtiene el valor del spinner carta comunitaria 2
-				String cartaSpinner2 = obtenerDatosCartaSpinner(spinnerCarta2);
-					String palo2 = obtenerPalo(cartaSpinner2);
-					String valor2 = obtenerValor(cartaSpinner2);
-				//obtiene el valor del spinner carta comunitaria 3
-				String cartaSpinner3 = obtenerDatosCartaSpinner(spinnerCarta3);
-					String palo3 = obtenerPalo(cartaSpinner3);
-					String valor3 = obtenerValor(cartaSpinner3);
-				//obtiene el valor del spinner carta comunitaria 4
-				String cartaSpinner4 = obtenerDatosCartaSpinner(spinnerCarta4);
-					String palo4 = obtenerPalo(cartaSpinner4);
-					String valor4 = obtenerValor(cartaSpinner4);
-				//obtiene el valor del spinner carta comunitaria 5
-				String cartaSpinner5 = obtenerDatosCartaSpinner(spinnerCarta5);
-					String palo5 = obtenerPalo(cartaSpinner5);
-					String valor5 = obtenerValor(cartaSpinner5);
+				//obtiene el valor del comboBox 1
+				String cartacomboBoxP1 = obtenerDatosCartacomboBox(comboBoxCartaPropia1);
+					String paloP1 = obtenerPalo(cartacomboBoxP1);
+					String valorP1 = obtenerValor(cartacomboBoxP1);
+				//obtiene el valor del comboBox 2
+				String cartacomboBoxP2 = obtenerDatosCartacomboBox(comboBoxCartaPropia2);
+					String paloP2 = obtenerPalo(cartacomboBoxP2);
+					String valorP2 = obtenerValor(cartacomboBoxP2);
+				//obtiene el valor del comboBox carta comunitaria 1
+				String cartacomboBox1 = obtenerDatosCartacomboBox(comboBoxCarta1);
+					String palo1 = obtenerPalo(cartacomboBox1);
+					String valor1 = obtenerValor(cartacomboBox1);
+				//obtiene el valor del comboBox carta comunitaria 2
+				String cartacomboBox2 = obtenerDatosCartacomboBox(comboBoxCarta2);
+					String palo2 = obtenerPalo(cartacomboBox2);
+					String valor2 = obtenerValor(cartacomboBox2);
+				//obtiene el valor del comboBox carta comunitaria 3
+				String cartacomboBox3 = obtenerDatosCartacomboBox(comboBoxCarta3);
+					String palo3 = obtenerPalo(cartacomboBox3);
+					String valor3 = obtenerValor(cartacomboBox3);
+				//obtiene el valor del comboBox carta comunitaria 4
+				String cartacomboBox4 = obtenerDatosCartacomboBox(comboBoxCarta4);
+					String palo4 = obtenerPalo(cartacomboBox4);
+					String valor4 = obtenerValor(cartacomboBox4);
+				//obtiene el valor del comboBox carta comunitaria 5
+				String cartacomboBox5 = obtenerDatosCartacomboBox(comboBoxCarta5);
+					String palo5 = obtenerPalo(cartacomboBox5);
+					String valor5 = obtenerValor(cartacomboBox5);
 				//creacion de cartas
 				Carta cp1 = new Carta(paloP1,valorP1);
 				Carta cp2 = new Carta(paloP2,valorP2);
@@ -265,7 +261,7 @@ public class Principal extends JDialog {
 				campoProbMano.setText(calculo.CalculoProbabilidadMano());
 			}
 		});
-		botonCalcular.setBounds(913, 585, 106, 23);
+		botonCalcular.setBounds(882, 585, 144, 65);
 		contentPanel.add(botonCalcular);
 		
 		JMenuBar barraMenu = new JMenuBar();
@@ -303,6 +299,11 @@ public class Principal extends JDialog {
 		menuItemHistorial.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		menuConfiguracion.add(menuItemHistorial);
 		
+		JMenu menuSelectorMesa = new JMenu("Selector de mesa");
+		menuSelectorMesa.setIcon(new ImageIcon(Principal.class.getResource("/botones/seleccionarMesa.png")));
+		menuSelectorMesa.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
+		barraMenu.add(menuSelectorMesa);
+		
 		JMenu menuAyuda = new JMenu("Ayuda");
 		menuAyuda.setIcon(new ImageIcon(Principal.class.getResource("/botones/ayuda10x10.png")));
 		menuAyuda.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
@@ -324,16 +325,16 @@ public class Principal extends JDialog {
 		this.dispose();
 	}
 	/**
-	 * Devuelve el texto de la carta en el jspinner
-	 * @param spinner
+	 * Devuelve el texto de la carta en el JComboBox
+	 * @param comboBox
 	 * @return
 	 */
-	private String obtenerDatosCartaSpinner(JSpinner spinner) {
-		String textoSpinner = (String)spinner.getValue();
-			if(textoSpinner.contains("10")) {
-				textoSpinner = textoSpinner.substring(1,3);
+	private String obtenerDatosCartacomboBox(JComboBox combobox) {
+		String textocomboBox = (String)combobox.getSelectedItem();
+			if(textocomboBox.contains("10")) {
+				textocomboBox = textocomboBox.substring(1,3);
 			}
-			return textoSpinner;
+			return textocomboBox;
 	}
 	
 	private String obtenerValor(String textoCarta) {
