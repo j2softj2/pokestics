@@ -222,11 +222,12 @@ public class Calculo {
 				
 					pMano = manoActual;
 			}
+			
 		return pMano;	
 	}
 	
 	public String calcularRiesgo() {
-		int nivelRiesgo = 0;//indicara el nivel de riesgo (1-3)
+		int nivelRiesgo = 0;//indicara el nivel de riesgo (1-9)
 		String riesgo = "";
 		String manoActual = "";
 		//variable en la que se especifica momento de la partida
@@ -313,8 +314,8 @@ public class Calculo {
 					
 					//primero comprueba si el bote es mayor el numero de odds -1 (ejemplo odds 4 el bote deberia ser mayor que 3 veces la apuesta) que la puesta
 					
-					if((ods-1)*this.bote<this.apuesta){
-						nivelRiesgo++;
+					if((ods-1)*this.apuesta>this.bote){
+						nivelRiesgo += 3;
 					}
 					//comprueba la posicion en mesa las primeras 4 son inicio-siguientes 3 medio-2 ultimas final. Se considera mayor riesgo las primeras posiciones
 					if(this.posicion.equals("SB") | this.posicion.equals("BB") | this.posicion.equals("3") | this.posicion.equals("4") | this.posicion.equals("5")) {
@@ -332,9 +333,10 @@ public class Calculo {
 					}
 					
 					//ahora dependiendo del riesgo sumado este sera bajo - medio - alto
-					if(nivelRiesgo<=2) riesgo = "Riesgo bajo";
-					else if(nivelRiesgo == 3) riesgo = "Riesgo medio";
-					else if(nivelRiesgo == 4 | nivelRiesgo == 5) riesgo = "Riesgo alto";
+					if(nivelRiesgo == 0) riesgo = "No Jugar";
+					else if(nivelRiesgo<=4) riesgo = "Riesgo bajo";
+					else if(nivelRiesgo>=5 && nivelRiesgo<7) riesgo = "Riesgo medio";
+					else if(nivelRiesgo>6) riesgo = "Riesgo alto";
 					return riesgo;
 		
 	}

@@ -298,7 +298,7 @@ public class Mano {
 			mano = "Pareja";
 		}
 		else {
-			mano = "";
+			mano = "Sin mano";
 		}
 		return mano;
 	}

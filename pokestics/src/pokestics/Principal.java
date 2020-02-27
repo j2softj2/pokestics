@@ -90,13 +90,13 @@ public class Principal extends JDialog {
 		JComboBox comboBoxCartaPropia1 = new JComboBox();
 		comboBoxCartaPropia1.setToolTipText("Introduzca la primera carta de su mano : C-Corazones P-Picas T-Treboles D-Diamantes");
 		comboBoxCartaPropia1.setModel(new DefaultComboBoxModel(new String[] {"AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
-		comboBoxCartaPropia1.setBounds(892, 50, 44, 20);
+		comboBoxCartaPropia1.setBounds(892, 50, 50, 20);
 		contentPanel.add(comboBoxCartaPropia1);
 		
 		JComboBox comboBoxCartaPropia2 = new JComboBox();
 		comboBoxCartaPropia2.setToolTipText("Introduzca la segunda carta de su mano : C-Corazones P-Picas T-Treboles D-Diamantes");
 		comboBoxCartaPropia2.setModel(new DefaultComboBoxModel(new String[] {"AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
-		comboBoxCartaPropia2.setBounds(956, 50, 44, 20);
+		comboBoxCartaPropia2.setBounds(956, 50, 50, 20);
 		contentPanel.add(comboBoxCartaPropia2);
 		
 		JLabel etPosicionMesa = new JLabel("Posici\u00F3n en mesa");
@@ -129,31 +129,31 @@ public class Principal extends JDialog {
 		JComboBox comboBoxCarta1 = new JComboBox();
 		comboBoxCarta1.setModel(new DefaultComboBoxModel(new String[] {"NO","AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
 		comboBoxCarta1.setToolTipText("Carta comunitaria 1 (Flop)");
-		comboBoxCarta1.setBounds(945, 111, 44, 20);
+		comboBoxCarta1.setBounds(945, 111, 50, 20);
 		contentPanel.add(comboBoxCarta1);
 		
 		JComboBox comboBoxCarta2 = new JComboBox();
 		comboBoxCarta2.setModel(new DefaultComboBoxModel(new String[] {"NO","AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
 		comboBoxCarta2.setToolTipText("Carta comunitaria 2 (Flop)");
-		comboBoxCarta2.setBounds(945, 142, 44, 20);
+		comboBoxCarta2.setBounds(945, 142, 50, 20);
 		contentPanel.add(comboBoxCarta2);
 		
 		JComboBox comboBoxCarta3 = new JComboBox();
 		comboBoxCarta3.setModel(new DefaultComboBoxModel(new String[] {"NO","AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
 		comboBoxCarta3.setToolTipText("Carta comunitaria 3 (Flop)");
-		comboBoxCarta3.setBounds(945, 173, 44, 20);
+		comboBoxCarta3.setBounds(945, 173, 50, 20);
 		contentPanel.add(comboBoxCarta3);
 		
 		JComboBox comboBoxCarta4 = new JComboBox();
 		comboBoxCarta4.setModel(new DefaultComboBoxModel(new String[] {"NO","AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
 		comboBoxCarta4.setToolTipText("Carta comunitaria 4 (Turn)");
-		comboBoxCarta4.setBounds(945, 204, 44, 20);
+		comboBoxCarta4.setBounds(945, 204, 50, 20);
 		contentPanel.add(comboBoxCarta4);
 		
 		JComboBox comboBoxCarta5 = new JComboBox();
 		comboBoxCarta5.setModel(new DefaultComboBoxModel(new String[] {"NO","AC", "KC", "QC", "JC", "10C", "9C", "8C", "7C", "6C", "5C", "4C", "3C", "2C", "AT", "KT", "QT", "JT", "10T", "9T", "8T", "7T", "6T", "5T", "4T", "3T", "2T", "AP", "KP", "QP", "JP", "10P", "9P", "8P", "7P", "6P", "5P", "4P", "3P", "2P", "AD", "KD", "QD", "JD", "10D", "9D", "8D", "7D", "6D", "5D", "4D", "3D", "2D"}));
 		comboBoxCarta5.setToolTipText("Carta comunitaria 5 (River)");
-		comboBoxCarta5.setBounds(945, 235, 44, 20);
+		comboBoxCarta5.setBounds(945, 235, 50, 20);
 		contentPanel.add(comboBoxCarta5);
 		
 		JLabel etApuesta = new JLabel("Apuesta");
@@ -265,10 +265,10 @@ public class Principal extends JDialog {
 				String posicion = (String) listaPosicion.getSelectedValue();
 				int bote = 0;
 				int apuesta = 0;
-				if(campoBote.getText()!= "") {
+				if(campoBote.getText().equals("")==false) {
 					bote = Integer.parseInt(campoBote.getText());
 				}
-				if(campoApuesta.getText()!= "") {
+				if(campoApuesta.getText().equals("")==false) {
 					apuesta = Integer.parseInt(campoApuesta.getText());
 				}
 				
