@@ -32,6 +32,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JTextField;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JInternalFrame;
 
 public class Principal extends JDialog {
 
@@ -39,7 +40,7 @@ public class Principal extends JDialog {
 	private JTextField campoApuesta;
 	private JTextField campoBote;
 	private JTextField campoProbMano;
-	private JTextField campoProbCarta;
+	private JTextField campoRiesgo;
 
 	/**
 	 * Launch the application.
@@ -207,10 +208,11 @@ public class Principal extends JDialog {
 		contentPanel.add(campoProbMano);
 		campoProbMano.setColumns(10);
 		
-		campoProbCarta = new JTextField();
-		campoProbCarta.setColumns(10);
-		campoProbCarta.setBounds(779, 543, 355, 31);
-		contentPanel.add(campoProbCarta);
+		campoRiesgo = new JTextField();
+		campoRiesgo.setFont(new Font("Tahoma", Font.BOLD, 11));
+		campoRiesgo.setColumns(10);
+		campoRiesgo.setBounds(779, 543, 355, 31);
+		contentPanel.add(campoRiesgo);
 		
 		JButton botonCalcular = new JButton("");
 		botonCalcular.setFocusable(false);
@@ -259,6 +261,24 @@ public class Principal extends JDialog {
 				//realiza calculo
 				Calculo calculo = new Calculo(cp1,cp2,c1,c2,c3,c4,c5,null,0,0);
 				campoProbMano.setText(calculo.CalculoProbabilidadMano());
+				//calculo de riesgo en caso de introducir todos los datos
+				String posicion = (String) listaPosicion.getSelectedValue();
+				int bote = 0;
+				int apuesta = 0;
+				if(campoBote.getText()!= "") {
+					bote = Integer.parseInt(campoBote.getText());
+				}
+				if(campoApuesta.getText()!= "") {
+					apuesta = Integer.parseInt(campoApuesta.getText());
+				}
+				
+				if(posicion!=null && bote != 0 && apuesta != 0 ) {
+					calculo.setPosicion(posicion);
+					calculo.setApuesta(apuesta);
+					calculo.setBote(bote);
+					campoRiesgo.setText(calculo.calcularRiesgo());
+				}
+				
 			}
 		});
 		botonCalcular.setBounds(882, 585, 144, 65);

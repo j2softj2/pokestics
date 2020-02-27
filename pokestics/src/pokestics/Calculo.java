@@ -202,16 +202,16 @@ public class Calculo {
 				Mano mano = new Mano(this.cartaPropia1,this.cartaPropia2,this.cartaComunitaria1,this.cartaComunitaria2,this.cartaComunitaria3,this.cartaComunitaria4);
 					String manoActual = mano.compruebaManoLigada();
 					if(manoActual.equals("Trío")) {
-						pMano = "Full o Poker 21,2%";
+						pMano = "Full o Poker 3.6-1(21,2%)";
 					}
 					else if(manoActual.equals("Proyecto de color")) {
-						pMano = "Color 19,6%";
+						pMano = "Color 4.1-1(19,6%)";
 					}
 					else if(manoActual.equals("Doble Pareja")) {
-						pMano = "Full 8,7%";
+						pMano = "Full 10.5-1(8,7%)";
 					}
 					else if(manoActual.equals("Pareja")) {
-						pMano = "Trío 4,3%";
+						pMano = "Trío 22-1(4,3%)";
 					}
 			}
 			else if(momento.equals("river")) {
@@ -223,6 +223,120 @@ public class Calculo {
 					pMano = manoActual;
 			}
 		return pMano;	
+	}
+	
+	public String calcularRiesgo() {
+		int nivelRiesgo = 0;//indicara el nivel de riesgo (1-3)
+		String riesgo = "";
+		String manoActual = "";
+		//variable en la que se especifica momento de la partida
+				String momento = "";
+				//variable en la que se especificara la mano
+				double ods = 0;
+				//comprueba si es preflop,turn o river
+					if(this.cartaComunitaria1.getPalo().equals("O")) {
+						momento = "preflop";
+					}
+					else if(this.cartaComunitaria4.getPalo().equals("O")) {
+						momento = "flop";
+					}
+					else if(this.cartaComunitaria5.getPalo().equals("O")) {
+						momento = "turn";
+					}
+					else {
+						momento = "river";
+					}
+					
+					//comprueba probabilidades en preflop
+					if(momento.equals("preflop")) {
+						//si las cartas son pareja  y del mismo palo
+						if(this.cartaPropia1.getValor().equals(this.cartaPropia2.getValor()) && this.cartaPropia1.getPalo().equals(this.cartaPropia2.getPalo())) {
+							ods = 7.5;
+						}
+						//pareja
+						else if(this.cartaPropia1.getValor().equals(this.cartaPropia2.getValor())) {
+							ods = 7.5;
+						}
+						//dos cartas del mismo palo
+						else if(this.cartaPropia1.getPalo().equals(this.cartaPropia2.getPalo())) {
+							ods = 8.1;
+						}
+						//cartas cualquiera
+						else {
+							ods = 2.1;
+						}
+					}
+					//comprueba probabilidades de ligar manos en turn
+					else if(momento.equals("flop")) {
+						//comprueba mano actual con las cartas del flop
+						Mano mano = new Mano(this.cartaPropia1,this.cartaPropia2,this.cartaComunitaria1,this.cartaComunitaria2,this.cartaComunitaria3);
+							manoActual = mano.compruebaManoLigada();
+							if(manoActual.equals("Trío")) {
+								ods = 5.7;
+							}
+							else if(manoActual.equals("Proyecto de color")) {
+								ods = 4.2;
+							}
+							else if(manoActual.equals("Doble Pareja")) {
+								ods = 10.8;
+							}
+							else if(manoActual.equals("Pareja")) {
+								ods = 22.5;
+							}
+					}
+					//comprueba probabilidades de ligar mano en river
+					else if(momento.equals("turn")) {
+						//comprueba mano actual con las cartas del turn
+						Mano mano = new Mano(this.cartaPropia1,this.cartaPropia2,this.cartaComunitaria1,this.cartaComunitaria2,this.cartaComunitaria3,this.cartaComunitaria4);
+							manoActual = mano.compruebaManoLigada();
+							if(manoActual.equals("Trío")) {
+								ods = 3.6;
+							}
+							else if(manoActual.equals("Proyecto de color")) {
+								ods = 4.1;
+							}
+							else if(manoActual.equals("Doble Pareja")) {
+								ods = 10.5;
+							}
+							else if(manoActual.equals("Pareja")) {
+								ods = 22;
+							}
+					}
+					else if(momento.equals("river")) {
+						//comprueba mano actual con las cartas del turn
+						Mano mano = new Mano(this.cartaPropia1,this.cartaPropia2,this.cartaComunitaria1,this.cartaComunitaria2,this.cartaComunitaria3
+								,this.cartaComunitaria4,this.cartaComunitaria5);
+							manoActual = mano.compruebaManoLigada();
+					}
+					
+					//calculos de riesgo
+					
+					//primero comprueba si el bote es mayor el numero de odds -1 (ejemplo odds 4 el bote deberia ser mayor que 3 veces la apuesta) que la puesta
+					
+					if((ods-1)*this.bote<this.apuesta){
+						nivelRiesgo++;
+					}
+					//comprueba la posicion en mesa las primeras 4 son inicio-siguientes 3 medio-2 ultimas final. Se considera mayor riesgo las primeras posiciones
+					if(this.posicion.equals("SB") | this.posicion.equals("BB") | this.posicion.equals("3") | this.posicion.equals("4") | this.posicion.equals("5")) {
+						nivelRiesgo += 3;
+					}
+					else if(this.posicion.equals("6") | this.posicion.equals("7") | this.posicion.equals("8")) {
+						nivelRiesgo += 2;
+					}
+					else if(this.posicion.equals("DEALER") | this.posicion.equals("9")) {
+						nivelRiesgo += 1;
+					}
+					//comprueba si la mano actual es carta alta o pareja y aumenta el  riesgo en caso de serlo
+					if(manoActual.equals("Pareja") | manoActual.equals("")) {
+						nivelRiesgo++;
+					}
+					
+					//ahora dependiendo del riesgo sumado este sera bajo - medio - alto
+					if(nivelRiesgo<=2) riesgo = "Riesgo bajo";
+					else if(nivelRiesgo == 3) riesgo = "Riesgo medio";
+					else if(nivelRiesgo == 4 | nivelRiesgo == 5) riesgo = "Riesgo alto";
+					return riesgo;
+		
 	}
 	
 	
