@@ -23,9 +23,9 @@ public class Calculo {
 	
 	private String posicion;
 	
-	private int apuesta;
+	private double apuesta;
 	
-	private int bote;
+	private double bote;
 
 	public Carta getCartaPropia1() {
 		return cartaPropia1;
@@ -91,19 +91,19 @@ public class Calculo {
 		this.posicion = posicion;
 	}
 
-	public int getApuesta() {
+	public double getApuesta() {
 		return apuesta;
 	}
 
-	public void setApuesta(int apuesta) {
+	public void setApuesta(double apuesta) {
 		this.apuesta = apuesta;
 	}
 
-	public int getBote() {
+	public double getBote() {
 		return bote;
 	}
 
-	public void setBote(int bote) {
+	public void setBote(double bote) {
 		this.bote = bote;
 	}
 	

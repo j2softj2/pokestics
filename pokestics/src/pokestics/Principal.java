@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Dimension;
@@ -19,6 +20,8 @@ import java.awt.event.ActionEvent;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.KeyEvent;
+import java.io.File;
+
 import javax.swing.KeyStroke;
 import java.awt.event.InputEvent;
 import javax.swing.JSeparator;
@@ -263,15 +266,19 @@ public class Principal extends JDialog {
 				campoProbMano.setText(calculo.CalculoProbabilidadMano());
 				//calculo de riesgo en caso de introducir todos los datos
 				String posicion = (String) listaPosicion.getSelectedValue();
-				int bote = 0;
-				int apuesta = 0;
-				if(campoBote.getText().equals("")==false) {
-					bote = Integer.parseInt(campoBote.getText());
+				double bote = 0;
+				double apuesta = 0;
+				try {
+					if(campoBote.getText().equals("")==false) {
+					bote = Double.valueOf(campoBote.getText());
+					}
+					if(campoApuesta.getText().equals("")==false) {
+					apuesta = Double.valueOf(campoApuesta.getText());
+					}
 				}
-				if(campoApuesta.getText().equals("")==false) {
-					apuesta = Integer.parseInt(campoApuesta.getText());
+				catch(Exception excepcionFormato) {
+					campoRiesgo.setText("El formato de número no es correcto, no usar coma (x.xx)");
 				}
-				
 				if(posicion!=null && bote != 0 && apuesta != 0 ) {
 					calculo.setPosicion(posicion);
 					calculo.setApuesta(apuesta);
@@ -313,8 +320,15 @@ public class Principal extends JDialog {
 		menuConfiguracion.setBackground(Color.WHITE);
 		menuConfiguracion.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		barraMenu.add(menuConfiguracion);
-		
+		//abre una ventana para seleccionar ruta del historial de manos
 		JMenuItem menuItemHistorial = new JMenuItem("Ruta historial de manos ");
+		menuItemHistorial.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser buscador = new JFileChooser();
+					buscador.showOpenDialog(contentPanel);
+					File archivo = buscador.getSelectedFile();
+			}
+		});
 		menuItemHistorial.setBackground(Color.WHITE);
 		menuItemHistorial.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		menuConfiguracion.add(menuItemHistorial);

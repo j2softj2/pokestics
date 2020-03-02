@@ -62,7 +62,7 @@ public class Inicio {
 	private void initialize() {
 		frmPokestics = new JFrame();
 		frmPokestics.setResizable(false);
-		frmPokestics.getContentPane().setBackground(new Color(0, 100, 0));
+		frmPokestics.getContentPane().setBackground(new Color(60, 179, 113));
 		frmPokestics.getContentPane().setLayout(null);
 		
 		
