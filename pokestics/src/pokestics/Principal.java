@@ -44,6 +44,15 @@ public class Principal extends JDialog {
 	private JTextField campoBote;
 	private JTextField campoProbMano;
 	private JTextField campoRiesgo;
+	private File archivo;
+
+	public File getArchivo() {
+		return archivo;
+	}
+
+	public void setArchivo(File archivo) {
+		this.archivo = archivo;
+	}
 
 	/**
 	 * Launch the application.
@@ -206,12 +215,14 @@ public class Principal extends JDialog {
 		contentPanel.add(etProbabilidadCarta);
 		
 		campoProbMano = new JTextField();
+		campoProbMano.setEditable(false);
 		campoProbMano.setFont(new Font("Tahoma", Font.BOLD, 11));
 		campoProbMano.setBounds(779, 466, 355, 31);
 		contentPanel.add(campoProbMano);
 		campoProbMano.setColumns(10);
 		
 		campoRiesgo = new JTextField();
+		campoRiesgo.setEditable(false);
 		campoRiesgo.setFont(new Font("Tahoma", Font.BOLD, 11));
 		campoRiesgo.setColumns(10);
 		campoRiesgo.setBounds(779, 543, 355, 31);
@@ -326,12 +337,29 @@ public class Principal extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser buscador = new JFileChooser();
 					buscador.showOpenDialog(contentPanel);
-					File archivo = buscador.getSelectedFile();
+						if(buscador.getSelectedFile().exists()) {
+							archivo = buscador.getSelectedFile();
+						};
 			}
 		});
 		menuItemHistorial.setBackground(Color.WHITE);
 		menuItemHistorial.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		menuConfiguracion.add(menuItemHistorial);
+		//realizar lectura del historial
+		JMenuItem menuItemIniciarEscaneo = new JMenuItem("Leer historial");
+		menuItemIniciarEscaneo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(archivo!=null) {
+					DatosHistorial leer = new DatosHistorial(archivo);
+						leer.lecturaHistorial();
+				}
+				else {
+					System.out.print("no existe archivo");
+				}
+			}
+		});
+		menuItemIniciarEscaneo.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
+		menuConfiguracion.add(menuItemIniciarEscaneo);
 		
 		JMenu menuSelectorMesa = new JMenu("Selector de mesa");
 		menuSelectorMesa.setIcon(new ImageIcon(Principal.class.getResource("/botones/seleccionarMesa.png")));
