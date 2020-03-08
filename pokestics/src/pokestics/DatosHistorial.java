@@ -9,7 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class DatosHistorial {
-	File archivo;
+	private File archivo;
+	private String usuario;
 
 	public File getArchivo() {
 		return archivo;
@@ -17,6 +18,14 @@ public class DatosHistorial {
 
 	public void setArchivo(File archivo) {
 		this.archivo = archivo;
+	}
+
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
 	}
 
 	public DatosHistorial(File archivo) {
@@ -29,7 +38,9 @@ public class DatosHistorial {
 	
 	
 	
+	
 	public void lecturaHistorial() {
+		usuario = "rafayjessi18";
 		InputStreamReader fr;
 		BufferedReader br;
 		String linea;
@@ -47,6 +58,13 @@ public class DatosHistorial {
 		String nombre8="";
 		String nombre9="";
 		String nombre10="";
+		String cartasPropias="";
+		String posicion="";
+		boolean cp = false;
+		boolean cg = false;
+		boolean resultado= false;
+		int asientoDealer = 0;
+		float boteTotal = 0;
 		
 		try {
 			fr = new InputStreamReader(new FileInputStream(this.archivo),"UTF-8");
@@ -61,6 +79,57 @@ public class DatosHistorial {
 					posInicio = linea.indexOf("-");
 					posFinal = posInicio + 12;
 					fecha = linea.substring(posInicio+1, posFinal);
+				}
+				else if(linea.contains(usuario) && linea.contains("ciega pequeña")){
+					cp = true;
+				}
+				else if(linea.contains(usuario) && linea.contains("ciega grande")){
+					cg = true;
+				}				
+				else if(linea.contains("n.º")) {
+					posInicio = linea.indexOf("º");
+					posFinal = posInicio+3;
+					String numeroAsientoDealer = linea.substring(posInicio+2, posFinal);
+						asientoDealer = Integer.parseInt(numeroAsientoDealer);
+						
+				}
+				else if(linea.contains(usuario) && linea.contains("fichas")) {
+					posInicio = linea.indexOf("o")+2;
+					posFinal = linea.lastIndexOf(":");
+					String asiento = linea.substring(posInicio,posFinal);
+					int asientoN = Integer.parseInt(asiento);
+						if(asientoN == asientoDealer) {
+							posicion = "Dealer";
+						}
+						else if(asientoN == asientoDealer+1) {
+							posicion = "SB";
+						}
+						else if(asientoN == asientoDealer+2) {
+							posicion = "BB";
+						}
+						else if(asientoN == asientoDealer+3) {
+							posicion = "3";
+						}
+						else if(asientoN == asientoDealer+4) {
+							posicion = "4";
+						}
+						else if(asientoN == asientoDealer+5) {
+							posicion = "5";
+						}
+						else if(asientoN == asientoDealer+6) {
+							posicion = "6";
+						}
+						else if(asientoN == asientoDealer+7) {
+							posicion = "7";
+						}
+						else if(asientoN == asientoDealer+8) {
+							posicion = "8";
+						}else if(asientoN == asientoDealer+9) {
+							posicion = "9";
+						}
+						else {
+							posicion = "X";
+						}
 				}
 				else if(linea.contains("Asiento 1")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -117,13 +186,24 @@ public class DatosHistorial {
 					posFinal = linea.indexOf("(");
 					nombre10 = linea.substring(posInicio+1, posFinal-1);
 				}
+				else if(linea.contains("Repartidas")) {
+					posInicio = linea.indexOf("[");
+					posFinal = linea.lastIndexOf("]");
+					cartasPropias = linea.substring(posInicio+1, posFinal);
+				}
+				else if(linea.contains("bote principal") && linea.contains(usuario)) {
+					resultado = true;
+				}
+				else if(linea.contains("Bote total")) {
+					posInicio = linea.indexOf("l")+1;
+					posFinal = linea.indexOf("€");
+					boteTotal = Float.parseFloat(linea.substring(posInicio,posFinal));
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		System.out.println(limite+fecha+nombre1+nombre2+nombre3+nombre4+nombre5+nombre6+nombre7+nombre8+nombre9+nombre10);
-		
-		
+		System.out.println(limite+fecha+nombre1+nombre2+nombre3+nombre4+nombre5+nombre6+nombre7+nombre8+nombre9+nombre10+cartasPropias+posicion+boteTotal);
 	}
 }
