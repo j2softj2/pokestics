@@ -65,7 +65,11 @@ public class DatosHistorial {
 		boolean resultado= false;
 		int asientoDealer = 0;
 		float boteTotal = 0;
-		
+		float apuestaTotal = 0;
+		float apuesta = 0;
+		float ganancia = 0;
+		float comision= 0;
+		float stack = 0;
 		try {
 			fr = new InputStreamReader(new FileInputStream(this.archivo),"UTF-8");
 			br = new BufferedReader(fr);
@@ -79,6 +83,27 @@ public class DatosHistorial {
 					posInicio = linea.indexOf("-");
 					posFinal = posInicio + 12;
 					fecha = linea.substring(posInicio+1, posFinal);
+					//reinicia valores
+					 cp = false;
+					 cg = false;
+					 resultado= false;
+					 asientoDealer = 0;
+					 boteTotal = 0;
+					 apuestaTotal = 0;
+					 apuesta = 0;
+					 ganancia = 0;
+					 comision= 0;
+					 stack = 0;
+					 nombre1="";
+				     nombre2="";
+					 nombre3="";
+					 nombre4="";
+					 nombre5="";
+					 nombre6="";
+					 nombre7="";
+					 nombre8="";
+					 nombre9="";
+					 nombre10="";
 				}
 				else if(linea.contains(usuario) && linea.contains("ciega pequeña")){
 					cp = true;
@@ -130,6 +155,9 @@ public class DatosHistorial {
 						else {
 							posicion = "X";
 						}
+					posInicio = linea.indexOf("(");
+					posFinal = linea.indexOf("€");
+					stack = Float.parseFloat(linea.substring(posInicio+1, posFinal-1));
 				}
 				else if(linea.contains("Asiento 1")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -191,6 +219,18 @@ public class DatosHistorial {
 					posFinal = linea.lastIndexOf("]");
 					cartasPropias = linea.substring(posInicio+1, posFinal);
 				}
+				else if(linea.contains("iguala") | linea.contains("apuesta") | linea.contains("sube") && linea.contains(usuario) && !linea.contains("igualada")){
+					if(linea.contains("sube")) {
+						posInicio = linea.indexOf("€");
+						posFinal = linea.lastIndexOf("€");
+						apuesta = Float.parseFloat(linea.substring(posInicio+4, posFinal-1));
+					}
+					else {
+						posInicio = linea.lastIndexOf("a");
+						posFinal = linea.indexOf("€");
+						apuesta = Float.parseFloat(linea.substring(posInicio+2, posFinal-1));
+					}
+				}
 				else if(linea.contains("bote principal") && linea.contains(usuario)) {
 					resultado = true;
 				}
@@ -198,12 +238,27 @@ public class DatosHistorial {
 					posInicio = linea.indexOf("l")+1;
 					posFinal = linea.indexOf("€");
 					boteTotal = Float.parseFloat(linea.substring(posInicio,posFinal));
+					//comision
+						if(linea.contains("Comisión 0 €") | resultado != true) {
+							comision += 0;
+						}
+						else {
+							posInicio = linea.lastIndexOf("n");
+							posFinal = linea.lastIndexOf("n");
+							comision += Float.parseFloat(linea.substring(posInicio+2,posFinal+7));
+						}
+					
 				}
+				
+				apuestaTotal = apuestaTotal + apuesta;
+				apuesta = 0;
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		System.out.println(limite+fecha+nombre1+nombre2+nombre3+nombre4+nombre5+nombre6+nombre7+nombre8+nombre9+nombre10+cartasPropias+posicion+boteTotal);
+		if(resultado==true)ganancia = boteTotal - apuestaTotal - comision;
+		else {ganancia = 0;}
+		System.out.println(limite+fecha+nombre1+nombre2+nombre3+nombre4+nombre5+nombre6+nombre7+nombre8+nombre9+nombre10+cartasPropias+posicion+boteTotal+"  "+apuestaTotal+"   "+comision+"  "+ganancia+"  "+stack);
 	}
 }

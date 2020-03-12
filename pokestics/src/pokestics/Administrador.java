@@ -39,6 +39,7 @@ public class Administrador extends JDialog {
 	private JTextField campoUsuarioBorrarBd;
 	private JTextField campoUsuarioCrear;
 	private JTextField campoContraseña;
+	private JTextField campoStackInicial;
 
 	/**
 	 * Launch the application.
@@ -61,7 +62,7 @@ public class Administrador extends JDialog {
 		setMinimumSize(new Dimension(500, 500));
 		setBounds(100, 100, 1069, 685);
 		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBackground(new Color(0, 100, 0));
+		contentPanel.setBackground(new Color(60, 179, 113));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
@@ -166,7 +167,7 @@ public class Administrador extends JDialog {
 		
 		campoContraseña = new JTextField();
 		campoContraseña.setColumns(10);
-		campoContraseña.setBounds(113, 367, 155, 26);
+		campoContraseña.setBounds(113, 364, 155, 26);
 		contentPanel.add(campoContraseña);
 		
 		JButton button = new JButton("");
@@ -203,6 +204,17 @@ public class Administrador extends JDialog {
 		button_1.setBackground(Color.WHITE);
 		button_1.setBounds(741, 500, 155, 26);
 		contentPanel.add(button_1);
+		
+		JLabel etStackInicial = new JLabel("Bankroll");
+		etStackInicial.setForeground(Color.WHITE);
+		etStackInicial.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 15));
+		etStackInicial.setBounds(10, 404, 93, 35);
+		contentPanel.add(etStackInicial);
+		
+		campoStackInicial = new JTextField();
+		campoStackInicial.setColumns(10);
+		campoStackInicial.setBounds(113, 413, 155, 26);
+		contentPanel.add(campoStackInicial);
 		
 		JMenuBar barraMenu = new JMenuBar();
 		setJMenuBar(barraMenu);
