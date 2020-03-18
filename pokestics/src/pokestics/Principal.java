@@ -20,7 +20,14 @@ import java.awt.event.ActionEvent;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.KeyStroke;
 import java.awt.event.InputEvent;
@@ -331,15 +338,19 @@ public class Principal extends JDialog {
 		menuConfiguracion.setBackground(Color.WHITE);
 		menuConfiguracion.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		barraMenu.add(menuConfiguracion);
-		//abre una ventana para seleccionar ruta del historial de manos
+		//abre una ventana para seleccionar ruta del historial de manos y obtiene la ruta a la carpeta
 		JMenuItem menuItemHistorial = new JMenuItem("Ruta historial de manos ");
 		menuItemHistorial.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser buscador = new JFileChooser();
 					buscador.showOpenDialog(contentPanel);
+					String direccion;
 						if(buscador.getSelectedFile().exists()) {
 							archivo = buscador.getSelectedFile();
+							direccion = archivo.getPath();
+							guardaRutaEnArchivo(direccion);
 						};
+					
 			}
 		});
 		menuItemHistorial.setBackground(Color.WHITE);
@@ -407,5 +418,24 @@ public class Principal extends JDialog {
 	private String obtenerPalo(String textoCarta) {
 		String palo = textoCarta.substring(1);
 			return palo;
+	}
+	
+	private void guardaRutaEnArchivo(String path){
+		File archivoConfiguracion = new File("Archivos/conf.txt");
+			//lee del fichero la ruta de la carpeta que contiene los historiales
+		String linea;
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(archivoConfiguracion));
+				BufferedWriter bw = new BufferedWriter(new FileWriter(archivoConfiguracion,true));
+						while((linea = br.readLine())!=null) {
+							if(linea.contains("historial")) {
+								bw.append(path);
+								bw.close();
+								br.close();
+							}
+						}
+			}catch (IOException e) {
+				System.out.print(e.getMessage());
+			}
 	}
 }
