@@ -347,7 +347,7 @@ public class Principal extends JDialog {
 					String direccion;
 						if(buscador.getSelectedFile().exists()) {
 							archivo = buscador.getSelectedFile();
-							direccion = archivo.getPath();
+							direccion = archivo.getParent();
 							guardaRutaEnArchivo(direccion);
 						};
 					
@@ -421,7 +421,7 @@ public class Principal extends JDialog {
 	}
 	
 	private void guardaRutaEnArchivo(String path){
-		File archivoConfiguracion = new File("Archivos/conf.txt");
+		File archivoConfiguracion = new File("pokestics/Archivos/conf.txt");
 			//lee del fichero la ruta de la carpeta que contiene los historiales
 		String linea;
 			try {
@@ -437,5 +437,28 @@ public class Principal extends JDialog {
 			}catch (IOException e) {
 				System.out.print(e.getMessage());
 			}
+	}
+	
+	
+	private void buscaHistorialNuevo() {
+		File archivoConfiguracion = new File("pokestics/Archivos/conf.txt");
+		String linea;
+		String rutaCarpeta = null;
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(archivoConfiguracion));
+					while((linea = br.readLine())!=null) {
+						if(linea.contains("historial")) {
+							int inicio;
+							inicio = linea.indexOf("-");
+							rutaCarpeta = linea.substring(inicio+3);
+							br.close();
+						}
+					}
+		}catch (IOException e) {
+			System.out.print(e.getMessage());
+		}
+		
+		File directorio = new File(rutaCarpeta);
+			File[] listaArchivos = directorio.listFiles();
 	}
 }
