@@ -28,6 +28,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 
 import javax.swing.KeyStroke;
 import java.awt.event.InputEvent;
@@ -349,6 +350,7 @@ public class Principal extends JDialog {
 							archivo = buscador.getSelectedFile();
 							direccion = archivo.getParent();
 							guardaRutaEnArchivo(direccion);
+							System.out.println(buscaHistorialNuevo());
 						};
 					
 			}
@@ -425,22 +427,18 @@ public class Principal extends JDialog {
 			//lee del fichero la ruta de la carpeta que contiene los historiales
 		String linea;
 			try {
-				BufferedReader br = new BufferedReader(new FileReader(archivoConfiguracion));
+				archivoConfiguracion.delete();
+				archivoConfiguracion.createNewFile();
 				BufferedWriter bw = new BufferedWriter(new FileWriter(archivoConfiguracion,true));
-						while((linea = br.readLine())!=null) {
-							if(linea.contains("historial")) {
-								bw.append(path);
-								bw.close();
-								br.close();
-							}
-						}
+					bw.append("Ruta historial -- " + path);
+					bw.close();
 			}catch (IOException e) {
 				System.out.print(e.getMessage());
 			}
 	}
 	
 	
-	private void buscaHistorialNuevo() {
+	private String buscaHistorialNuevo() {
 		File archivoConfiguracion = new File("pokestics/Archivos/conf.txt");
 		String linea;
 		String rutaCarpeta = null;
@@ -460,5 +458,31 @@ public class Principal extends JDialog {
 		
 		File directorio = new File(rutaCarpeta);
 			File[] listaArchivos = directorio.listFiles();
+			   //array donde se guardaran todas las fechas de modificacion de los archivos
+			long[] fecha = new long[listaArchivos.length];
+			//convierte a fecha
+			Date[] fechaDate = new Date[listaArchivos.length];
+			
+			//obtiene le fecha
+			for(int i=0; i<listaArchivos.length;i++) {
+				fecha[i] = listaArchivos[i].lastModified();
+				fechaDate[i] = new Date(fecha[i]);
+			}
+			//obtiene el mas nuevo
+			Date menor = fechaDate[0];
+			for(int i=0;i<fechaDate.length;i++) {
+				if(fechaDate[i].after(menor)){
+					menor = fechaDate[i];
+				}
+			}
+			//consigue el nombre del archivo que tiene esa fecha 
+			String nombreUltimoArchivo ="" ;
+			for(int i=0;i<listaArchivos.length;i++) {
+				if(listaArchivos[i].lastModified() == menor.getTime()) {
+					nombreUltimoArchivo = listaArchivos[i].getName();
+				}
+			}
+			return nombreUltimoArchivo;
+			
 	}
 }
