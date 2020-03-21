@@ -350,7 +350,17 @@ public class Principal extends JDialog {
 							archivo = buscador.getSelectedFile();
 							direccion = archivo.getParent();
 							guardaRutaEnArchivo(direccion);
-							System.out.println(buscaHistorialNuevo());
+							if(archivo!=null) {
+								if(guardaNombreEnArchivo(new File(buscaHistorialNuevo()))==true) {
+									guardaNombreEnArchivo(new File(buscaHistorialNuevo()));
+									DatosHistorial leer = new DatosHistorial(new File(buscaHistorialNuevo()));
+									leer.lecturaHistorial();
+								}
+								
+							}
+							else {
+								System.out.print("no existe archivo");
+							}
 						};
 					
 			}
@@ -362,13 +372,7 @@ public class Principal extends JDialog {
 		JMenuItem menuItemIniciarEscaneo = new JMenuItem("Leer historial");
 		menuItemIniciarEscaneo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(archivo!=null) {
-					DatosHistorial leer = new DatosHistorial(archivo);
-						leer.lecturaHistorial();
-				}
-				else {
-					System.out.print("no existe archivo");
-				}
+				
 			}
 		});
 		menuItemIniciarEscaneo.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
@@ -482,7 +486,31 @@ public class Principal extends JDialog {
 					nombreUltimoArchivo = listaArchivos[i].getName();
 				}
 			}
-			return nombreUltimoArchivo;
+			return rutaCarpeta+"/"+nombreUltimoArchivo;
 			
+	}
+	
+	private boolean guardaNombreEnArchivo(File archivo) {
+		boolean ok = false;
+		File historialLeidos = new File("pokestics/Archivos/HistorialesLeidos.txt");
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(historialLeidos));
+			BufferedReader br = new BufferedReader(new FileReader(historialLeidos));
+			String linea = "";
+			boolean escribir = true;
+				while((linea = br.readLine())!=null) {
+					if(linea.contains(archivo.getName())) escribir = false;
+				}
+			if(escribir == true) {
+				bw.newLine();
+				bw.write(archivo.getName());
+				bw.close();
+				ok = true;
+			}
+			br.close();
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+		return ok;
 	}
 }

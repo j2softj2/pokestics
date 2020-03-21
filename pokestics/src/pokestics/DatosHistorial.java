@@ -155,9 +155,17 @@ public class DatosHistorial {
 						else {
 							posicion = "X";
 						}
-					posInicio = linea.indexOf("(");
-					posFinal = linea.indexOf("€");
-					stack = Float.parseFloat(linea.substring(posInicio+1, posFinal-1));
+						if(linea.contains("€")) {
+							posInicio = linea.indexOf("(");
+							posFinal = linea.indexOf("€");
+							stack = Float.parseFloat(linea.substring(posInicio+1, posFinal-1));
+						}
+						else {
+							posInicio = linea.indexOf("(");
+							posFinal = linea.indexOf(")");
+							stack = Float.parseFloat(linea.substring(posInicio+1, posFinal-10));
+						}
+					
 				}
 				else if(linea.contains("Asiento 1")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -220,33 +228,82 @@ public class DatosHistorial {
 					cartasPropias = linea.substring(posInicio+1, posFinal);
 				}
 				else if(linea.contains("iguala") | linea.contains("apuesta") | linea.contains("sube") && linea.contains(usuario) && !linea.contains("igualada")){
-					if(linea.contains("sube")) {
-						posInicio = linea.indexOf("€");
-						posFinal = linea.lastIndexOf("€");
-						apuesta = Float.parseFloat(linea.substring(posInicio+4, posFinal-1));
+					if(linea.contains("€")) {
+						if(linea.contains("sube")) {
+							posInicio = linea.indexOf("€");
+							posFinal = linea.lastIndexOf("€");
+							apuesta = Float.parseFloat(linea.substring(posInicio+4, posFinal-1));
+						}
+						else {
+							posInicio = linea.lastIndexOf("a");
+							posFinal = linea.indexOf("€");
+							apuesta = Float.parseFloat(linea.substring(posInicio+2, posFinal-1));
+						}
 					}
 					else {
-						posInicio = linea.lastIndexOf("a");
-						posFinal = linea.indexOf("€");
-						apuesta = Float.parseFloat(linea.substring(posInicio+2, posFinal-1));
+						if(linea.contains("sube") && linea.contains("all-in")) {
+							posInicio = linea.lastIndexOf(" a ")+2;
+							posFinal = linea.lastIndexOf("y")-2;
+							apuesta = Float.parseFloat(linea.substring(posInicio,posFinal));
+						}
+						else if(linea.contains("sube")) {
+							posInicio = linea.lastIndexOf("a")+2;
+							apuesta = Float.parseFloat(linea.substring(posInicio));
+						}
+						else {
+							if(linea.contains("all-in")) {
+								posFinal = linea.lastIndexOf("y")-2;
+								posInicio = linea.lastIndexOf("u")+6;
+								apuesta = Float.parseFloat(linea.substring(posInicio,posFinal));
+							}
+							else {
+								posInicio = linea.lastIndexOf("a")+2;
+								apuesta = Float.parseFloat(linea.substring(posInicio));
+							}
+							
+						}
 					}
+					
 				}
 				else if(linea.contains("bote principal") && linea.contains(usuario)) {
 					resultado = true;
 				}
 				else if(linea.contains("Bote total")) {
-					posInicio = linea.indexOf("l")+1;
-					posFinal = linea.indexOf("€");
-					boteTotal = Float.parseFloat(linea.substring(posInicio,posFinal));
-					//comision
-						if(linea.contains("Comisión 0 €") | resultado != true) {
-							comision += 0;
+					if(linea.contains("€")) {
+						posInicio = linea.indexOf("l")+1;
+						posFinal = linea.indexOf("€");
+						boteTotal = Float.parseFloat(linea.substring(posInicio,posFinal));
+						//comision
+							if(linea.contains("Comisión 0 €") | resultado != true) {
+								comision += 0;
+							}
+							else {
+								posInicio = linea.lastIndexOf("n");
+								posFinal = linea.lastIndexOf("n");
+								comision += Float.parseFloat(linea.substring(posInicio+2,posFinal+7));
+							}
+					}
+					else{
+						if(linea.contains("secundario")) {
+							posInicio = linea.indexOf("l")+1;
+							posFinal = linea.indexOf(".")-22;
+							boteTotal = Float.parseFloat(linea.substring(posInicio,posFinal));
 						}
 						else {
-							posInicio = linea.lastIndexOf("n");
-							posFinal = linea.lastIndexOf("n");
-							comision += Float.parseFloat(linea.substring(posInicio+2,posFinal+7));
+							posInicio = linea.indexOf("l")+1;
+							posFinal = linea.indexOf("|")-2;
+							boteTotal = Float.parseFloat(linea.substring(posInicio,posFinal));
 						}
+						
+						//comision
+							if(linea.contains("Comisión 0 €") | resultado != true) {
+								comision += 0;
+							}
+							else {
+								posInicio = linea.lastIndexOf("n");
+								comision += Float.parseFloat(linea.substring(posInicio+2));
+							}
+					}
 					
 				}
 				
