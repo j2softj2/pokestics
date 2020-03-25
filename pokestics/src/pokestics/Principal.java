@@ -28,6 +28,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.KeyStroke;
@@ -353,13 +354,10 @@ public class Principal extends JDialog {
 							if(archivo!=null) {
 								if(guardaNombreEnArchivo(new File(buscaHistorialNuevo()))==true) {
 									guardaNombreEnArchivo(new File(buscaHistorialNuevo()));
-									DatosHistorial leer = new DatosHistorial(new File(buscaHistorialNuevo()));
-									leer.lecturaHistorial();
 								}
-								
 							}
 							else {
-								System.out.print("no existe archivo");
+								System.out.print("No existe archivo");
 							}
 						};
 					
@@ -372,7 +370,7 @@ public class Principal extends JDialog {
 		JMenuItem menuItemIniciarEscaneo = new JMenuItem("Leer historial");
 		menuItemIniciarEscaneo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				leeHistorialesNoLeidos();
 			}
 		});
 		menuItemIniciarEscaneo.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
@@ -494,7 +492,7 @@ public class Principal extends JDialog {
 		boolean ok = false;
 		File historialLeidos = new File("pokestics/Archivos/HistorialesLeidos.txt");
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(historialLeidos));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(historialLeidos,true));
 			BufferedReader br = new BufferedReader(new FileReader(historialLeidos));
 			String linea = "";
 			boolean escribir = true;
@@ -503,7 +501,7 @@ public class Principal extends JDialog {
 				}
 			if(escribir == true) {
 				bw.newLine();
-				bw.write(archivo.getName());
+				bw.append(archivo.getName());
 				bw.close();
 				ok = true;
 			}
@@ -512,5 +510,52 @@ public class Principal extends JDialog {
 			System.out.println(e.getMessage());
 		}
 		return ok;
+	}
+	
+	private void leeHistorialesNoLeidos() {
+		File rutaArchivoConf;
+		File rutaHistoriales = null;
+		BufferedReader br;
+		String linea;
+		
+		rutaArchivoConf = new File("pokestics/Archivos/conf.txt");
+			try {
+				br = new BufferedReader(new FileReader(rutaArchivoConf));
+					while((linea = br.readLine())!=null) {
+						if(linea.contains("historial"))rutaHistoriales = new File(linea.substring(linea.lastIndexOf("-")+2));
+					}
+					br.close();
+			} catch (FileNotFoundException e) {
+				System.out.println(e.getMessage());
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
+			}
+			//obtiene el nombre de los archivos ya leidos del archivo de historiales leidos
+			File[] listaHistoriales = rutaHistoriales.listFiles();
+			File historialesLeidos = new File("pokestics/Archivos/HistorialesLeidos.txt");
+			ArrayList<String> nombreArchivos = new ArrayList<String>(); 
+			try {
+				BufferedReader brr = new BufferedReader(new FileReader(historialesLeidos));
+				String lineaHistorial;
+				
+				while((lineaHistorial = brr.readLine())!=null) {
+					nombreArchivos.add(lineaHistorial);
+				}
+			} catch (FileNotFoundException e) {
+				System.out.println(e.getMessage());
+
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
+
+			}
+			//comprueba si ya esta leido y en caso de no estarlo lo lee
+			
+			for(int i=0;i<listaHistoriales.length;i++) {
+				if(!nombreArchivos.contains(listaHistoriales[i].getName()) && listaHistoriales[i].getName().contains("EUR")) {
+					DatosHistorial leer = new DatosHistorial(new File(rutaHistoriales+"/"+listaHistoriales[i].getName()));
+					leer.lecturaHistorial();
+					this.guardaNombreEnArchivo(listaHistoriales[i]);
+				}
+			}
 	}
 }

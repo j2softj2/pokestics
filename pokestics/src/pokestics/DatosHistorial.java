@@ -44,8 +44,8 @@ public class DatosHistorial {
 		InputStreamReader fr;
 		BufferedReader br;
 		String linea;
-		int posInicio;
-		int posFinal;
+		int posInicio=0;
+		int posFinal = 0;
 		String limite="";
 		String fecha="";
 		String nombre1="";
@@ -118,9 +118,15 @@ public class DatosHistorial {
 						asientoDealer = Integer.parseInt(numeroAsientoDealer);
 						
 				}
-				else if(linea.contains(usuario) && linea.contains("fichas")) {
-					posInicio = linea.indexOf("o")+2;
-					posFinal = linea.lastIndexOf(":");
+				else if(linea.contains(usuario) && linea.contains("fichas") && linea.contains("recompra") == false) {
+					if(linea.contains("€")) {
+						posInicio = linea.indexOf("o")+2;
+						posFinal = linea.indexOf("o")+3;
+					}
+					/*else{
+						posInicio = linea.indexOf("o")+2;
+						posFinal = linea.indexOf("o")+3;
+					}*/
 					String asiento = linea.substring(posInicio,posFinal);
 					int asientoN = Integer.parseInt(asiento);
 						if(asientoN == asientoDealer) {
@@ -160,11 +166,12 @@ public class DatosHistorial {
 							posFinal = linea.indexOf("€");
 							stack = Float.parseFloat(linea.substring(posInicio+1, posFinal-1));
 						}
-						else {
+						/*else {
 							posInicio = linea.indexOf("(");
 							posFinal = linea.indexOf(")");
 							stack = Float.parseFloat(linea.substring(posInicio+1, posFinal-10));
 						}
+						*/
 					
 				}
 				else if(linea.contains("Asiento 1")&& linea.contains("fichas")) {
@@ -228,7 +235,7 @@ public class DatosHistorial {
 					cartasPropias = linea.substring(posInicio+1, posFinal);
 				}
 				else if(linea.contains("iguala") | linea.contains("apuesta") | linea.contains("sube") && linea.contains(usuario) && !linea.contains("igualada")){
-					if(linea.contains("€")) {
+					if(linea.contains("€") && !linea.contains("all-in")) {
 						if(linea.contains("sube")) {
 							posInicio = linea.indexOf("€");
 							posFinal = linea.lastIndexOf("€");
@@ -241,6 +248,23 @@ public class DatosHistorial {
 						}
 					}
 					else {
+						if(linea.contains("sube")) {
+							posInicio = linea.indexOf("€");
+							posFinal = linea.lastIndexOf("€");
+							apuesta = Float.parseFloat(linea.substring(posInicio+4, posFinal-2));
+						}
+						else if (linea.contains("iguala")){
+							posInicio = linea.lastIndexOf("u");
+							posFinal = linea.indexOf("€");
+							apuesta = Float.parseFloat(linea.substring(posInicio+6, posFinal-2));
+						}
+						else {
+							posInicio = linea.lastIndexOf("u");
+							posFinal = linea.indexOf("€");
+							apuesta = Float.parseFloat(linea.substring(posInicio+7, posFinal-2));
+						}
+					}
+					/*else {
 						if(linea.contains("sube") && linea.contains("all-in")) {
 							posInicio = linea.lastIndexOf(" a ")+2;
 							posFinal = linea.lastIndexOf("y")-2;
@@ -262,7 +286,7 @@ public class DatosHistorial {
 							}
 							
 						}
-					}
+					}*/
 					
 				}
 				else if(linea.contains("bote principal") && linea.contains(usuario)) {
