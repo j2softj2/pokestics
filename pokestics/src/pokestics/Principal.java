@@ -28,6 +28,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -45,6 +47,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.JTextField;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JInternalFrame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Principal extends JDialog {
 
@@ -54,6 +58,10 @@ public class Principal extends JDialog {
 	private JTextField campoProbMano;
 	private JTextField campoRiesgo;
 	private File archivo;
+	
+ //conexion a la base de datos
+	
+	static Connection conexion = Inicio.getConexion();
 
 	public File getArchivo() {
 		return archivo;
@@ -71,6 +79,7 @@ public class Principal extends JDialog {
 			Principal dialog = new Principal();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
+			leeHistorialesNoLeidos();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -80,9 +89,18 @@ public class Principal extends JDialog {
 	 * Create the dialog.
 	 */
 	public Principal() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				cerrarConexion(conexion);
+			}
+		});
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
+		setTitle("Principal");
 		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);
-		setMinimumSize(new Dimension(500, 500));
+		setMinimumSize(new Dimension(1200, 800));
 		setBounds(100, 100, 1150, 762);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(60, 179, 113));
@@ -370,7 +388,7 @@ public class Principal extends JDialog {
 		JMenuItem menuItemIniciarEscaneo = new JMenuItem("Leer historial");
 		menuItemIniciarEscaneo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				leeHistorialesNoLeidos();
+				//leeHistorialesNoLeidos();
 			}
 		});
 		menuItemIniciarEscaneo.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
@@ -400,6 +418,7 @@ public class Principal extends JDialog {
 	
 	private void cerrarAplicacion() {
 		this.dispose();
+		
 	}
 	/**
 	 * Devuelve el texto de la carta en el JComboBox
@@ -439,7 +458,7 @@ public class Principal extends JDialog {
 			}
 	}
 	
-	
+	//no usar
 	private String buscaHistorialNuevo() {
 		File archivoConfiguracion = new File("pokestics/Archivos/conf.txt");
 		String linea;
@@ -488,7 +507,7 @@ public class Principal extends JDialog {
 			
 	}
 	
-	private boolean guardaNombreEnArchivo(File archivo) {
+	private static boolean guardaNombreEnArchivo(File archivo) {
 		boolean ok = false;
 		File historialLeidos = new File("pokestics/Archivos/HistorialesLeidos.txt");
 		try {
@@ -512,7 +531,7 @@ public class Principal extends JDialog {
 		return ok;
 	}
 	
-	private void leeHistorialesNoLeidos() {
+	private static void leeHistorialesNoLeidos() {
 		File rutaArchivoConf;
 		File rutaHistoriales = null;
 		BufferedReader br;
@@ -554,8 +573,20 @@ public class Principal extends JDialog {
 				if(!nombreArchivos.contains(listaHistoriales[i].getName()) && listaHistoriales[i].getName().contains("EUR")) {
 					DatosHistorial leer = new DatosHistorial(new File(rutaHistoriales+"/"+listaHistoriales[i].getName()));
 					leer.lecturaHistorial();
-					this.guardaNombreEnArchivo(listaHistoriales[i]);
+					guardaNombreEnArchivo(listaHistoriales[i]);
 				}
 			}
+	}
+	
+	/**
+	 * Cerrar conexion a base de datos
+	 */
+	private static void cerrarConexion(Connection con) {
+		try {
+			con.close();
+			System.out.println("Conexion cerrada");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }

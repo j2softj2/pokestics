@@ -14,11 +14,17 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javax.swing.KeyStroke;
 import java.awt.event.InputEvent;
 import javax.swing.BoxLayout;
@@ -28,9 +34,15 @@ import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Calendar;
 import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class Administrador extends JDialog {
 
@@ -40,6 +52,9 @@ public class Administrador extends JDialog {
 	private JTextField campoUsuarioCrear;
 	private JTextField campoContraseña;
 	private JTextField campoStackInicial;
+	
+	
+	static Connection conexion = Inicio.getConexion();
 
 	/**
 	 * Launch the application.
@@ -58,6 +73,12 @@ public class Administrador extends JDialog {
 	 * Create the dialog.
 	 */
 	public Administrador() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				cerrarConexion(conexion);
+			}
+		});
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setMinimumSize(new Dimension(500, 500));
 		setBounds(100, 100, 1069, 685);
@@ -91,6 +112,25 @@ public class Administrador extends JDialog {
 		campoUsuario.setColumns(10);
 		
 		JButton botonBorrarUsuario = new JButton("");
+		//borra usuario introducido
+		botonBorrarUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Statement st;
+				String usuario = campoUsuario.getText();
+				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de borrar al usuario "+usuario+"?", "Advertencia",JOptionPane.YES_NO_OPTION);
+					if(respuesta == 0) {
+						try {
+							st = conexion.createStatement();
+							st.executeUpdate("REVOKE ALL ON DATABASE pokestics FROM " + usuario);
+							st.executeUpdate("DROP USER "+ usuario);
+							JOptionPane.showMessageDialog(null,"Usuario borrado correctamente");
+						} catch (SQLException e1) {
+							JOptionPane.showMessageDialog(null,e1.getMessage());
+						}
+					}
+				
+			}
+		});
 		botonBorrarUsuario.setBackground(Color.WHITE);
 		botonBorrarUsuario.setIcon(new ImageIcon(Administrador.class.getResource("/botones/borrar.png")));
 		botonBorrarUsuario.setBounds(282, 64, 155, 26);
@@ -170,7 +210,62 @@ public class Administrador extends JDialog {
 		campoContraseña.setBounds(113, 364, 155, 26);
 		contentPanel.add(campoContraseña);
 		
+		JComboBox comboBoxRol = new JComboBox();
+		comboBoxRol.setToolTipText("Tipo de usuario: Invitado solo observador, Usuario uso normal ");
+		comboBoxRol.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
+		comboBoxRol.setModel(new DefaultComboBoxModel(new String[] {"Invitado", "Usuario"}));
+		comboBoxRol.setBounds(113, 457, 155, 26);
+		contentPanel.add(comboBoxRol);
+		
 		JButton button = new JButton("");
+		button.addActionListener(new ActionListener() {
+			//crear usuario
+			public void actionPerformed(ActionEvent e) {
+				Statement st = null;
+				String usuario = campoUsuarioCrear.getText();
+				String contraseña = campoContraseña.getText();
+				String tipo = (String)comboBoxRol.getSelectedItem();
+				Double bankrol = null;
+				String combinacion = "[0-9]{10}[.][0-9] {2}";
+				Pattern p = Pattern.compile(combinacion);
+				Matcher m = p.matcher(campoStackInicial.getText());
+				if(m.matches()) {
+					if(Float.parseFloat(campoStackInicial.getText())>0){
+						bankrol = Double.parseDouble(campoStackInicial.getText());
+					};
+				}
+				
+				String creacionUsuario = "CREATE USER "+usuario+" WITH PASSWORD '"+ contraseña +"'";
+				String privilegiosObservador = "GRANT SELECT ON TABLE usuario,juega,sesion,manos,obtiene,estadisticasJuego,"
+						+ "estadisticasCash,juegan,jugadores,bankroll TO "+usuario;
+				String privilegiosUsuario = "GRANT SELECT,INSERT,UPDATE ON TABLE usuario,juega,sesion,manos,obtiene,estadisticasJuego,"
+						+ "estadisticasCash,juegan,jugadores,bankroll TO "+usuario;
+				String revocarTodo = "REVOKE ALL ON DATABASE pokestics FROM "+usuario;	
+				String insertarBankrol = "INSERT INTO BANKROLL (CASH) VALUES ('"+ bankrol + "') WHERE USUARIO = "+usuario; 
+				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de borrar al usuario "+usuario+"?", "Advertencia",JOptionPane.YES_NO_OPTION);
+				if(respuesta == 0){
+					try {
+				
+					if(tipo.equals("Invitado")){
+						st.executeUpdate(creacionUsuario);
+						st.executeUpdate(revocarTodo);
+						st.executeUpdate(privilegiosObservador);
+					}
+					else if(tipo.equals("Usuario")) {
+						st.executeUpdate(creacionUsuario);
+						st.executeUpdate(revocarTodo);
+						st.executeUpdate(privilegiosUsuario);
+						st.executeUpdate(insertarBankrol);
+					}
+				JOptionPane.showMessageDialog(null,"Usuario creado correctamente");
+					}
+					catch(SQLException e1) {
+						JOptionPane.showMessageDialog(null,e1.getMessage());
+					}
+				}
+				
+			}
+		});
 		button.setIcon(new ImageIcon(Administrador.class.getResource("/botones/crear.png")));
 		button.setBackground(Color.WHITE);
 		button.setBounds(282, 338, 155, 26);
@@ -216,6 +311,14 @@ public class Administrador extends JDialog {
 		campoStackInicial.setBounds(113, 413, 155, 26);
 		contentPanel.add(campoStackInicial);
 		
+		JLabel etRol = new JLabel("Rol");
+		etRol.setForeground(Color.WHITE);
+		etRol.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 15));
+		etRol.setBounds(10, 451, 93, 35);
+		contentPanel.add(etRol);
+		
+		
+		
 		JMenuBar barraMenu = new JMenuBar();
 		setJMenuBar(barraMenu);
 		
@@ -233,6 +336,7 @@ public class Administrador extends JDialog {
 		menuItemCerrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cerrarAplicacion();
+				cerrarConexion(conexion);
 			}
 		});
 		menuItemCerrar.setBackground(Color.WHITE);
@@ -270,4 +374,16 @@ public class Administrador extends JDialog {
 	private void cerrarAplicacion() {
 		this.dispose();
 	}
+	
+	/**
+	 * Cerrar conexion a base de datos
+	 */
+	private static void cerrarConexion(Connection con) {
+		try {
+			con.close();
+			System.out.println("Conexion cerrada");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}	
 }

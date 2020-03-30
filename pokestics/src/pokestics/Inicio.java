@@ -27,6 +27,19 @@ import java.awt.event.ActionEvent;
 
 public class Inicio {
 
+	/**
+	 * Conexion a la base de datos
+	 */
+	private static Connection conexion = null;
+	
+	/**
+	 * metodo getter conexion
+	 */
+	public static Connection getConexion() {
+		return conexion;
+	}
+	
+	
 	private JFrame frmPokestics;
 	private JTextField campoUsuario;
 	private JTextField campoPass;
@@ -85,6 +98,7 @@ public class Inicio {
 		frmPokestics.getContentPane().add(etPass);
 		
 		campoUsuario = new JTextField();
+		campoUsuario.setAutoscrolls(false);
 		campoUsuario.setHorizontalAlignment(SwingConstants.CENTER);
 		campoUsuario.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		campoUsuario.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
@@ -93,6 +107,7 @@ public class Inicio {
 		campoUsuario.setColumns(10);
 		
 		campoPass = new JPasswordField();
+		campoPass.setAutoscrolls(false);
 		campoPass.setHorizontalAlignment(SwingConstants.CENTER);
 		campoPass.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		campoPass.setColumns(10);
@@ -152,12 +167,12 @@ public class Inicio {
 			//System.out.println("Error al registrar el driver de PostreSQL: "+ ex);
 		}
 		//conexion usando usuario y pass
-		Connection conexion = null;
+		
 			try {
 				conexion = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pokestics",usuario,pass);
 					if(usuario.equals("postgres")) usuario = "superusuario";
 				JOptionPane.showMessageDialog(null, "Conectado a la base de datos como "+usuario);
-				//abre la ventana principal de la aplicacion
+				//abre la ventana principal de la aplicacion para usuarios normales o la de administrador en caso de ser el admin
 				if(usuario.equals("superusuario")) {
 					Administrador adm = new Administrador();
 						adm.setMinimumSize(new Dimension(1200,800));
@@ -168,10 +183,10 @@ public class Inicio {
 				}
 				else {
 					Principal p = new Principal();
-					p.setMinimumSize(new Dimension(800,800));
+					p.setMinimumSize(new Dimension(1200,800));
 						p.pack();
 						p.setLocationRelativeTo(null);
-						p.setVisible(true);
+						p.setVisible(true);		
 				}
 				
 					
