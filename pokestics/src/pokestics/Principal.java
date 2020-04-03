@@ -14,6 +14,8 @@ import javax.swing.JMenu;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.JMenuItem;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -49,9 +51,12 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JInternalFrame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.Toolkit;
+import javax.swing.UIManager;
 
 public class Principal extends JDialog {
 
+	
 	private final JPanel contentPanel = new JPanel();
 	private JTextField campoApuesta;
 	private JTextField campoBote;
@@ -59,9 +64,12 @@ public class Principal extends JDialog {
 	private JTextField campoRiesgo;
 	private File archivo;
 	
+	
+	
  //conexion a la base de datos
 	
 	static Connection conexion = Inicio.getConexion();
+	private JTextField campoFechaSesion;
 
 	public File getArchivo() {
 		return archivo;
@@ -89,6 +97,7 @@ public class Principal extends JDialog {
 	 * Create the dialog.
 	 */
 	public Principal() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Principal.class.getResource("/imagenesFondo/logoSimple.png")));
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
@@ -104,12 +113,11 @@ public class Principal extends JDialog {
 		setBounds(100, 100, 1150, 762);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(60, 179, 113));
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
 		JSeparator separadorCalculadora = new JSeparator();
-		separadorCalculadora.setBounds(751, 5, 2, 696);
+		separadorCalculadora.setBounds(751, 5, 2, 730);
 		separadorCalculadora.setBackground(new Color(255, 255, 255));
 		separadorCalculadora.setOrientation(SwingConstants.VERTICAL);
 		contentPanel.add(separadorCalculadora);
@@ -256,6 +264,8 @@ public class Principal extends JDialog {
 		contentPanel.add(campoRiesgo);
 		
 		JButton botonCalcular = new JButton("");
+		botonCalcular.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
+		botonCalcular.setContentAreaFilled(false);
 		botonCalcular.setFocusable(false);
 		botonCalcular.setBackground(Color.WHITE);
 		botonCalcular.setIcon(new ImageIcon(Principal.class.getResource("/botones/calculadora.png")));
@@ -326,8 +336,68 @@ public class Principal extends JDialog {
 				
 			}
 		});
-		botonCalcular.setBounds(882, 585, 144, 65);
+		botonCalcular.setBounds(892, 603, 134, 132);
 		contentPanel.add(botonCalcular);
+		
+		JSeparator separadorGraficas = new JSeparator();
+		separadorGraficas.setBounds(10, 543, 731, 2);
+		contentPanel.add(separadorGraficas);
+		
+		JLabel etMostrarDatos = new JLabel("Mostrar datos sesion");
+		etMostrarDatos.setForeground(Color.WHITE);
+		etMostrarDatos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 20));
+		etMostrarDatos.setBounds(20, 552, 214, 31);
+		contentPanel.add(etMostrarDatos);
+		
+		JLabel etFechaSesion = new JLabel("Fecha sesi\u00F3n");
+		etFechaSesion.setForeground(Color.WHITE);
+		etFechaSesion.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
+		etFechaSesion.setBounds(85, 585, 85, 31);
+		contentPanel.add(etFechaSesion);
+		
+		campoFechaSesion = new JTextField();
+		campoFechaSesion.setBounds(20, 615, 214, 31);
+		contentPanel.add(campoFechaSesion);
+		campoFechaSesion.setColumns(10);
+		
+		JLabel etListadoDatos = new JLabel("Listado sesiones");
+		etListadoDatos.setForeground(Color.WHITE);
+		etListadoDatos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
+		etListadoDatos.setBounds(76, 674, 102, 31);
+		contentPanel.add(etListadoDatos);
+		
+		JComboBox comboBoxListadoSesion = new JComboBox();
+		comboBoxListadoSesion.setBounds(20, 704, 214, 31);
+		contentPanel.add(comboBoxListadoSesion);
+		
+		JButton botonMostrarDatos = new JButton("");
+		botonMostrarDatos.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
+		botonMostrarDatos.setContentAreaFilled(false);
+		botonMostrarDatos.setSelectedIcon(new ImageIcon(Principal.class.getResource("/botones/cuadricula.png")));
+		botonMostrarDatos.setIcon(new ImageIcon(Principal.class.getResource("/botones/cuadricula.png")));
+		//botonMostrarDatos.setBackground(Color.white);
+		botonMostrarDatos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
+		botonMostrarDatos.setForeground(Color.BLACK);
+		botonMostrarDatos.setBounds(249, 660, 60, 41);
+		contentPanel.add(botonMostrarDatos);
+		
+		JSeparator separadorGrafica = new JSeparator();
+		separadorGrafica.setOrientation(SwingConstants.VERTICAL);
+		separadorGrafica.setBounds(332, 555, 2, 186);
+		contentPanel.add(separadorGrafica);
+		
+		JLabel etMostrarGrafica = new JLabel("Mostrar Graficas");
+		etMostrarGrafica.setForeground(Color.WHITE);
+		etMostrarGrafica.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 20));
+		etMostrarGrafica.setBounds(450, 552, 174, 31);
+		contentPanel.add(etMostrarGrafica);
+		
+		JButton btnNewButton = new JButton("");
+		btnNewButton.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
+		btnNewButton.setContentAreaFilled(false);
+		btnNewButton.setIcon(new ImageIcon(Principal.class.getResource("/botones/grafica.png")));
+		btnNewButton.setBounds(453, 585, 169, 150);
+		contentPanel.add(btnNewButton);
 		
 		JMenuBar barraMenu = new JMenuBar();
 		barraMenu.setBackground(new Color(255, 255, 255));
@@ -349,6 +419,15 @@ public class Principal extends JDialog {
 				cerrarAplicacion();
 			}
 		});
+		//realizar lectura del historial
+		JMenuItem menuItemIniciarEscaneo = new JMenuItem("Leer historial");
+		menuArchivo.add(menuItemIniciarEscaneo);
+		menuItemIniciarEscaneo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//leeHistorialesNoLeidos();
+			}
+		});
+		menuItemIniciarEscaneo.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		menuItemCerrar.setBackground(Color.WHITE);
 		menuItemCerrar.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		menuArchivo.add(menuItemCerrar);
@@ -384,15 +463,6 @@ public class Principal extends JDialog {
 		menuItemHistorial.setBackground(Color.WHITE);
 		menuItemHistorial.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		menuConfiguracion.add(menuItemHistorial);
-		//realizar lectura del historial
-		JMenuItem menuItemIniciarEscaneo = new JMenuItem("Leer historial");
-		menuItemIniciarEscaneo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//leeHistorialesNoLeidos();
-			}
-		});
-		menuItemIniciarEscaneo.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
-		menuConfiguracion.add(menuItemIniciarEscaneo);
 		
 		JMenu menuSelectorMesa = new JMenu("Selector de mesa");
 		menuSelectorMesa.setIcon(new ImageIcon(Principal.class.getResource("/botones/seleccionarMesa.png")));

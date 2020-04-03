@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.SwingConstants;
@@ -39,7 +40,7 @@ public class Inicio {
 		return conexion;
 	}
 	
-	
+	private Image imagenFondo = new ImageIcon(getClass().getResource("/imagenesFondo/logoLetras800.png")).getImage();
 	private JFrame frmPokestics;
 	private JTextField campoUsuario;
 	private JTextField campoPass;
@@ -74,8 +75,10 @@ public class Inicio {
 	 */
 	private void initialize() {
 		frmPokestics = new JFrame();
+		frmPokestics.setIconImage(Toolkit.getDefaultToolkit().getImage(Inicio.class.getResource("/imagenesFondo/logoSimple.png")));
+		frmPokestics.setContentPane(new JPanelFondo(imagenFondo));
 		frmPokestics.setResizable(false);
-		frmPokestics.getContentPane().setBackground(new Color(60, 179, 113));
+		//frmPokestics.getContentPane().setBackground(new Color(60, 179, 113));
 		frmPokestics.getContentPane().setLayout(null);
 		
 		
@@ -150,7 +153,7 @@ public class Inicio {
 		botonEntrar.setFont(new Font("DejaVu Serif Condensed", Font.PLAIN, 16));
 		botonEntrar.setBounds(252, 295, 171, 29);
 		frmPokestics.getContentPane().add(botonEntrar);
-		frmPokestics.setBackground(new Color(0, 100, 0));
+		frmPokestics.setBackground(Color.BLACK);
 		frmPokestics.setMinimumSize(new Dimension(690, 500));
 		frmPokestics.setTitle("POKESTICS");
 		frmPokestics.setBounds(100, 100, 693, 500);

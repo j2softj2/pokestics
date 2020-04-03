@@ -34,6 +34,7 @@ import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Calendar;
@@ -43,6 +44,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import java.awt.Toolkit;
 
 public class Administrador extends JDialog {
 
@@ -55,6 +57,7 @@ public class Administrador extends JDialog {
 	
 	
 	static Connection conexion = Inicio.getConexion();
+	private JTextField campoNombreCompleto;
 
 	/**
 	 * Launch the application.
@@ -73,6 +76,8 @@ public class Administrador extends JDialog {
 	 * Create the dialog.
 	 */
 	public Administrador() {
+		setTitle("Administrador");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Administrador.class.getResource("/imagenes/logoSimple.png")));
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
@@ -121,7 +126,7 @@ public class Administrador extends JDialog {
 					if(respuesta == 0) {
 						try {
 							st = conexion.createStatement();
-							st.executeUpdate("REVOKE ALL ON DATABASE pokestics FROM " + usuario);
+							st.executeUpdate("REVOKE ALL PRIVILEGES ON TABLE USUARIO,JUEGA,MANOS,ESTADISTICASJUEGO,ESTADISTICASCASH,OBTIENE,JUGADORES,JUEGAN,BANKROLL,SESION FROM "+usuario);
 							st.executeUpdate("DROP USER "+ usuario);
 							JOptionPane.showMessageDialog(null,"Usuario borrado correctamente");
 						} catch (SQLException e1) {
@@ -219,43 +224,58 @@ public class Administrador extends JDialog {
 		
 		JButton button = new JButton("");
 		button.addActionListener(new ActionListener() {
+			//obtencion de la fecha actual
+			Calendar calendario = new GregorianCalendar();
+			int dia = calendario.get(Calendar.DAY_OF_MONTH);
+			int mes = calendario.get(Calendar.MONTH)+1;
+			int año = calendario.get(Calendar.YEAR);
+			String fecha = año+"/"+mes+"/"+dia;
 			//crear usuario
 			public void actionPerformed(ActionEvent e) {
 				Statement st = null;
 				String usuario = campoUsuarioCrear.getText();
 				String contraseña = campoContraseña.getText();
 				String tipo = (String)comboBoxRol.getSelectedItem();
-				Double bankrol = null;
-				String combinacion = "[0-9]{10}[.][0-9] {2}";
+				String nombreCompleto = campoNombreCompleto.getText();
+				Double bankrol = 0.0;
+				String combinacion = "[0-9]{1,10}.[0-9]{1,2}";
 				Pattern p = Pattern.compile(combinacion);
 				Matcher m = p.matcher(campoStackInicial.getText());
 				if(m.matches()) {
-					if(Float.parseFloat(campoStackInicial.getText())>0){
+					if(Double.parseDouble(campoStackInicial.getText())>0){
 						bankrol = Double.parseDouble(campoStackInicial.getText());
 					};
 				}
 				
 				String creacionUsuario = "CREATE USER "+usuario+" WITH PASSWORD '"+ contraseña +"'";
+				String creacionInvitado = "CREATE USER "+usuario; 
 				String privilegiosObservador = "GRANT SELECT ON TABLE usuario,juega,sesion,manos,obtiene,estadisticasJuego,"
 						+ "estadisticasCash,juegan,jugadores,bankroll TO "+usuario;
 				String privilegiosUsuario = "GRANT SELECT,INSERT,UPDATE ON TABLE usuario,juega,sesion,manos,obtiene,estadisticasJuego,"
 						+ "estadisticasCash,juegan,jugadores,bankroll TO "+usuario;
 				String revocarTodo = "REVOKE ALL ON DATABASE pokestics FROM "+usuario;	
-				String insertarBankrol = "INSERT INTO BANKROLL (CASH) VALUES ('"+ bankrol + "') WHERE USUARIO = "+usuario; 
-				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de borrar al usuario "+usuario+"?", "Advertencia",JOptionPane.YES_NO_OPTION);
+				String insertarBankrol = "INSERT INTO BANKROLL (CASH,USUARIO,FECHA) VALUES ('"+ bankrol + "','"+nombreCompleto+"','"+fecha+"')"; 
+				String insertarUsuario = "INSERT INTO USUARIO (NOMBRE,USUARIOSALA) VALUES ('"+nombreCompleto+"','"+usuario+"')";
+				
+				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de crear al usuario "+usuario+"?", "Advertencia",JOptionPane.YES_NO_OPTION);
 				if(respuesta == 0){
 					try {
-				
-					if(tipo.equals("Invitado")){
-						st.executeUpdate(creacionUsuario);
+						st = conexion.createStatement();
+					if(tipo.equals("Invitado") && usuario!=null){
+						st.executeUpdate(creacionInvitado);
 						st.executeUpdate(revocarTodo);
 						st.executeUpdate(privilegiosObservador);
+						st.executeUpdate(insertarUsuario);
 					}
-					else if(tipo.equals("Usuario")) {
+					else if(tipo.equals("Usuario") && usuario!=null && nombreCompleto !=null && bankrol!=null && contraseña!=null) {
 						st.executeUpdate(creacionUsuario);
 						st.executeUpdate(revocarTodo);
 						st.executeUpdate(privilegiosUsuario);
+						st.executeUpdate(insertarUsuario);
 						st.executeUpdate(insertarBankrol);
+					}
+					else {
+						JOptionPane.showMessageDialog(null,"Es necesario rellenar los datos para cada tipo de usuario (Invitado solo usuario)");
 					}
 				JOptionPane.showMessageDialog(null,"Usuario creado correctamente");
 					}
@@ -317,6 +337,17 @@ public class Administrador extends JDialog {
 		etRol.setBounds(10, 451, 93, 35);
 		contentPanel.add(etRol);
 		
+		JLabel etNombreCompleto = new JLabel("Nombre Completo");
+		etNombreCompleto.setForeground(Color.WHITE);
+		etNombreCompleto.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 15));
+		etNombreCompleto.setBounds(10, 493, 140, 35);
+		contentPanel.add(etNombreCompleto);
+		
+		campoNombreCompleto = new JTextField();
+		campoNombreCompleto.setColumns(10);
+		campoNombreCompleto.setBounds(10, 538, 258, 33);
+		contentPanel.add(campoNombreCompleto);
+		
 		
 		
 		JMenuBar barraMenu = new JMenuBar();
@@ -342,17 +373,6 @@ public class Administrador extends JDialog {
 		menuItemCerrar.setBackground(Color.WHITE);
 		menuItemCerrar.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		menuArchivo.add(menuItemCerrar);
-		
-		JMenu menuConfiguracion = new JMenu("Configuraci\u00F3n");
-		menuConfiguracion.setIcon(new ImageIcon(Principal.class.getResource("/botones/configuracion10x10.png")));
-		menuConfiguracion.setBackground(Color.WHITE);
-		menuConfiguracion.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
-		barraMenu.add(menuConfiguracion);
-		
-		JMenuItem menuItemHistorial = new JMenuItem("Ruta historial de manos ");
-		menuItemHistorial.setBackground(Color.WHITE);
-		menuItemHistorial.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
-		menuConfiguracion.add(menuItemHistorial);
 		
 		JMenu menuAyuda = new JMenu("Ayuda");
 		menuAyuda.setIcon(new ImageIcon(Principal.class.getResource("/botones/ayuda10x10.png")));
