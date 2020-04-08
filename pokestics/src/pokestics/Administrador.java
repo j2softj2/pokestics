@@ -77,7 +77,7 @@ public class Administrador extends JDialog {
 	 */
 	public Administrador() {
 		setTitle("Administrador");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(Administrador.class.getResource("/imagenes/logoSimple.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Administrador.class.getResource("/imagenesFondo/logoSimple.png")));
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {

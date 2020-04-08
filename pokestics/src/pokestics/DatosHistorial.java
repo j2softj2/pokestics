@@ -7,6 +7,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class DatosHistorial {
 	private File archivo;
@@ -35,6 +43,10 @@ public class DatosHistorial {
 	public DatosHistorial() {
 		
 	}
+	
+	//conexion a la base de datos
+	
+	Connection con = Inicio.getConexion();
 	
 	
 	
@@ -70,6 +82,7 @@ public class DatosHistorial {
 		float ganancia = 0;
 		float comision= 0;
 		float stack = 0;
+		float perdida = 0;
 		try {
 			fr = new InputStreamReader(new FileInputStream(this.archivo),"UTF-8");
 			br = new BufferedReader(fr);
@@ -78,7 +91,7 @@ public class DatosHistorial {
 				//primera linea siempre es limite-fecha lo que debemos obtener
 				if(linea.contains("Mano")) {	
 					posInicio = linea.indexOf("(");
-					posFinal = linea.lastIndexOf(")");
+					posFinal = linea.lastIndexOf("€")+1;
 					limite = linea.substring(posInicio+1, posFinal);
 					posInicio = linea.indexOf("-");
 					posFinal = posInicio + 12;
@@ -339,7 +352,58 @@ public class DatosHistorial {
 			e.printStackTrace();
 		}
 		if(resultado==true)ganancia = boteTotal - apuestaTotal - comision;
-		else {ganancia = 0;}
+		else {ganancia = 0; perdida = apuestaTotal;}
 		System.out.println(limite+fecha+nombre1+nombre2+nombre3+nombre4+nombre5+nombre6+nombre7+nombre8+nombre9+nombre10+cartasPropias+posicion+boteTotal+"  "+apuestaTotal+"   "+comision+"  "+ganancia+"  "+stack);
+		
+		insertarSesion();
+		insertarManos(cartasPropias,posicion,boteTotal,resultado,cg,cp,apuestaTotal,ganancia,perdida,limite,stack);
+	}
+	
+	//metodos para insertar en la base de datos
+	private void insertarSesion() {
+		try {
+			String fecha;
+			Calendar fechaDate = new GregorianCalendar();
+			int dia= fechaDate.DAY_OF_MONTH;
+			int mes = fechaDate.MONTH +1 ;
+			int año = fechaDate.YEAR;
+			String usuario = Inicio.getUsuario();
+				fecha = año + "/" + mes + "/" + dia;
+			PreparedStatement pst = con.prepareStatement("INSERT INTO sesion(fecha,usuario) VALUES (?,?)");
+				pst.setString(1, fecha);
+				pst.setString(2,usuario);
+				pst.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	private void insertarManos(String cartas ,String posicion, float bote, boolean resultado, boolean cg, boolean cp,float apuesta,float ganancia,float perdida,String limite, float stack) {
+		try {
+			//consulta la sesion creada justo antes
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT MAX(codigo) FROM sesion");
+			//comienza la insercion en la tabla manos
+			PreparedStatement pst= con.prepareStatement("INSERT INTO manos (cartas,pos,bote,resultado,cg,cp,apuesta,ganancia,perdida,limite,stack,sesion) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+				pst.setString(1,cartas);
+				pst.setString(2,posicion);
+				pst.setDouble(3,bote);
+				pst.setBoolean(4,resultado);
+				pst.setBoolean(5,cg);
+				pst.setBoolean(6,cp);
+				pst.setDouble(7, apuesta);
+				pst.setDouble(8, ganancia);
+				pst.setDouble(9, perdida);
+				pst.setString(10,limite);
+				pst.setDouble(11, stack);
+				while(rs.next()) {
+					pst.setInt(12, rs.getInt(1));
+				}
+				pst.executeUpdate();
+				
+				
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }

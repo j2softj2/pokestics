@@ -40,6 +40,17 @@ public class Inicio {
 		return conexion;
 	}
 	
+	private static String usuario;
+	
+	
+	public static String getUsuario() {
+		return usuario;
+	}
+
+	public static void setUsuario(String usuario) {
+		usuario = usuario;
+	}
+
 	private Image imagenFondo = new ImageIcon(getClass().getResource("/imagenesFondo/logoLetras800.png")).getImage();
 	private JFrame frmPokestics;
 	private JTextField campoUsuario;
@@ -140,7 +151,7 @@ public class Inicio {
 		JButton botonEntrar = new JButton("");
 		botonEntrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String usuario = campoUsuario.getText();
+				usuario = campoUsuario.getText();
 				String pass = campoPass.getText();
 					if(usuario.equals("superusuario")){usuario = "postgres";}
 				conexionBaseDatos(usuario,pass);

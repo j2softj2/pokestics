@@ -87,7 +87,7 @@ public class Principal extends JDialog {
 			Principal dialog = new Principal();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
-			leeHistorialesNoLeidos();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -101,7 +101,12 @@ public class Principal extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
+				
 				cerrarConexion(conexion);
+			}
+			@Override
+			public void windowOpened(WindowEvent e) {
+				leeHistorialesNoLeidos();
 			}
 		});
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -456,6 +461,9 @@ public class Principal extends JDialog {
 							else {
 								System.out.print("No existe archivo");
 							}
+						}
+						else{
+							
 						};
 					
 			}
@@ -528,7 +536,7 @@ public class Principal extends JDialog {
 			}
 	}
 	
-	//no usar
+	//no usar por ahora
 	private String buscaHistorialNuevo() {
 		File archivoConfiguracion = new File("pokestics/Archivos/conf.txt");
 		String linea;
@@ -640,7 +648,7 @@ public class Principal extends JDialog {
 			//comprueba si ya esta leido y en caso de no estarlo lo lee
 			
 			for(int i=0;i<listaHistoriales.length;i++) {
-				if(!nombreArchivos.contains(listaHistoriales[i].getName()) && listaHistoriales[i].getName().contains("EUR")) {
+				if(nombreArchivos.contains(listaHistoriales[i].getName()) == false && listaHistoriales[i].getName().contains("EUR")) {
 					DatosHistorial leer = new DatosHistorial(new File(rutaHistoriales+"/"+listaHistoriales[i].getName()));
 					leer.lecturaHistorial();
 					guardaNombreEnArchivo(listaHistoriales[i]);
