@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -52,6 +54,7 @@ public class DatosHistorial {
 	
 	
 	public void lecturaHistorial() {
+		insertarSesion();
 		usuario = "rafayjessi18";
 		InputStreamReader fr;
 		BufferedReader br;
@@ -353,15 +356,15 @@ public class DatosHistorial {
 				
 				apuestaTotal = apuestaTotal + apuesta;
 				apuesta = 0;
-				
+				if(resultado==true)ganancia = boteTotal - apuestaTotal - comision;
+				else {ganancia = 0; perdida = apuestaTotal;}
 			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if(resultado==true)ganancia = boteTotal - apuestaTotal - comision;
-		else {ganancia = 0; perdida = apuestaTotal;}
-		insertarSesion();
+		
+		
 	}
 	
 	//metodos para insertar en la base de datos
@@ -401,15 +404,15 @@ public class DatosHistorial {
 			PreparedStatement pst= con.prepareStatement("INSERT INTO manos (cartas,pos,bote,resultado,cg,cp,apuesta,ganancia,perdida,limite,stack,sesion) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
 				pst.setString(1,cartas);
 				pst.setString(2,posicion);
-				pst.setDouble(3,bote);
+				pst.setDouble(3,Math.round(bote * 100d)/100d);
 				pst.setBoolean(4,resultado);
 				pst.setBoolean(5,cg);
 				pst.setBoolean(6,cp);
-				pst.setDouble(7, apuesta);
-				pst.setDouble(8, ganancia);
-				pst.setDouble(9, perdida);
+				pst.setDouble(7, Math.round(apuesta * 100d)/100d);
+				pst.setDouble(8, Math.round(ganancia * 100d)/100d);
+				pst.setDouble(9, Math.round(perdida * 100d)/100d);
 				pst.setString(10,limite);
-				pst.setDouble(11, stack);
+				pst.setDouble(11, Math.round(stack * 100d)/100d);
 				while(rs.next()) {
 					pst.setInt(12, rs.getInt(1));
 				}
