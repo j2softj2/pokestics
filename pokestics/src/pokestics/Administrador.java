@@ -120,13 +120,16 @@ public class Administrador extends JDialog {
 		//borra usuario introducido
 		botonBorrarUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				Statement st;
 				String usuario = campoUsuario.getText();
+				String revocarSecuencias = "REVOKE ALL ON SEQUENCE secuencia_man, secuencia_se, secuencia_us FROM "+usuario;
 				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de borrar al usuario "+usuario+"?", "Advertencia",JOptionPane.YES_NO_OPTION);
 					if(respuesta == 0) {
 						try {
 							st = conexion.createStatement();
 							st.executeUpdate("REVOKE ALL PRIVILEGES ON TABLE USUARIO,JUEGA,MANOS,ESTADISTICASJUEGO,ESTADISTICASCASH,OBTIENE,JUGADORES,JUEGAN,BANKROLL,SESION FROM "+usuario);
+							st.executeUpdate(revocarSecuencias);
 							st.executeUpdate("DROP USER "+ usuario);
 							JOptionPane.showMessageDialog(null,"Usuario borrado correctamente");
 						} catch (SQLException e1) {
@@ -253,7 +256,9 @@ public class Administrador extends JDialog {
 						+ "estadisticasCash,juegan,jugadores,bankroll TO "+usuario;
 				String privilegiosUsuario = "GRANT SELECT,INSERT,UPDATE ON TABLE usuario,juega,sesion,manos,obtiene,estadisticasJuego,"
 						+ "estadisticasCash,juegan,jugadores,bankroll TO "+usuario;
+				String privilegiosSecuencias = "GRANT ALL ON secuencia_man, secuencia_se, secuencia_us TO "+usuario;
 				String revocarTodo = "REVOKE ALL ON DATABASE pokestics FROM "+usuario;	
+				String recovarSecuencias = "REVOKE ALL ON SEQUENCE secuencia_man, secuencia_se, secuencia_us FROM "+usuario;
 				String insertarBankrol = "INSERT INTO BANKROLL (CASH,USUARIO,FECHA) VALUES ('"+ bankrol + "','"+nombreCompleto+"','"+fecha+"')"; 
 				String insertarUsuario = "INSERT INTO USUARIO (NOMBRE,USUARIOSALA) VALUES ('"+nombreCompleto+"','"+usuario+"')";
 				
@@ -270,7 +275,9 @@ public class Administrador extends JDialog {
 					else if(tipo.equals("Usuario") && usuario!=null && nombreCompleto !=null && bankrol!=null && contraseña!=null) {
 						st.executeUpdate(creacionUsuario);
 						st.executeUpdate(revocarTodo);
+						st.executeUpdate(recovarSecuencias);
 						st.executeUpdate(privilegiosUsuario);
+						st.executeUpdate(privilegiosSecuencias);
 						st.executeUpdate(insertarUsuario);
 						st.executeUpdate(insertarBankrol);
 					}

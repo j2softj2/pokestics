@@ -89,13 +89,20 @@ public class DatosHistorial {
 			while((linea=br.readLine())!=null) {
 				//comienzan las comprobaciones linea a linea
 				//primera linea siempre es limite-fecha lo que debemos obtener
-				if(linea.contains("Mano")) {	
+				if(linea.contains("Mano")) {
 					posInicio = linea.indexOf("(");
 					posFinal = linea.lastIndexOf("€")+1;
 					limite = linea.substring(posInicio+1, posFinal);
 					posInicio = linea.indexOf("-");
 					posFinal = posInicio + 12;
 					fecha = linea.substring(posInicio+1, posFinal);
+					//inserta en bd
+					if(boteTotal != 0){
+						System.out.println(limite+fecha+nombre1+nombre2+nombre3+nombre4+nombre5+nombre6+nombre7+nombre8+nombre9+nombre10+cartasPropias+posicion+boteTotal+"  "+apuestaTotal+"   "+comision+"  "+ganancia+"  "+stack);					
+						
+						insertarManos(cartasPropias,posicion,boteTotal,resultado,cg,cp,apuestaTotal,ganancia,perdida,limite,stack);
+					}
+					
 					//reinicia valores
 					 cp = false;
 					 cg = false;
@@ -348,30 +355,38 @@ public class DatosHistorial {
 				apuesta = 0;
 				
 			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		if(resultado==true)ganancia = boteTotal - apuestaTotal - comision;
 		else {ganancia = 0; perdida = apuestaTotal;}
-		System.out.println(limite+fecha+nombre1+nombre2+nombre3+nombre4+nombre5+nombre6+nombre7+nombre8+nombre9+nombre10+cartasPropias+posicion+boteTotal+"  "+apuestaTotal+"   "+comision+"  "+ganancia+"  "+stack);
-		
 		insertarSesion();
-		insertarManos(cartasPropias,posicion,boteTotal,resultado,cg,cp,apuestaTotal,ganancia,perdida,limite,stack);
 	}
 	
 	//metodos para insertar en la base de datos
 	private void insertarSesion() {
 		try {
+			Date fechaDate;
 			String fecha;
-			Calendar fechaDate = new GregorianCalendar();
-			int dia= fechaDate.DAY_OF_MONTH;
-			int mes = fechaDate.MONTH +1 ;
-			int año = fechaDate.YEAR;
+			Calendar fechaCal = new GregorianCalendar();
+			int dia= fechaCal.get(Calendar.DATE);
+			int mes = fechaCal.get(Calendar.MONTH)+1;
+			int año = fechaCal.get(Calendar.YEAR);
 			String usuario = Inicio.getUsuario();
-				fecha = año + "/" + mes + "/" + dia;
+				fecha = año + "-" + mes + "-" + dia;
+				fechaDate = Date.valueOf(fecha);
+				//consulta el nombre del usuario
+				//consulta la sesion creada justo antes
+				Statement st = con.createStatement();
+				ResultSet rs = st.executeQuery("SELECT nombre FROM usuario WHERE usuariosala = '"+usuario+"'");
+				String nombreCompleto = "";
+				while(rs.next()) {
+					nombreCompleto = rs.getString(1);
+				}
 			PreparedStatement pst = con.prepareStatement("INSERT INTO sesion(fecha,usuario) VALUES (?,?)");
-				pst.setString(1, fecha);
-				pst.setString(2,usuario);
+				pst.setDate(1, fechaDate);
+				pst.setString(2,nombreCompleto);
 				pst.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
