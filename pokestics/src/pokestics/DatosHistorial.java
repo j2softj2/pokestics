@@ -54,8 +54,15 @@ public class DatosHistorial {
 	
 	
 	public void lecturaHistorial() {
+		//inserta la sesion
 		insertarSesion();
 		usuario = "rafayjessi18";
+		//inserta en la tabla juega		
+		insertarJuega(usuario);
+		
+		
+		
+		
 		InputStreamReader fr;
 		BufferedReader br;
 		String linea;
@@ -104,6 +111,7 @@ public class DatosHistorial {
 						System.out.println(limite+fecha+nombre1+nombre2+nombre3+nombre4+nombre5+nombre6+nombre7+nombre8+nombre9+nombre10+cartasPropias+posicion+boteTotal+"  "+apuestaTotal+"   "+comision+"  "+ganancia+"  "+stack);					
 						
 						insertarManos(cartasPropias,posicion,boteTotal,resultado,cg,cp,apuestaTotal,ganancia,perdida,limite,stack);
+						
 					}
 					
 					//reinicia valores
@@ -201,56 +209,89 @@ public class DatosHistorial {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
 					nombre1 = linea.substring(posInicio+1, posFinal-1);
+					//inserta jugador en la base de datos y añade mano analizada
+					insertarJugadores(nombre1);
+					insertarManoAnalizada(nombre1);
 				}
 				else if(linea.contains("Asiento 2")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
 					nombre2 = linea.substring(posInicio+1, posFinal-1);
+					//inserta jugador en la base de datos y añade mano analizada
+					insertarJugadores(nombre1);
+					insertarManoAnalizada(nombre1);
 				}
 				else if(linea.contains("Asiento 3")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
 					nombre3 = linea.substring(posInicio+1, posFinal-1);
+					//inserta jugador en la base de datos y añade mano analizada
+					insertarJugadores(nombre1);
+					insertarManoAnalizada(nombre1);
 				}
 				else if(linea.contains("Asiento 4")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
 					nombre4 = linea.substring(posInicio+1, posFinal-1);
+					//inserta jugador en la base de datos y añade mano analizada
+					insertarJugadores(nombre1);
+					insertarManoAnalizada(nombre1);
 				}
 				else if(linea.contains("Asiento 5")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
 					nombre5 = linea.substring(posInicio+1, posFinal-1);
+					//inserta jugador en la base de datos y añade mano analizada
+					insertarJugadores(nombre1);
+					insertarManoAnalizada(nombre1);
 				}
 				else if(linea.contains("Asiento 5")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
 					nombre5 = linea.substring(posInicio+1, posFinal-1);
+					//inserta jugador en la base de datos y añade mano analizada
+					insertarJugadores(nombre1);
+					insertarManoAnalizada(nombre1);
 				}
 				else if(linea.contains("Asiento 6")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
 					nombre6 = linea.substring(posInicio+1, posFinal-1);
+					//inserta jugador en la base de datos y añade mano analizada
+					insertarJugadores(nombre1);
+					insertarManoAnalizada(nombre1);
 				}
 				else if(linea.contains("Asiento 7")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
 					nombre7 = linea.substring(posInicio+1, posFinal-1);
+					//inserta jugador en la base de datos y añade mano analizada
+					insertarJugadores(nombre1);
+					insertarManoAnalizada(nombre1);
 				}
 				else if(linea.contains("Asiento 8")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
 					nombre8 = linea.substring(posInicio+1, posFinal-1);
+					//inserta jugador en la base de datos y añade mano analizada
+					insertarJugadores(nombre1);
+					insertarManoAnalizada(nombre1);
 				}
 				else if(linea.contains("Asiento 9")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
 					nombre9 = linea.substring(posInicio+1, posFinal-1);
+					//inserta jugador en la base de datos y añade mano analizada
+					insertarJugadores(nombre1);
+					insertarManoAnalizada(nombre1);
 				}
 				else if(linea.contains("Asiento 10")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
 					nombre10 = linea.substring(posInicio+1, posFinal-1);
+					//inserta jugador en la base de datos y añade mano analizada
+					insertarJugadores(nombre1);
+					insertarManoAnalizada(nombre1);
 				}
 				else if(linea.contains("Repartidas")) {
 					posInicio = linea.indexOf("[");
@@ -287,29 +328,6 @@ public class DatosHistorial {
 							apuesta = Float.parseFloat(linea.substring(posInicio+7, posFinal-2));
 						}
 					}
-					/*else {
-						if(linea.contains("sube") && linea.contains("all-in")) {
-							posInicio = linea.lastIndexOf(" a ")+2;
-							posFinal = linea.lastIndexOf("y")-2;
-							apuesta = Float.parseFloat(linea.substring(posInicio,posFinal));
-						}
-						else if(linea.contains("sube")) {
-							posInicio = linea.lastIndexOf("a")+2;
-							apuesta = Float.parseFloat(linea.substring(posInicio));
-						}
-						else {
-							if(linea.contains("all-in")) {
-								posFinal = linea.lastIndexOf("y")-2;
-								posInicio = linea.lastIndexOf("u")+6;
-								apuesta = Float.parseFloat(linea.substring(posInicio,posFinal));
-							}
-							else {
-								posInicio = linea.lastIndexOf("a")+2;
-								apuesta = Float.parseFloat(linea.substring(posInicio));
-							}
-							
-						}
-					}*/
 					
 				}
 				else if(linea.contains("bote principal") && linea.contains(usuario)) {
@@ -424,4 +442,136 @@ public class DatosHistorial {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+	
+	private void insertarJuega(String usuario) {
+		String insertar = "INSERT INTO juega (codigouser, codigosesion) VALUES (?,?)";
+		int codigoSesion = 0;
+		int codigoUsuario = 0;
+		
+		try {
+			//consulta la sesion creada justo antes
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT MAX(codigo) FROM sesion");
+			while(rs.next()) {
+				codigoSesion=rs.getInt(1);
+			}
+			//consulta el codigo de usuario
+			Statement st2 = con.createStatement();
+			ResultSet rs2 = st2.executeQuery("SELECT codigo FROM usuario WHERE usuariosala = '"+usuario+"'");
+			while(rs.next()) {
+				codigoUsuario=rs.getInt(1);
+			}
+			//
+			PreparedStatement pst = con.prepareStatement(insertar);
+				pst.setInt(1, codigoUsuario);
+				pst.setInt(2, codigoSesion);
+				pst.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	
+	private boolean insertarJugadores(String nombre) {
+		//comprueba si existe el jugador en la base de datos
+		boolean existe = false;
+		
+		try {
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT nombre FROM jugadores WHERE nombre = '"+nombre+"'");
+				if(rs.next()) {
+					existe = true;
+				}
+			
+		//en caso de no existir realiza un insert en la tabla jugadores 
+				
+			st.executeUpdate("INSERT INTO jugadores(nombre) VALUES ('"+nombre+"')");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return existe;
+	}
+	
+	
+	private void insertarManoAnalizada(String nombre) {
+		
+		Statement st;
+		try {
+			st = con.createStatement();
+			st.executeUpdate("UPDATE jugadores SET manosanalizadas = manosanalizadas +1 WHERE nombre = '"+nombre+"'");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+			
+	}
+	
+	
+	private void insertarFlopVisto(String nombre) {
+		Statement st;
+		try {
+			st = con.createStatement();
+			st.executeUpdate("UPDATE jugadores SET flopvisto = flopvisto + 1 WHERE nombre = '"+nombre+"'");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	
+	private void insertarRiverJugado(String nombre) {
+		Statement st;
+		try {
+			st = con.createStatement();
+			st.executeUpdate("UPDATE jugadores SET riverjugado = riverjugado + 1 WHERE nombre = '"+nombre+"'");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	
+	private void insertarGanadasJugadores(String nombre) {
+		Statement st;
+		try {
+			st = con.createStatement();
+			st.executeUpdate("UPDATE jugadores SET ganadas = ganadas + 1 WHERE nombre = '"+nombre+"'");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	private void insertarPerdidaJugadores(String nombre) {
+		Statement st;
+		try {
+			st = con.createStatement();
+			st.executeUpdate("UPDATE jugadores SET perdidas = perdidas + 1 WHERE nombre = '"+nombre+"'");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	private void insertarJuegan(String nombre){
+		
+		int codigoSesion;
+		
+		//consulta codigo sesion
+		//consulta la sesion creada justo antes
+		Statement st;
+		try {
+			st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT MAX(codigo) FROM sesion");
+				while(rs.next()) {
+					codigoSesion = rs.getInt(1);
+				}
+				
+		//inserta en la tabla juegan
+			st.executeUpdate("INSERT INTO juegan ");	
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		
+	}
+	
+	
 }
