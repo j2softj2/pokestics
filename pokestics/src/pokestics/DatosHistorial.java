@@ -74,6 +74,10 @@ public class DatosHistorial {
 		//inserta en la tabla juega		
 		insertarJuega(usuario);
 		//
+		int flopVisto = 0;
+		int riverJugado = 0;
+		int turnVisto = 0;
+		int numeroRetiradas = 0;
 		InputStreamReader fr;
 		BufferedReader br;
 		String linea;
@@ -467,12 +471,26 @@ public class DatosHistorial {
 					else if(linea.contains(nombre10) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
 							insertarPerdidaJugadores(nombre10);
 					}
+				
+				//conteo de flop river y turn jugados + numero retiradas
+				if(linea.contains(usuario) && linea.contains("se retiró en el Flop")) flopVisto++;
+				if(linea.contains(usuario) && linea.contains("se retiró en el River")) {
+					flopVisto++;
+					turnVisto++;
+				}
+				if(linea.contains(usuario) && linea.contains("se retiró en el Turn")) {
+					flopVisto++;
+					turnVisto++;
+					riverJugado++;
+				}
+				if(linea.contains(usuario) && !linea.contains("antes del Flop") && linea.contains("retiró"))numeroRetiradas++;
 				apuestaTotal = apuestaTotal + apuesta;
 				apuesta = 0;
 				if(resultado==true)ganancia = boteTotal - apuestaTotal - comision;
 				else {ganancia = 0; perdida = apuestaTotal;}
 			}
-			
+			insertarSesionCash(sesionActual);
+			insertarSesionJuego(sesionActual,flopVisto,riverJugado,turnVisto,numeroRetiradas);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -554,7 +572,7 @@ public class DatosHistorial {
 			//consulta el codigo de usuario
 			Statement st2 = con.createStatement();
 			ResultSet rs2 = st2.executeQuery("SELECT codigo FROM usuario WHERE usuariosala = '"+usuario+"'");
-			while(rs.next()) {
+			while(rs2.next()) {
 				codigoUsuario=rs.getInt(1);
 			}
 			//
@@ -654,11 +672,6 @@ public class DatosHistorial {
 		Statement st;
 		try {
 			st = con.createStatement();
-			/*ResultSet rs = st.executeQuery("SELECT MAX(codigo) FROM sesion");
-				while(rs.next()) {
-					codigoSesion = rs.getInt(1);
-				}
-				*/
 		//inserta en la tabla juegan en caso de no existir 
 				
 				
@@ -690,21 +703,34 @@ public class DatosHistorial {
 	}
 	
 	//inserta sesion en la tabla estadisticascash
-	private void insertarSesisionCash(int sesion) {
+	private void insertarSesionCash(int sesion) {
 		Statement st;
 		ResultSet rs;
+		int numeroApuestas;
+		float totalApuestas;
 		float ganancias;
 		int manos;
 		float ganancias100;
+		float apuestaMedia;
 		try {
 			st = con.createStatement();
 			//consulta las ganancias x100 manos
 			rs = st.executeQuery("SELECT SUM(ganancia) FROM manos WHERE sesion = '"+sesion+"'");
 				ganancias = rs.getFloat(1);
 			rs = st.executeQuery("SELECT COUNT(numero) FROM manos WHERE sesion = '"+sesion+"'");
-			
+				manos = rs.getInt(1);
+			//consulta el numero de apuestas
+			rs = st.executeQuery("SELECT COUNT(apuesta) FROM manos WHERE sesion = '"+sesion+"'");
+				numeroApuestas = rs.getInt(1);
+			//consulta el total de apuestas
+			rs = st.executeQuery("SELECT SUM(apuesta) FROM manos WHERE sesion = '"+sesion+"'");
+				totalApuestas = rs.getFloat(1);
 			//resultado a insertar en la tabla
-			
+			ganancias100 = (manos / 100) * ganancias;
+			apuestaMedia = totalApuestas/numeroApuestas;
+			//inserta en la tabla estadisticascash
+			st.executeUpdate("INSERT INTO estadisticascash (sesion,ganancias100manos,apuestamedia) "
+					+ "VALUES ('"+sesion+"','"+ganancias100+"','"+apuestaMedia+"')");
 			
 			
 			
@@ -712,6 +738,31 @@ public class DatosHistorial {
 			System.out.println(e.getMessage());
 
 		}
+		
+	}
+	
+	private void insertarSesionJuego(int sesion,int flopVisto, int riverJugado, int turnVisto, int numeroRetiradas) {
+		
+		Statement st;
+		ResultSet rs;
+		int numeroGanadas;
+		int numeroPerdidas;
+		
+		try {
+			st = con.createStatement();
+			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = true");
+				numeroGanadas = rs.getInt(1);
+			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = false");
+				numeroPerdidas = rs.getInt(1);
+			//inserta en la tabla
+			st.executeUpdate("INSERT INTO estadisticasjuego VALUES ('"+sesion+"','"+flopVisto+"','"+riverJugado+"','"+turnVisto+"','"+numeroGanadas+"','"+numeroPerdidas+"','"+numeroRetiradas+"')");
+			
+		} catch (SQLException e) {
+			// TODO Bloque catch generado automáticamente
+			e.printStackTrace();
+		}
+			
+		
 		
 	}
 	
