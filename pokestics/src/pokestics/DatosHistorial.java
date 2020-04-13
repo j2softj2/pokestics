@@ -46,6 +46,17 @@ public class DatosHistorial {
 		
 	}
 	
+	
+	private int sesionActual;
+	
+	public int getSesionActual() {
+		return sesionActual;
+	}
+
+	public void setSesionActual(int sesionActual) {
+		this.sesionActual = sesionActual;
+	}
+	
 	//conexion a la base de datos
 	
 	Connection con = Inicio.getConexion();
@@ -53,16 +64,16 @@ public class DatosHistorial {
 	
 	
 	
+	
 	public void lecturaHistorial() {
+		//obtener sesion
+		sesionActual = consultaSesion();
 		//inserta la sesion
 		insertarSesion();
 		usuario = "rafayjessi18";
 		//inserta en la tabla juega		
 		insertarJuega(usuario);
-		
-		
-		
-		
+		//
 		InputStreamReader fr;
 		BufferedReader br;
 		String linea;
@@ -212,6 +223,7 @@ public class DatosHistorial {
 					//inserta jugador en la base de datos y añade mano analizada
 					insertarJugadores(nombre1);
 					insertarManoAnalizada(nombre1);
+					insertarJuegan(nombre1,sesionActual);
 				}
 				else if(linea.contains("Asiento 2")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -220,6 +232,7 @@ public class DatosHistorial {
 					//inserta jugador en la base de datos y añade mano analizada
 					insertarJugadores(nombre1);
 					insertarManoAnalizada(nombre1);
+					insertarJuegan(nombre2,sesionActual);
 				}
 				else if(linea.contains("Asiento 3")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -228,6 +241,7 @@ public class DatosHistorial {
 					//inserta jugador en la base de datos y añade mano analizada
 					insertarJugadores(nombre1);
 					insertarManoAnalizada(nombre1);
+					insertarJuegan(nombre3,sesionActual);
 				}
 				else if(linea.contains("Asiento 4")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -236,6 +250,7 @@ public class DatosHistorial {
 					//inserta jugador en la base de datos y añade mano analizada
 					insertarJugadores(nombre1);
 					insertarManoAnalizada(nombre1);
+					insertarJuegan(nombre4,sesionActual);
 				}
 				else if(linea.contains("Asiento 5")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -244,14 +259,7 @@ public class DatosHistorial {
 					//inserta jugador en la base de datos y añade mano analizada
 					insertarJugadores(nombre1);
 					insertarManoAnalizada(nombre1);
-				}
-				else if(linea.contains("Asiento 5")&& linea.contains("fichas")) {
-					posInicio = linea.indexOf(":");
-					posFinal = linea.indexOf("(");
-					nombre5 = linea.substring(posInicio+1, posFinal-1);
-					//inserta jugador en la base de datos y añade mano analizada
-					insertarJugadores(nombre1);
-					insertarManoAnalizada(nombre1);
+					insertarJuegan(nombre5,sesionActual);
 				}
 				else if(linea.contains("Asiento 6")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -260,6 +268,7 @@ public class DatosHistorial {
 					//inserta jugador en la base de datos y añade mano analizada
 					insertarJugadores(nombre1);
 					insertarManoAnalizada(nombre1);
+					insertarJuegan(nombre6,sesionActual);
 				}
 				else if(linea.contains("Asiento 7")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -268,6 +277,7 @@ public class DatosHistorial {
 					//inserta jugador en la base de datos y añade mano analizada
 					insertarJugadores(nombre1);
 					insertarManoAnalizada(nombre1);
+					insertarJuegan(nombre7,sesionActual);
 				}
 				else if(linea.contains("Asiento 8")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -276,6 +286,7 @@ public class DatosHistorial {
 					//inserta jugador en la base de datos y añade mano analizada
 					insertarJugadores(nombre1);
 					insertarManoAnalizada(nombre1);
+					insertarJuegan(nombre8,sesionActual);
 				}
 				else if(linea.contains("Asiento 9")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -284,6 +295,7 @@ public class DatosHistorial {
 					//inserta jugador en la base de datos y añade mano analizada
 					insertarJugadores(nombre1);
 					insertarManoAnalizada(nombre1);
+					insertarJuegan(nombre9,sesionActual);
 				}
 				else if(linea.contains("Asiento 10")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
@@ -292,6 +304,7 @@ public class DatosHistorial {
 					//inserta jugador en la base de datos y añade mano analizada
 					insertarJugadores(nombre1);
 					insertarManoAnalizada(nombre1);
+					insertarJuegan(nombre10,sesionActual);
 				}
 				else if(linea.contains("Repartidas")) {
 					posInicio = linea.indexOf("[");
@@ -371,7 +384,89 @@ public class DatosHistorial {
 					}
 					
 				}
-				
+				//comprobacion flop visto por jugadores
+				if(linea.contains(nombre1) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre1);
+				else if(linea.contains(nombre2) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre2);
+				else if(linea.contains(nombre3) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre3);
+				else if(linea.contains(nombre4) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre4);
+				else if(linea.contains(nombre5) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre5);
+				else if(linea.contains(nombre6) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre6);
+				else if(linea.contains(nombre7) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre7);
+				else if(linea.contains(nombre8) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre8);
+				else if(linea.contains(nombre9) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre9);
+				else if(linea.contains(nombre10) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre10);
+				//comprobacion river jugado
+				if(linea.contains(nombre1) && linea.contains("descartó"))insertarRiverJugado(nombre1);
+				else if(linea.contains(nombre2) && linea.contains("descartó"))insertarRiverJugado(nombre2);
+				else if(linea.contains(nombre3) && linea.contains("descartó"))insertarRiverJugado(nombre3);
+				else if(linea.contains(nombre4) && linea.contains("descartó"))insertarRiverJugado(nombre4);
+				else if(linea.contains(nombre5) && linea.contains("descartó"))insertarRiverJugado(nombre5);
+				else if(linea.contains(nombre6) && linea.contains("descartó"))insertarRiverJugado(nombre6);
+				else if(linea.contains(nombre7) && linea.contains("descartó"))insertarRiverJugado(nombre7);
+				else if(linea.contains(nombre8) && linea.contains("descartó"))insertarRiverJugado(nombre8);
+				else if(linea.contains(nombre9) && linea.contains("descartó"))insertarRiverJugado(nombre9);
+				else if(linea.contains(nombre10) && linea.contains("descartó"))insertarRiverJugado(nombre10);
+				//comprobacion si gana o pierde
+				if(linea.contains(nombre1) && linea.contains("ganó")) {
+					insertarGanadasJugadores(nombre1);
+				}
+					else if(linea.contains(nombre1) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
+						insertarPerdidaJugadores(nombre1);
+					}
+				else if(linea.contains(nombre2) && linea.contains("ganó")) {
+					insertarGanadasJugadores(nombre2);
+				}
+					else if(linea.contains(nombre2) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
+						insertarPerdidaJugadores(nombre2);
+					}
+				else if(linea.contains(nombre3) && linea.contains("ganó")) {
+					insertarGanadasJugadores(nombre3);
+					}
+					else if(linea.contains(nombre3) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
+							insertarPerdidaJugadores(nombre3);
+					}
+				else if(linea.contains(nombre4) && linea.contains("ganó")) {
+					insertarGanadasJugadores(nombre4);
+					}
+					else if(linea.contains(nombre4) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
+							insertarPerdidaJugadores(nombre4);
+					}	
+				else if(linea.contains(nombre5) && linea.contains("ganó")) {
+					insertarGanadasJugadores(nombre5);
+					}
+					else if(linea.contains(nombre5) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
+							insertarPerdidaJugadores(nombre5);
+					}
+				else if(linea.contains(nombre6) && linea.contains("ganó")) {
+					insertarGanadasJugadores(nombre6);
+					}
+					else if(linea.contains(nombre6) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
+							insertarPerdidaJugadores(nombre6);
+					}
+				else if(linea.contains(nombre7) && linea.contains("ganó")) {
+					insertarGanadasJugadores(nombre7);
+					}
+					else if(linea.contains(nombre7) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
+								insertarPerdidaJugadores(nombre7);
+					}
+				else if(linea.contains(nombre8) && linea.contains("ganó")) {
+					insertarGanadasJugadores(nombre8);
+					}
+					else if(linea.contains(nombre8) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
+							insertarPerdidaJugadores(nombre8);
+					}
+				else if(linea.contains(nombre9) && linea.contains("ganó")) {
+					insertarGanadasJugadores(nombre9);
+					}
+					else if(linea.contains(nombre9) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
+							insertarPerdidaJugadores(nombre9);
+					}
+				else if(linea.contains(nombre10) && linea.contains("ganó")) {
+					insertarGanadasJugadores(nombre10);
+					}
+					else if(linea.contains(nombre10) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
+							insertarPerdidaJugadores(nombre10);
+					}
 				apuestaTotal = apuestaTotal + apuesta;
 				apuesta = 0;
 				if(resultado==true)ganancia = boteTotal - apuestaTotal - comision;
@@ -472,7 +567,7 @@ public class DatosHistorial {
 		}
 	}
 	
-	
+	//inserta jugador
 	private boolean insertarJugadores(String nombre) {
 		//comprueba si existe el jugador en la base de datos
 		boolean existe = false;
@@ -494,7 +589,7 @@ public class DatosHistorial {
 		return existe;
 	}
 	
-	
+	//inserta mano analizada en tabla jugadores
 	private void insertarManoAnalizada(String nombre) {
 		
 		Statement st;
@@ -507,7 +602,7 @@ public class DatosHistorial {
 			
 	}
 	
-	
+	//inserta flop visto en tabla jugadores al jugador
 	private void insertarFlopVisto(String nombre) {
 		Statement st;
 		try {
@@ -518,7 +613,7 @@ public class DatosHistorial {
 		}
 	}
 	
-	
+	//inserta river jugado en la tabla jugadores
 	private void insertarRiverJugado(String nombre) {
 		Statement st;
 		try {
@@ -529,7 +624,7 @@ public class DatosHistorial {
 		}
 	}
 	
-	
+	//inserta partida gana en tabla jugadores
 	private void insertarGanadasJugadores(String nombre) {
 		Statement st;
 		try {
@@ -539,7 +634,7 @@ public class DatosHistorial {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+	//inserta partida perdida en tabla jugadores
 	private void insertarPerdidaJugadores(String nombre) {
 		Statement st;
 		try {
@@ -549,27 +644,74 @@ public class DatosHistorial {
 			System.out.println(e.getMessage());
 		}
 	}
-	
-	private void insertarJuegan(String nombre){
+	//inserta jugador y sesion en la tabla juegan
+	private void insertarJuegan(String nombre,int codigoSesion){
 		
-		int codigoSesion;
+		//int codigoSesion = 0;
 		
 		//consulta codigo sesion
 		//consulta la sesion creada justo antes
 		Statement st;
 		try {
 			st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT MAX(codigo) FROM sesion");
+			/*ResultSet rs = st.executeQuery("SELECT MAX(codigo) FROM sesion");
 				while(rs.next()) {
 					codigoSesion = rs.getInt(1);
 				}
+				*/
+		//inserta en la tabla juegan en caso de no existir 
 				
-		//inserta en la tabla juegan
-			st.executeUpdate("INSERT INTO juegan ");	
+				
+			st.executeUpdate("INSERT INTO juegan(codigo,nombre) VALUES ('"+codigoSesion+"','"+nombre+"') ON CONFLICT (codigo,nombre) DO NOTHING");	
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 		
+		
+	}
+	
+	
+	//consulta la sesion
+	private int consultaSesion() {
+		int sesion=0;
+		//consulta la sesion creada justo antes
+		Statement st;
+		try {
+			st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT MAX(codigo) FROM sesion");
+			while(rs.next()) {
+				sesion=rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return sesion;
+	}
+	
+	//inserta sesion en la tabla estadisticascash
+	private void insertarSesisionCash(int sesion) {
+		Statement st;
+		ResultSet rs;
+		float ganancias;
+		int manos;
+		float ganancias100;
+		try {
+			st = con.createStatement();
+			//consulta las ganancias x100 manos
+			rs = st.executeQuery("SELECT SUM(ganancia) FROM manos WHERE sesion = '"+sesion+"'");
+				ganancias = rs.getFloat(1);
+			rs = st.executeQuery("SELECT COUNT(numero) FROM manos WHERE sesion = '"+sesion+"'");
+			
+			//resultado a insertar en la tabla
+			
+			
+			
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+
+		}
 		
 	}
 	
