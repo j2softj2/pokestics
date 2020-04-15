@@ -70,7 +70,8 @@ public class DatosHistorial {
 		sesionActual = consultaSesion();
 		//inserta la sesion
 		insertarSesion();
-		usuario = "rafayjessi18";
+		if(Inicio.getUsuario()!= "postgres" && Inicio.getUsuario() != "superusuario") usuario = Inicio.getUsuario();
+		else { usuario = "anonimo";}
 		//inserta en la tabla juega		
 		insertarJuega(usuario);
 		//
@@ -491,6 +492,7 @@ public class DatosHistorial {
 			}
 			insertarSesionCash(sesionActual);
 			insertarSesionJuego(sesionActual,flopVisto,riverJugado,turnVisto,numeroRetiradas);
+			insertarObtiene(sesionActual);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -758,13 +760,49 @@ public class DatosHistorial {
 			st.executeUpdate("INSERT INTO estadisticasjuego VALUES ('"+sesion+"','"+flopVisto+"','"+riverJugado+"','"+turnVisto+"','"+numeroGanadas+"','"+numeroPerdidas+"','"+numeroRetiradas+"')");
 			
 		} catch (SQLException e) {
-			// TODO Bloque catch generado automáticamente
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 			
 		
 		
 	}
 	
+	
+	//inserta en la tabla obtiene
+	
+	private void insertarObtiene(int sesion) {
+		
+		int codigoJuego;
+		int codigoCash;
+		//obtiene codigo sesion de tablas  estadisticas cash y juego
+		Statement st;
+		ResultSet rs;
+		try {
+			st = con.createStatement();
+			rs = st.executeQuery("SELECT MAX sesion FROM estadisticasjuego;");
+			
+			codigoJuego = rs.getInt(1);
+			
+			rs = st.executeQuery("SELECT MAX sesioncash FROM estadisticascash");
+			
+			codigoCash = rs.getInt(1);
+			
+		//inserta en la tabla
+			
+			st.executeUpdate("INSERT INTO obtiene(codigo,sesion,sesioncash) VALUES ('"+sesion+"','"+codigoJuego+"','"+codigoCash +"')");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		 
+		
+	}
+	
+	
+	//insertar en la tabla bankroll
+	
+	private void insertarBank() {
+			
+		
+	}
 	
 }

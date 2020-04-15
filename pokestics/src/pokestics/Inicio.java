@@ -201,6 +201,7 @@ public class Inicio {
 						p.pack();
 						p.setLocationRelativeTo(null);
 						p.setVisible(true);		
+						
 				}
 				
 					
