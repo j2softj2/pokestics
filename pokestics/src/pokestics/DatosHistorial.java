@@ -3,12 +3,8 @@ package pokestics;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -235,8 +231,8 @@ public class DatosHistorial {
 					posFinal = linea.indexOf("(");
 					nombre2 = linea.substring(posInicio+1, posFinal-1);
 					//inserta jugador en la base de datos y añade mano analizada
-					insertarJugadores(nombre1);
-					insertarManoAnalizada(nombre1);
+					insertarJugadores(nombre2);
+					insertarManoAnalizada(nombre2);
 					insertarJuegan(nombre2,sesionActual);
 				}
 				else if(linea.contains("Asiento 3")&& linea.contains("fichas")) {
@@ -244,8 +240,8 @@ public class DatosHistorial {
 					posFinal = linea.indexOf("(");
 					nombre3 = linea.substring(posInicio+1, posFinal-1);
 					//inserta jugador en la base de datos y añade mano analizada
-					insertarJugadores(nombre1);
-					insertarManoAnalizada(nombre1);
+					insertarJugadores(nombre3);
+					insertarManoAnalizada(nombre3);
 					insertarJuegan(nombre3,sesionActual);
 				}
 				else if(linea.contains("Asiento 4")&& linea.contains("fichas")) {
@@ -253,8 +249,8 @@ public class DatosHistorial {
 					posFinal = linea.indexOf("(");
 					nombre4 = linea.substring(posInicio+1, posFinal-1);
 					//inserta jugador en la base de datos y añade mano analizada
-					insertarJugadores(nombre1);
-					insertarManoAnalizada(nombre1);
+					insertarJugadores(nombre4);
+					insertarManoAnalizada(nombre4);
 					insertarJuegan(nombre4,sesionActual);
 				}
 				else if(linea.contains("Asiento 5")&& linea.contains("fichas")) {
@@ -262,8 +258,8 @@ public class DatosHistorial {
 					posFinal = linea.indexOf("(");
 					nombre5 = linea.substring(posInicio+1, posFinal-1);
 					//inserta jugador en la base de datos y añade mano analizada
-					insertarJugadores(nombre1);
-					insertarManoAnalizada(nombre1);
+					insertarJugadores(nombre5);
+					insertarManoAnalizada(nombre5);
 					insertarJuegan(nombre5,sesionActual);
 				}
 				else if(linea.contains("Asiento 6")&& linea.contains("fichas")) {
@@ -271,8 +267,8 @@ public class DatosHistorial {
 					posFinal = linea.indexOf("(");
 					nombre6 = linea.substring(posInicio+1, posFinal-1);
 					//inserta jugador en la base de datos y añade mano analizada
-					insertarJugadores(nombre1);
-					insertarManoAnalizada(nombre1);
+					insertarJugadores(nombre6);
+					insertarManoAnalizada(nombre6);
 					insertarJuegan(nombre6,sesionActual);
 				}
 				else if(linea.contains("Asiento 7")&& linea.contains("fichas")) {
@@ -280,8 +276,8 @@ public class DatosHistorial {
 					posFinal = linea.indexOf("(");
 					nombre7 = linea.substring(posInicio+1, posFinal-1);
 					//inserta jugador en la base de datos y añade mano analizada
-					insertarJugadores(nombre1);
-					insertarManoAnalizada(nombre1);
+					insertarJugadores(nombre7);
+					insertarManoAnalizada(nombre7);
 					insertarJuegan(nombre7,sesionActual);
 				}
 				else if(linea.contains("Asiento 8")&& linea.contains("fichas")) {
@@ -289,8 +285,8 @@ public class DatosHistorial {
 					posFinal = linea.indexOf("(");
 					nombre8 = linea.substring(posInicio+1, posFinal-1);
 					//inserta jugador en la base de datos y añade mano analizada
-					insertarJugadores(nombre1);
-					insertarManoAnalizada(nombre1);
+					insertarJugadores(nombre8);
+					insertarManoAnalizada(nombre8);
 					insertarJuegan(nombre8,sesionActual);
 				}
 				else if(linea.contains("Asiento 9")&& linea.contains("fichas")) {
@@ -298,8 +294,8 @@ public class DatosHistorial {
 					posFinal = linea.indexOf("(");
 					nombre9 = linea.substring(posInicio+1, posFinal-1);
 					//inserta jugador en la base de datos y añade mano analizada
-					insertarJugadores(nombre1);
-					insertarManoAnalizada(nombre1);
+					insertarJugadores(nombre9);
+					insertarManoAnalizada(nombre9);
 					insertarJuegan(nombre9,sesionActual);
 				}
 				else if(linea.contains("Asiento 10")&& linea.contains("fichas")) {
@@ -307,8 +303,8 @@ public class DatosHistorial {
 					posFinal = linea.indexOf("(");
 					nombre10 = linea.substring(posInicio+1, posFinal-1);
 					//inserta jugador en la base de datos y añade mano analizada
-					insertarJugadores(nombre1);
-					insertarManoAnalizada(nombre1);
+					insertarJugadores(nombre10);
+					insertarManoAnalizada(nombre10);
 					insertarJuegan(nombre10,sesionActual);
 				}
 				else if(linea.contains("Repartidas")) {
@@ -576,7 +572,7 @@ public class DatosHistorial {
 			Statement st2 = con.createStatement();
 			ResultSet rs2 = st2.executeQuery("SELECT codigo FROM usuario WHERE usuariosala = '"+usuario+"'");
 			while(rs2.next()) {
-				codigoUsuario=rs.getInt(1);
+				codigoUsuario=rs2.getInt(1);
 			}
 			//
 			PreparedStatement pst = con.prepareStatement(insertar);
@@ -596,13 +592,15 @@ public class DatosHistorial {
 		try {
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT nombre FROM jugadores WHERE nombre = '"+nombre+"'");
-				if(rs.next()) {
+				if(rs.next() == true) {
 					existe = true;
 				}
 			
 		//en caso de no existir realiza un insert en la tabla jugadores 
-				
-			st.executeUpdate("INSERT INTO jugadores(nombre) VALUES ('"+nombre+"')");
+			if(existe == false) {
+				st.executeUpdate("INSERT INTO jugadores(nombre) VALUES ('"+nombre+"')");
+			}
+			
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
@@ -709,25 +707,25 @@ public class DatosHistorial {
 	private void insertarSesionCash(int sesion) {
 		Statement st;
 		ResultSet rs;
-		int numeroApuestas;
-		float totalApuestas;
-		float ganancias;
-		int manos;
+		int numeroApuestas = 0;
+		float totalApuestas = 0;
+		float ganancias = 0;
+		int manos = 0;
 		float ganancias100;
 		float apuestaMedia;
 		try {
 			st = con.createStatement();
 			//consulta las ganancias x100 manos
 			rs = st.executeQuery("SELECT SUM(ganancia) FROM manos WHERE sesion = '"+sesion+"'");
-				ganancias = rs.getFloat(1);
+			while(rs.next())ganancias = rs.getFloat(1);
 			rs = st.executeQuery("SELECT COUNT(numero) FROM manos WHERE sesion = '"+sesion+"'");
-				manos = rs.getInt(1);
+			while(rs.next())manos = rs.getInt(1);
 			//consulta el numero de apuestas
 			rs = st.executeQuery("SELECT COUNT(apuesta) FROM manos WHERE sesion = '"+sesion+"'");
-				numeroApuestas = rs.getInt(1);
+			while(rs.next())numeroApuestas = rs.getInt(1);
 			//consulta el total de apuestas
 			rs = st.executeQuery("SELECT SUM(apuesta) FROM manos WHERE sesion = '"+sesion+"'");
-				totalApuestas = rs.getFloat(1);
+			while(rs.next())totalApuestas = rs.getFloat(1);
 			//resultado a insertar en la tabla
 			ganancias100 = (manos / 100) * ganancias;
 			apuestaMedia = totalApuestas/numeroApuestas;
@@ -748,15 +746,15 @@ public class DatosHistorial {
 		
 		Statement st;
 		ResultSet rs;
-		int numeroGanadas;
-		int numeroPerdidas;
+		int numeroGanadas = 0;
+		int numeroPerdidas = 0;
 		
 		try {
 			st = con.createStatement();
 			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = true");
-				numeroGanadas = rs.getInt(1);
+			while(rs.next())numeroGanadas = rs.getInt(1);
 			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = false");
-				numeroPerdidas = rs.getInt(1);
+			while(rs.next())numeroPerdidas = rs.getInt(1);
 			//inserta en la tabla
 			st.executeUpdate("INSERT INTO estadisticasjuego VALUES ('"+sesion+"','"+flopVisto+"','"+riverJugado+"','"+turnVisto+"','"+numeroGanadas+"','"+numeroPerdidas+"','"+numeroRetiradas+"')");
 			
@@ -773,20 +771,20 @@ public class DatosHistorial {
 	
 	private void insertarObtiene(int sesion) {
 		
-		int codigoJuego;
-		int codigoCash;
+		int codigoJuego = 0;
+		int codigoCash = 0;
 		//obtiene codigo sesion de tablas  estadisticas cash y juego
 		Statement st;
 		ResultSet rs;
 		try {
 			st = con.createStatement();
-			rs = st.executeQuery("SELECT MAX sesion FROM estadisticasjuego;");
+			rs = st.executeQuery("SELECT MAX (sesion) FROM estadisticasjuego;");
 			
-			codigoJuego = rs.getInt(1);
+			while(rs.next())codigoJuego = rs.getInt(1);
 			
-			rs = st.executeQuery("SELECT MAX sesioncash FROM estadisticascash");
+			rs = st.executeQuery("SELECT MAX (sesion) FROM estadisticascash");
 			
-			codigoCash = rs.getInt(1);
+			while(rs.next())codigoCash = rs.getInt(1);
 			
 		//inserta en la tabla
 			
@@ -804,24 +802,24 @@ public class DatosHistorial {
 	private void insertarBank() {
 			Statement st;
 			ResultSet rs;
-			float cashInicio;
+			float cashInicio = 0;
 			Date fechaDate;
 			String fecha;
-			int manosJugadas;
+			int manosJugadas = 0;
 			float diferencia;
-			String nombreUsuario;
+			String nombreUsuario = "";
 			float cash;
-			float ganancias;
-			float perdidas;
+			float ganancias = 0;
+			float perdidas = 0;
 			
 			try {//consulta nombre del usuario
 				st = con.createStatement();
 				rs = st.executeQuery("SELECT nombre FROM usuario WHERE usuariosala = '"+usuario+"'");
-					nombreUsuario = rs.getString(1);
+				while(rs.next())nombreUsuario = rs.getString(1);
 				//consulta cash de la sesion anterior
 					
 					rs = st.executeQuery("SELECT cash FROM bankroll WHERE usuario = '"+nombreUsuario+"' ORDER BY sesion DESC LIMIT 1");	
-					cashInicio = rs.getFloat(1);
+					while(rs.next())cashInicio = rs.getFloat(1);
 				
 				//fecha
 				Calendar fechaCal = new GregorianCalendar();
@@ -832,14 +830,14 @@ public class DatosHistorial {
 					fechaDate = Date.valueOf(fecha);
 				//consulta manos jugadas
 				rs = st.executeQuery("SELECT COUNT(numero) FROM manos WHERE sesion = '"+sesionActual+"'");
-					manosJugadas = rs.getInt(1);
+				while(rs.next())manosJugadas = rs.getInt(1);
 					
 				// consulta ganancias
 				rs = st.executeQuery("SELECT SUM(ganancia) FROM manos WHERE sesion = '"+sesionActual+"'");
-					ganancias = rs.getFloat(1);
+					while(rs.next())ganancias = rs.getFloat(1);
 				// consulta perdidas
 				rs = st.executeQuery("SELECT SUM(perdida) FROM manos WHERE sesion = '"+sesionActual+"'");
-					perdidas = rs.getFloat(1);
+				while(rs.next())perdidas = rs.getFloat(1);
 				//calculo de cash
 				cash = (cashInicio + ganancias)- perdidas;
 				//calculo diferencia
