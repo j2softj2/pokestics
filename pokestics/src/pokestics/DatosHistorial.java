@@ -493,6 +493,7 @@ public class DatosHistorial {
 			insertarSesionCash(sesionActual);
 			insertarSesionJuego(sesionActual,flopVisto,riverJugado,turnVisto,numeroRetiradas);
 			insertarObtiene(sesionActual);
+			insertarBank();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -801,7 +802,56 @@ public class DatosHistorial {
 	//insertar en la tabla bankroll
 	
 	private void insertarBank() {
+			Statement st;
+			ResultSet rs;
+			float cashInicio;
+			Date fechaDate;
+			String fecha;
+			int manosJugadas;
+			float diferencia;
+			String nombreUsuario;
+			float cash;
+			float ganancias;
+			float perdidas;
 			
+			try {//consulta nombre del usuario
+				st = con.createStatement();
+				rs = st.executeQuery("SELECT nombre FROM usuario WHERE usuariosala = '"+usuario+"'");
+					nombreUsuario = rs.getString(1);
+				//consulta cash de la sesion anterior
+					
+					rs = st.executeQuery("SELECT cash FROM bankroll WHERE usuario = '"+nombreUsuario+"' ORDER BY sesion DESC LIMIT 1");	
+					cashInicio = rs.getFloat(1);
+				
+				//fecha
+				Calendar fechaCal = new GregorianCalendar();
+				int dia= fechaCal.get(Calendar.DATE);
+				int mes = fechaCal.get(Calendar.MONTH)+1;
+				int año = fechaCal.get(Calendar.YEAR);
+					fecha = año + "-" + mes + "-" + dia;
+					fechaDate = Date.valueOf(fecha);
+				//consulta manos jugadas
+				rs = st.executeQuery("SELECT COUNT(numero) FROM manos WHERE sesion = '"+sesionActual+"'");
+					manosJugadas = rs.getInt(1);
+					
+				// consulta ganancias
+				rs = st.executeQuery("SELECT SUM(ganancia) FROM manos WHERE sesion = '"+sesionActual+"'");
+					ganancias = rs.getFloat(1);
+				// consulta perdidas
+				rs = st.executeQuery("SELECT SUM(perdida) FROM manos WHERE sesion = '"+sesionActual+"'");
+					perdidas = rs.getFloat(1);
+				//calculo de cash
+				cash = (cashInicio + ganancias)- perdidas;
+				//calculo diferencia
+				diferencia = cash-cashInicio;
+				
+				//insert en la tabla
+				st.executeUpdate("INSERT INTO bankroll VALUES('"+nombreUsuario+"','"+cash+"','"+sesionActual+"','"+fechaDate+"','"+manosJugadas+"','"+diferencia+"')");
+					
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+
+			}
 		
 	}
 	
