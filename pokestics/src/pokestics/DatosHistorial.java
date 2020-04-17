@@ -62,10 +62,10 @@ public class DatosHistorial {
 	
 	
 	public void lecturaHistorial() {
-		//obtener sesion
-		sesionActual = consultaSesion();
 		//inserta la sesion
 		insertarSesion();
+		//obtener sesion
+		sesionActual = consultaSesion();
 		if(Inicio.getUsuario()!= "postgres" && Inicio.getUsuario() != "superusuario") usuario = Inicio.getUsuario();
 		else { usuario = "anonimo";}
 		//inserta en la tabla juega		
@@ -386,27 +386,57 @@ public class DatosHistorial {
 					
 				}
 				//comprobacion flop visto por jugadores
-				if(linea.contains(nombre1) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre1);
-				else if(linea.contains(nombre2) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre2);
-				else if(linea.contains(nombre3) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre3);
-				else if(linea.contains(nombre4) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre4);
-				else if(linea.contains(nombre5) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre5);
-				else if(linea.contains(nombre6) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre6);
-				else if(linea.contains(nombre7) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre7);
-				else if(linea.contains(nombre8) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre8);
-				else if(linea.contains(nombre9) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre9);
-				else if(linea.contains(nombre10) && linea.contains("Flop") && !linea.contains("antes"))insertarFlopVisto(nombre10);
+				if(linea.contains(nombre1) && linea.contains("Flop") && linea.contains("antes")==false)insertarFlopVisto(nombre1);
+				else if(linea.contains(nombre2) && linea.contains("Flop") && !linea.contains("antes")==false)insertarFlopVisto(nombre2);
+				else if(linea.contains(nombre3) && linea.contains("Flop") && !linea.contains("antes")==false)insertarFlopVisto(nombre3);
+				else if(linea.contains(nombre4) && linea.contains("Flop") && !linea.contains("antes")==false)insertarFlopVisto(nombre4);
+				else if(linea.contains(nombre5) && linea.contains("Flop") && !linea.contains("antes")==false)insertarFlopVisto(nombre5);
+				else if(linea.contains(nombre6) && linea.contains("Flop") && !linea.contains("antes")==false)insertarFlopVisto(nombre6);
+				else if(linea.contains(nombre7) && linea.contains("Flop") && !linea.contains("antes")==false)insertarFlopVisto(nombre7);
+				else if(linea.contains(nombre8) && linea.contains("Flop") && !linea.contains("antes")==false)insertarFlopVisto(nombre8);
+				else if(linea.contains(nombre9) && linea.contains("Flop") && !linea.contains("antes")==false)insertarFlopVisto(nombre9);
+				else if(linea.contains(nombre10) && linea.contains("Flop") && !linea.contains("antes")==false)insertarFlopVisto(nombre10);
 				//comprobacion river jugado
-				if(linea.contains(nombre1) && linea.contains("descartó"))insertarRiverJugado(nombre1);
-				else if(linea.contains(nombre2) && linea.contains("descartó"))insertarRiverJugado(nombre2);
-				else if(linea.contains(nombre3) && linea.contains("descartó"))insertarRiverJugado(nombre3);
-				else if(linea.contains(nombre4) && linea.contains("descartó"))insertarRiverJugado(nombre4);
-				else if(linea.contains(nombre5) && linea.contains("descartó"))insertarRiverJugado(nombre5);
-				else if(linea.contains(nombre6) && linea.contains("descartó"))insertarRiverJugado(nombre6);
-				else if(linea.contains(nombre7) && linea.contains("descartó"))insertarRiverJugado(nombre7);
-				else if(linea.contains(nombre8) && linea.contains("descartó"))insertarRiverJugado(nombre8);
-				else if(linea.contains(nombre9) && linea.contains("descartó"))insertarRiverJugado(nombre9);
-				else if(linea.contains(nombre10) && linea.contains("descartó"))insertarRiverJugado(nombre10);
+				if(linea.contains(nombre1) && linea.contains("descartó")) {
+					insertarRiverJugado(nombre1);
+					insertarFlopVisto(nombre1);
+				}
+				else if(linea.contains(nombre2) && linea.contains("descartó")) {
+					insertarRiverJugado(nombre2);
+					insertarFlopVisto(nombre2);
+				}
+				else if(linea.contains(nombre3) && linea.contains("descartó")) {
+					insertarRiverJugado(nombre3);
+					insertarFlopVisto(nombre3);
+				}
+				else if(linea.contains(nombre4) && linea.contains("descartó")) {
+					insertarRiverJugado(nombre4);
+					insertarFlopVisto(nombre4);
+				}
+				else if(linea.contains(nombre5) && linea.contains("descartó")) {
+					insertarRiverJugado(nombre5);
+					insertarFlopVisto(nombre5);
+				}
+				else if(linea.contains(nombre6) && linea.contains("descartó")) {
+					insertarRiverJugado(nombre6);
+					insertarFlopVisto(nombre6);
+				}
+				else if(linea.contains(nombre7) && linea.contains("descartó")) {
+					insertarRiverJugado(nombre7);
+					insertarFlopVisto(nombre7);
+				}
+				else if(linea.contains(nombre8) && linea.contains("descartó")) {
+					insertarRiverJugado(nombre8);
+					insertarFlopVisto(nombre8);
+				}
+				else if(linea.contains(nombre9) && linea.contains("descartó")) {
+					insertarRiverJugado(nombre9);
+					insertarFlopVisto(nombre9);
+				}
+				else if(linea.contains(nombre10) && linea.contains("descartó")) {
+					insertarRiverJugado(nombre10);
+					insertarFlopVisto(nombre10);
+				}
 				//comprobacion si gana o pierde
 				if(linea.contains(nombre1) && linea.contains("ganó")) {
 					insertarGanadasJugadores(nombre1);
@@ -465,7 +495,7 @@ public class DatosHistorial {
 				else if(linea.contains(nombre10) && linea.contains("ganó")) {
 					insertarGanadasJugadores(nombre10);
 					}
-					else if(linea.contains(nombre10) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
+				else if(linea.contains(nombre10) && linea.contains("descartó") && !linea.contains("no apostó") && !linea.contains("ganó")) {
 							insertarPerdidaJugadores(nombre10);
 					}
 				
@@ -598,7 +628,7 @@ public class DatosHistorial {
 			
 		//en caso de no existir realiza un insert en la tabla jugadores 
 			if(existe == false) {
-				st.executeUpdate("INSERT INTO jugadores(nombre) VALUES ('"+nombre+"')");
+				st.executeUpdate("INSERT INTO jugadores(nombre,manosanalizadas,flopvisto,riverjugado,ganadas,perdidas) VALUES ('"+nombre+"',0,0,0,0,0)");
 			}
 			
 		} catch (SQLException e) {
