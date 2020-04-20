@@ -69,7 +69,6 @@ public class Principal extends JDialog {
  //conexion a la base de datos
 	
 	static Connection conexion = Inicio.getConexion();
-	private JTextField campoFechaSesion;
 
 	public File getArchivo() {
 		return archivo;
@@ -113,7 +112,6 @@ public class Principal extends JDialog {
 		setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		setTitle("Principal");
 		setResizable(false);
-		setModalityType(ModalityType.APPLICATION_MODAL);
 		setMinimumSize(new Dimension(1200, 800));
 		setBounds(100, 100, 1150, 762);
 		getContentPane().setLayout(new BorderLayout());
@@ -351,31 +349,29 @@ public class Principal extends JDialog {
 		JLabel etMostrarDatos = new JLabel("Mostrar datos sesion");
 		etMostrarDatos.setForeground(Color.WHITE);
 		etMostrarDatos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 20));
-		etMostrarDatos.setBounds(20, 552, 214, 31);
+		etMostrarDatos.setBounds(54, 558, 214, 31);
 		contentPanel.add(etMostrarDatos);
-		
-		JLabel etFechaSesion = new JLabel("Fecha sesi\u00F3n");
-		etFechaSesion.setForeground(Color.WHITE);
-		etFechaSesion.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
-		etFechaSesion.setBounds(85, 585, 85, 31);
-		contentPanel.add(etFechaSesion);
-		
-		campoFechaSesion = new JTextField();
-		campoFechaSesion.setBounds(20, 615, 214, 31);
-		contentPanel.add(campoFechaSesion);
-		campoFechaSesion.setColumns(10);
 		
 		JLabel etListadoDatos = new JLabel("Listado sesiones");
 		etListadoDatos.setForeground(Color.WHITE);
 		etListadoDatos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
-		etListadoDatos.setBounds(76, 674, 102, 31);
+		etListadoDatos.setBounds(110, 599, 102, 31);
 		contentPanel.add(etListadoDatos);
 		
 		JComboBox comboBoxListadoSesion = new JComboBox();
-		comboBoxListadoSesion.setBounds(20, 704, 214, 31);
+		comboBoxListadoSesion.setBounds(54, 640, 214, 31);
 		contentPanel.add(comboBoxListadoSesion);
-		
+		//muestra la ventana con la tabla de datos por sesion
 		JButton botonMostrarDatos = new JButton("");
+		botonMostrarDatos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				VisualizadorDatos vd = new VisualizadorDatos(1);
+				vd.setMinimumSize(new Dimension(800,800));
+				vd.setLocationRelativeTo(null);
+				vd.pack();
+				vd.setVisible(true);
+			}
+		});
 		botonMostrarDatos.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
 		botonMostrarDatos.setContentAreaFilled(false);
 		botonMostrarDatos.setSelectedIcon(new ImageIcon(Principal.class.getResource("/botones/cuadricula.png")));
@@ -383,7 +379,7 @@ public class Principal extends JDialog {
 		//botonMostrarDatos.setBackground(Color.white);
 		botonMostrarDatos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		botonMostrarDatos.setForeground(Color.BLACK);
-		botonMostrarDatos.setBounds(249, 660, 60, 41);
+		botonMostrarDatos.setBounds(131, 700, 60, 41);
 		contentPanel.add(botonMostrarDatos);
 		
 		JSeparator separadorGrafica = new JSeparator();
