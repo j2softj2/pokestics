@@ -96,7 +96,7 @@ public class DatosHistorial {
 		String posicion="";
 		boolean cp = false;
 		boolean cg = false;
-		boolean resultado= false;
+		String resultado= "";
 		int asientoDealer = 0;
 		float boteTotal = 0;
 		float apuestaTotal = 0;
@@ -129,7 +129,7 @@ public class DatosHistorial {
 					//reinicia valores
 					 cp = false;
 					 cg = false;
-					 resultado= false;
+					 resultado= "perdida";
 					 asientoDealer = 0;
 					 boteTotal = 0;
 					 apuestaTotal = 0;
@@ -345,7 +345,7 @@ public class DatosHistorial {
 					
 				}
 				else if(linea.contains("bote principal") && linea.contains(usuario)) {
-					resultado = true;
+					resultado = "ganada";
 				}
 				else if(linea.contains("Bote total")) {
 					if(linea.contains("€")) {
@@ -353,7 +353,7 @@ public class DatosHistorial {
 						posFinal = linea.indexOf("€");
 						boteTotal = Float.parseFloat(linea.substring(posInicio,posFinal));
 						//comision
-							if(linea.contains("Comisión 0 €") | resultado != true) {
+							if(linea.contains("Comisión 0 €") | resultado != "ganada") {
 								comision += 0;
 							}
 							else {
@@ -375,7 +375,7 @@ public class DatosHistorial {
 						}
 						
 						//comision
-							if(linea.contains("Comisión 0 €") | resultado != true) {
+							if(linea.contains("Comisión 0 €") | resultado != "ganada") {
 								comision += 0;
 							}
 							else {
@@ -510,10 +510,21 @@ public class DatosHistorial {
 					turnVisto++;
 					riverJugado++;
 				}
+				if(linea.contains(usuario) && linea.contains("muestra") && linea.contains("perdió")) {
+					flopVisto++;
+					turnVisto++;
+					riverJugado++;
+				}
+				if(linea.contains(usuario) && linea.contains("muestra") && linea.contains("ganó")) {
+					flopVisto++;
+					turnVisto++;
+					riverJugado++;
+				}
 				if(linea.contains(usuario) && !linea.contains("antes del Flop") && linea.contains("retiró"))numeroRetiradas++;
+				if(linea.contains(usuario) && linea.contains("antes del Flop") && linea.contains("retiró"))resultado = "no jugada";
 				apuestaTotal = apuestaTotal + apuesta;
 				apuesta = 0;
-				if(resultado==true)ganancia = boteTotal - apuestaTotal - comision;
+				if(resultado.equals("ganada"))ganancia = boteTotal - apuestaTotal - comision;
 				else {ganancia = 0; perdida = apuestaTotal;}
 			}
 			insertarSesionCash(sesionActual);
@@ -555,7 +566,7 @@ public class DatosHistorial {
 			System.out.println(e.getMessage());
 		}
 	}
-	private void insertarManos(String cartas ,String posicion, float bote, boolean resultado, boolean cg, boolean cp,float apuesta,float ganancia,float perdida,String limite, float stack) {
+	private void insertarManos(String cartas ,String posicion, float bote, String resultado, boolean cg, boolean cp,float apuesta,float ganancia,float perdida,String limite, float stack) {
 		try {
 			//consulta la sesion creada justo antes
 			Statement st = con.createStatement();
@@ -565,7 +576,7 @@ public class DatosHistorial {
 				pst.setString(1,cartas);
 				pst.setString(2,posicion);
 				pst.setDouble(3,Math.round(bote * 100d)/100d);
-				pst.setBoolean(4,resultado);
+				pst.setString(4,resultado);
 				pst.setBoolean(5,cg);
 				pst.setBoolean(6,cp);
 				pst.setDouble(7, Math.round(apuesta * 100d)/100d);
@@ -781,9 +792,9 @@ public class DatosHistorial {
 		
 		try {
 			st = con.createStatement();
-			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = true");
+			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = 'ganada'");
 			while(rs.next())numeroGanadas = rs.getInt(1);
-			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = false");
+			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = 'perdida'");
 			while(rs.next())numeroPerdidas = rs.getInt(1);
 			//inserta en la tabla
 			st.executeUpdate("INSERT INTO estadisticasjuego VALUES ('"+sesion+"','"+flopVisto+"','"+riverJugado+"','"+turnVisto+"','"+numeroGanadas+"','"+numeroPerdidas+"','"+numeroRetiradas+"')");
