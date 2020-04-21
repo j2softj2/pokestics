@@ -129,7 +129,7 @@ public class DatosHistorial {
 					//reinicia valores
 					 cp = false;
 					 cg = false;
-					 resultado= "perdida";
+					 resultado= "Perdida";
 					 asientoDealer = 0;
 					 boteTotal = 0;
 					 apuestaTotal = 0;
@@ -345,7 +345,7 @@ public class DatosHistorial {
 					
 				}
 				else if(linea.contains("bote principal") && linea.contains(usuario)) {
-					resultado = "ganada";
+					resultado = "Ganada";
 				}
 				else if(linea.contains("Bote total")) {
 					if(linea.contains("€")) {
@@ -353,7 +353,7 @@ public class DatosHistorial {
 						posFinal = linea.indexOf("€");
 						boteTotal = Float.parseFloat(linea.substring(posInicio,posFinal));
 						//comision
-							if(linea.contains("Comisión 0 €") | resultado != "ganada") {
+							if(linea.contains("Comisión 0 €") | resultado != "Ganada") {
 								comision += 0;
 							}
 							else {
@@ -375,7 +375,7 @@ public class DatosHistorial {
 						}
 						
 						//comision
-							if(linea.contains("Comisión 0 €") | resultado != "ganada") {
+							if(linea.contains("Comisión 0 €") | resultado != "Ganada") {
 								comision += 0;
 							}
 							else {
@@ -521,10 +521,10 @@ public class DatosHistorial {
 					riverJugado++;
 				}
 				if(linea.contains(usuario) && !linea.contains("antes del Flop") && linea.contains("retiró"))numeroRetiradas++;
-				if(linea.contains(usuario) && linea.contains("antes del Flop") && linea.contains("retiró"))resultado = "no jugada";
+				if(linea.contains(usuario) && linea.contains("antes del Flop") && linea.contains("retiró"))resultado = "No jugada";
 				apuestaTotal = apuestaTotal + apuesta;
 				apuesta = 0;
-				if(resultado.equals("ganada"))ganancia = boteTotal - apuestaTotal - comision;
+				if(resultado.equals("Ganada"))ganancia = boteTotal - apuestaTotal - comision;
 				else {ganancia = 0; perdida = apuestaTotal;}
 			}
 			insertarSesionCash(sesionActual);
@@ -792,9 +792,9 @@ public class DatosHistorial {
 		
 		try {
 			st = con.createStatement();
-			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = 'ganada'");
+			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = 'Ganada'");
 			while(rs.next())numeroGanadas = rs.getInt(1);
-			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = 'perdida'");
+			rs = st.executeQuery("SELECT COUNT(resultado) FROM manos WHERE sesion = '"+sesion+"' and resultado = 'Perdida'");
 			while(rs.next())numeroPerdidas = rs.getInt(1);
 			//inserta en la tabla
 			st.executeUpdate("INSERT INTO estadisticasjuego VALUES ('"+sesion+"','"+flopVisto+"','"+riverJugado+"','"+turnVisto+"','"+numeroGanadas+"','"+numeroPerdidas+"','"+numeroRetiradas+"')");

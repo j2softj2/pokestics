@@ -31,7 +31,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -359,14 +361,77 @@ public class Principal extends JDialog {
 		contentPanel.add(etListadoDatos);
 		
 		JComboBox comboBoxListadoSesion = new JComboBox();
+		
+		//inserta en el comboBox el listado de sesiones
+		
+		Connection con = Inicio.getConexion();
+		
+		Statement st;
+		ResultSet rs;
+		ArrayList<Integer> codigosSesiones = new ArrayList<>();
+		ArrayList<Date> fechaSesiones = new ArrayList<>();
+		ArrayList<String> muestra = new ArrayList<>();
+		
+		
+		if(Inicio.getUsuario() == "invitado") {
+			
+			try {
+				st = con.createStatement();
+				rs = st.executeQuery("SELECT codigo,fecha FROM sesion");
+					while(rs.next()) {
+						codigosSesiones.add(rs.getInt(1));
+						fechaSesiones.add(rs.getDate(2));
+					}
+				//inserta en codigo y fecha en un array para mostrar
+					for(int i=0;i<codigosSesiones.size();i++) {
+						muestra.add(codigosSesiones.get(i).toString() + "--" + fechaSesiones.get(i).toString());
+					}
+				//inserta en el combobox
+					for(int i=0;i<muestra.size();i++) {
+						comboBoxListadoSesion.addItem(muestra.get(i));
+					}
+					
+			} catch (SQLException e1) {
+				System.out.println(e1.getMessage());
+
+			}
+		}
+		else {
+			try {
+				st = con.createStatement();
+				rs = st.executeQuery("SELECT codigo,fecha FROM sesion WHERE usuario = '"+consultaNombre(Inicio.getUsuario())+"'");
+					while(rs.next()) {
+						codigosSesiones.add(rs.getInt(1));
+						fechaSesiones.add(rs.getDate(2));
+					}
+				//inserta en codigo y fecha en un array para mostrar
+					for(int i=0;i<codigosSesiones.size();i++) {
+						muestra.add(codigosSesiones.get(i).toString() + "--" + fechaSesiones.get(i).toString());
+					}
+				//inserta en el combobox
+					for(int i=0;i<muestra.size();i++) {
+						comboBoxListadoSesion.addItem(muestra.get(i));
+					}
+					
+			} catch (SQLException e1) {
+				System.out.println(e1.getMessage());
+			}
+		}
+		
+		
 		comboBoxListadoSesion.setBounds(54, 640, 214, 31);
 		contentPanel.add(comboBoxListadoSesion);
 		//muestra la ventana con la tabla de datos por sesion
 		JButton botonMostrarDatos = new JButton("");
 		botonMostrarDatos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				VisualizadorDatos vd = new VisualizadorDatos(1);
-				vd.setMinimumSize(new Dimension(800,800));
+				
+				int codigoSesion;
+				String textoCombo = comboBoxListadoSesion.getSelectedItem().toString();
+				int lugarCortar = textoCombo.indexOf("-");
+				codigoSesion = Integer.parseInt(textoCombo.substring(0,lugarCortar));
+				VisualizadorDatos vd = new VisualizadorDatos(codigoSesion);
+				vd.setMinimumSize(new Dimension(980,600));
 				vd.setLocationRelativeTo(null);
 				vd.pack();
 				vd.setVisible(true);
@@ -379,7 +444,7 @@ public class Principal extends JDialog {
 		//botonMostrarDatos.setBackground(Color.white);
 		botonMostrarDatos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		botonMostrarDatos.setForeground(Color.BLACK);
-		botonMostrarDatos.setBounds(131, 700, 60, 41);
+		botonMostrarDatos.setBounds(131, 681, 60, 41);
 		contentPanel.add(botonMostrarDatos);
 		
 		JSeparator separadorGrafica = new JSeparator();
@@ -662,5 +727,28 @@ public class Principal extends JDialog {
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+	}
+	
+	//consulta nombre completo usuario
+	private String consultaNombre(String usuario) {
+		Connection con = Inicio.getConexion();
+		Statement st;
+		ResultSet rs;
+		String nombreCompleto = "";
+		
+		
+		try {
+			st = con.createStatement();
+			rs = st.executeQuery("SELECT nombre FROM usuario WHERE usuariosala = '"+usuario+"'");
+			while(rs.next()) {
+				nombreCompleto = rs.getString(1);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Bloque catch generado automáticamente
+			e.printStackTrace();
+		}
+		
+		return nombreCompleto;
 	}
 }
