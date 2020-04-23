@@ -65,7 +65,7 @@ public class Administrador extends JDialog {
 	public static void main(String[] args) {
 		try {
 			Administrador dialog = new Administrador();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();

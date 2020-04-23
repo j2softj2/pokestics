@@ -86,7 +86,7 @@ public class Principal extends JDialog {
 	public static void main(String[] args) {
 		try {
 			Principal dialog = new Principal();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
 			dialog.setVisible(true);
 			
 		} catch (Exception e) {
@@ -269,7 +269,7 @@ public class Principal extends JDialog {
 		contentPanel.add(campoRiesgo);
 		
 		JButton botonCalcular = new JButton("");
-		botonCalcular.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
+		botonCalcular.setBorder(null);
 		botonCalcular.setContentAreaFilled(false);
 		botonCalcular.setFocusable(false);
 		botonCalcular.setBackground(Color.WHITE);
@@ -437,7 +437,7 @@ public class Principal extends JDialog {
 				vd.setVisible(true);
 			}
 		});
-		botonMostrarDatos.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
+		botonMostrarDatos.setBorder(null);
 		botonMostrarDatos.setContentAreaFilled(false);
 		botonMostrarDatos.setSelectedIcon(new ImageIcon(Principal.class.getResource("/botones/cuadricula.png")));
 		botonMostrarDatos.setIcon(new ImageIcon(Principal.class.getResource("/botones/cuadricula.png")));
@@ -458,8 +458,18 @@ public class Principal extends JDialog {
 		etMostrarGrafica.setBounds(450, 552, 174, 31);
 		contentPanel.add(etMostrarGrafica);
 		
+		//muestra la ventana de graficas
 		JButton btnNewButton = new JButton("");
-		btnNewButton.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				VisualizadorGraficas vg = new VisualizadorGraficas();
+					vg.setMinimumSize(new Dimension(980,300));
+					vg.setLocationRelativeTo(null);
+					vg.pack();
+					vg.setVisible(true);
+			}
+		});
+		btnNewButton.setBorder(null);
 		btnNewButton.setContentAreaFilled(false);
 		btnNewButton.setIcon(new ImageIcon(Principal.class.getResource("/botones/grafica.png")));
 		btnNewButton.setBounds(453, 585, 169, 150);

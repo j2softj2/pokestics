@@ -155,6 +155,7 @@ public class Inicio {
 				String pass = campoPass.getText();
 					if(usuario.equals("superusuario")){usuario = "postgres";}
 				conexionBaseDatos(usuario,pass);
+				frmPokestics.setVisible(false);
 			}
 		});
 		botonEntrar.setSelectedIcon(null);
