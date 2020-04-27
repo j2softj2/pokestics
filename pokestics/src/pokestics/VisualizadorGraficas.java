@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
 public class VisualizadorGraficas extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField comboBoxJugadores;
+	private JTextField campoJugadores;
 	Connection con = Inicio.getConexion();
 	String usuario = Inicio.getUsuario();
 
@@ -99,10 +99,10 @@ public class VisualizadorGraficas extends JDialog {
 		//inserta el listado
 				obtenerSesionesJuego(comboBoxCash);
 				
-		comboBoxJugadores = new JTextField();
-		comboBoxJugadores.setBounds(435, 74, 188, 34);
-		contentPanel.add(comboBoxJugadores);
-		comboBoxJugadores.setColumns(10);
+		campoJugadores = new JTextField();
+		campoJugadores.setBounds(435, 74, 188, 34);
+		contentPanel.add(campoJugadores);
+		campoJugadores.setColumns(10);
 		
 		JComboBox comboBoxBankroll = new JComboBox();
 		comboBoxBankroll.setBounds(648, 74, 169, 34);
@@ -128,22 +128,53 @@ public class VisualizadorGraficas extends JDialog {
 		botonJuego.setIcon(new ImageIcon(VisualizadorGraficas.class.getResource("/botones/mostrar.png")));
 		botonJuego.setBounds(54, 118, 121, 82);
 		contentPanel.add(botonJuego);
-		
+		//boton para mostrar el grafico de la tabla estadisticascash
 		JButton botonCash = new JButton("");
+		botonCash.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//obtencion sesion
+				int codigoSesion;
+				String textoCombo = comboBoxCash.getSelectedItem().toString();
+				int lugarCortar = textoCombo.indexOf("-");
+				codigoSesion = Integer.parseInt(textoCombo.substring(0,lugarCortar));
+				//realiza consulta
+				insertarGraficaCash(codigoSesion);
+			}
+		});
 		botonCash.setBorder(null);
 		botonCash.setIcon(new ImageIcon(VisualizadorGraficas.class.getResource("/botones/mostrar.png")));
 		botonCash.setContentAreaFilled(false);
 		botonCash.setBounds(256, 118, 121, 85);
 		contentPanel.add(botonCash);
 		
+		//boton para mostrar el grafico de la tabla jugadores
 		JButton botonJugadores = new JButton("");
+		botonJugadores.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(campoJugadores.getText()!=null && campoJugadores.getText().length()>3) {
+					insertarGraficaJugadores(campoJugadores.getText());
+				}
+			}
+		});
 		botonJugadores.setBorder(null);
 		botonJugadores.setIcon(new ImageIcon(VisualizadorGraficas.class.getResource("/botones/mostrar.png")));
 		botonJugadores.setContentAreaFilled(false);
 		botonJugadores.setBounds(464, 118, 131, 85);
 		contentPanel.add(botonJugadores);
 		
+		//boton para mostrar el grafico de la tabla bankroll
 		JButton botonBankroll = new JButton("");
+		botonBankroll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//obtencion sesion
+				int codigoSesion;
+				String textoCombo = comboBoxBankroll.getSelectedItem().toString();
+				int lugarCortar = textoCombo.indexOf("-");
+				codigoSesion = Integer.parseInt(textoCombo.substring(0,lugarCortar));
+				//realiza consulta
+				insertarGraficaBankroll(codigoSesion);
+			}
+		});
 		botonBankroll.setBorder(null);
 		botonBankroll.setIcon(new ImageIcon(VisualizadorGraficas.class.getResource("/botones/mostrar.png")));
 		botonBankroll.setContentAreaFilled(false);
@@ -218,8 +249,8 @@ public class VisualizadorGraficas extends JDialog {
 				}
 				
 			} catch (SQLException e) {
-				// TODO Bloque catch generado automáticamente
-				e.printStackTrace();
+				System.out.println(e.getMessage());
+
 			}
 			
 			return nombreCompleto;
@@ -266,9 +297,122 @@ public class VisualizadorGraficas extends JDialog {
 						graficos.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 						
 			} catch (SQLException e) {
-				// TODO Bloque catch generado automáticamente
-				e.printStackTrace();
+				System.out.println(e.getMessage());
+
 			}
 			
 		}
+		
+		
+		
+		//realiza consulta en la tabla estadisticasJuego
+			
+			private void insertarGraficaCash(int sesion) {
+				
+				Statement st;
+				ResultSet rs;
+				JFreeChart grafica;
+				DefaultCategoryDataset datos = new DefaultCategoryDataset();;
+				
+				try {
+					st = con.createStatement();
+					rs = st.executeQuery("SELECT ganancias100manos,apuestamedia FROM estadisticascash WHERE sesion = "+sesion);
+					
+					while(rs.next()) {
+						datos.addValue(rs.getFloat(1), "Ganancias x 100", "Ganancias por 100 manos");
+						datos.addValue(rs.getFloat(2), "Apuesta media", "Apuesta media");
+					}
+					//crea la grafica
+					grafica = ChartFactory.createBarChart("Estadisticas Cash", "Datos", "Total", datos,PlotOrientation.VERTICAL,true,true,false);
+
+					//la añade al panel y repaint
+					ChartPanel panelGrafica = new ChartPanel(grafica);
+						JFrame graficos = new JFrame("Grafico");
+							graficos.getContentPane().add(panelGrafica);
+							graficos.pack();
+							graficos.setVisible(true);
+							graficos.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+							
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+
+				}
+				
+			}
+			
+			
+			//realiza consulta en la tabla bankroll
+			
+			private void insertarGraficaBankroll(int sesion) {
+				
+				Statement st;
+				ResultSet rs;
+				JFreeChart grafica;
+				DefaultCategoryDataset datos = new DefaultCategoryDataset();
+				
+				try {
+					st = con.createStatement();
+					rs = st.executeQuery("SELECT cash,manosjugadas,diferencia FROM bankroll WHERE sesion = "+sesion);
+					
+					while(rs.next()) {
+						datos.addValue(rs.getFloat(1), "Cash", "Cash");
+						datos.addValue(rs.getFloat(2), "Manos jugadas", "Manos jugadas");
+						datos.addValue(rs.getFloat(3), "Diferencia", "Diferencia");
+					}
+					//crea la grafica
+					grafica = ChartFactory.createBarChart("Estadisticas de Bankroll", "Datos", "Total", datos,PlotOrientation.VERTICAL,true,true,false);
+
+					//la añade al panel y repaint
+					ChartPanel panelGrafica = new ChartPanel(grafica);
+						JFrame graficos = new JFrame("Grafico");
+							graficos.getContentPane().add(panelGrafica);
+							graficos.pack();
+							graficos.setVisible(true);
+							graficos.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+							
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+
+				}
+				
+			}
+			
+			
+			
+//realiza consulta en la tabla estadisticasJuego
+			
+			private void insertarGraficaJugadores(String jugador) {
+				
+				Statement st;
+				ResultSet rs;
+				JFreeChart grafica;
+				DefaultCategoryDataset datos = new DefaultCategoryDataset();
+				
+				try {
+					st = con.createStatement();
+					rs = st.executeQuery("SELECT manosanalizadas,flopvisto,riverjugado,ganadas,perdidas FROM jugadores WHERE nombre = ' "+jugador+"'");
+					
+					while(rs.next()) {
+						datos.addValue(rs.getInt(1), "Total manos", "Manos analizadas");
+						datos.addValue(rs.getInt(2), "Flop visto", "Flop visto");
+						datos.addValue(rs.getInt(3), "River jugado", "River jugado");
+						datos.addValue(rs.getInt(4), "Ganadas", "Ganadas");
+						datos.addValue(rs.getInt(5), "Perdidas", "Perdidas");
+					}
+					//crea la grafica
+					grafica = ChartFactory.createBarChart("Estadisticas de Jugadores", "Datos", "Total", datos,PlotOrientation.VERTICAL,true,true,false);
+
+					//la añade al panel
+					ChartPanel panelGrafica = new ChartPanel(grafica);
+						JFrame graficos = new JFrame("Grafico");
+							graficos.getContentPane().add(panelGrafica);
+							graficos.pack();
+							graficos.setVisible(true);
+							graficos.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+							
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+				
+			}
 }

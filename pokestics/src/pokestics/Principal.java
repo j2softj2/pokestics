@@ -734,6 +734,7 @@ public class Principal extends JDialog {
 		try {
 			con.close();
 			System.out.println("Conexion cerrada");
+			
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
