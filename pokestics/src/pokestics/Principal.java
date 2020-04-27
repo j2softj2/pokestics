@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Dimension;
@@ -56,7 +57,7 @@ import java.awt.event.WindowEvent;
 import java.awt.Toolkit;
 import javax.swing.UIManager;
 
-public class Principal extends JDialog {
+public class Principal extends JFrame {
 
 	
 	private final JPanel contentPanel = new JPanel();
@@ -463,7 +464,7 @@ public class Principal extends JDialog {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				VisualizadorGraficas vg = new VisualizadorGraficas();
-					vg.setMinimumSize(new Dimension(980,300));
+					vg.setMinimumSize(new Dimension(930,500));
 					vg.setLocationRelativeTo(null);
 					vg.pack();
 					vg.setVisible(true);

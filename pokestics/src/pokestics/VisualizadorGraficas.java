@@ -18,10 +18,13 @@ import javax.swing.ImageIcon;
 import javax.swing.border.MatteBorder;
 
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -56,7 +59,7 @@ public class VisualizadorGraficas extends JDialog {
 	 * Create the dialog.
 	 */
 	public VisualizadorGraficas() {
-		setBounds(100, 100, 841, 298);
+		setBounds(100, 100, 841, 461);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(60, 179, 113));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -180,6 +183,42 @@ public class VisualizadorGraficas extends JDialog {
 		botonBankroll.setContentAreaFilled(false);
 		botonBankroll.setBounds(672, 118, 121, 85);
 		contentPanel.add(botonBankroll);
+		
+		JLabel etJuegoCompleto = new JLabel("Estadisticas juego del total de sesiones");
+		etJuegoCompleto.setForeground(Color.WHITE);
+		etJuegoCompleto.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
+		etJuegoCompleto.setBounds(7, 270, 283, 24);
+		contentPanel.add(etJuegoCompleto);
+		
+		JLabel etEstadisticasCashCompleta = new JLabel("Estadisticas cash del total de sesiones");
+		etEstadisticasCashCompleta.setForeground(Color.WHITE);
+		etEstadisticasCashCompleta.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
+		etEstadisticasCashCompleta.setBounds(526, 270, 283, 24);
+		contentPanel.add(etEstadisticasCashCompleta);
+		//muestra grafica con los datos de todas las sesiones
+		JButton botonJuegoTotal = new JButton("");
+		botonJuegoTotal.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				estadisticasTotales("juego");
+			}
+		});
+		botonJuegoTotal.setIcon(new ImageIcon(VisualizadorGraficas.class.getResource("/botones/mostrar.png")));
+		botonJuegoTotal.setContentAreaFilled(false);
+		botonJuegoTotal.setBorder(null);
+		botonJuegoTotal.setBounds(88, 304, 121, 82);
+		contentPanel.add(botonJuegoTotal);
+		
+		JButton botonCashTotal = new JButton("");
+		botonCashTotal.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				estadisticasTotales("cash");
+			}
+		});
+		botonCashTotal.setIcon(new ImageIcon(VisualizadorGraficas.class.getResource("/botones/mostrar.png")));
+		botonCashTotal.setContentAreaFilled(false);
+		botonCashTotal.setBorder(null);
+		botonCashTotal.setBounds(607, 304, 121, 82);
+		contentPanel.add(botonCashTotal);
 	}
 	
 	//inserta las sesiones del usuario ( codigo y fecha)
@@ -413,6 +452,117 @@ public class VisualizadorGraficas extends JDialog {
 				} catch (SQLException e) {
 					System.out.println(e.getMessage());
 				}
+				
+			}
+			
+		//realiza consulta y crea grafica del total de la tabla estadisticasjuego y estadisticascash
+			
+			private void estadisticasTotales(String tabla) {
+				
+				Statement st;
+				ResultSet rs;
+				ArrayList<Integer> codigosSesion = new ArrayList<Integer>();
+				int sesion = 0;
+				int numeroRetiradas = 0;
+				int numeroPerdidas = 0;
+				int numeroGanadas = 0;
+				int turnVisto = 0;
+				int riverVisto = 0;
+				int flopVisto = 0;
+				float ganancias100manos = 0;
+				float apuestaMedia = 0;
+				int totalManos = 0;
+				String consultaSesiones = "SELECT codigo FROM sesion WHERE usuario = '"+consultaNombre()+"'";
+				String consultaJuego = "SELECT SUM(numeroretiradas),SUM(numeroperdidas),SUM(numeroganadas),SUM(turnvisto),SUM(rivervisto),SUM(flopvisto) FROM estadisticasjuego WHERE sesion = ";
+				String consultaCash = "SELECT SUM(ganancias100manos),SUM(apuestamedia) FROM estadisticascash WHERE sesion = ";
+				String consultaTotalManos = "SELECT COUNT(numero) FROM manos WHERE sesion = ";
+				JFreeChart grafica;
+				DefaultCategoryDataset datos = new DefaultCategoryDataset();
+				
+				try {
+					//consulta las sesiones pertenecientes al usuario
+					st = con.createStatement();
+					rs = st.executeQuery(consultaSesiones);
+					while(rs.next()) {
+						codigosSesion.add(rs.getInt(1));
+					}
+					//consulta el total de manos jugadas por el usuario
+					for(int i=0;i<codigosSesion.size();i++) {
+						rs = st.executeQuery(consultaTotalManos+codigosSesion.get(i));
+						while(rs.next()) {
+							totalManos += rs.getInt(1);
+						}
+					}
+					
+					//en caso de ser la tabla juego realiza la consulta por cada sesion sumando el resultado en las variables
+					if(tabla == "juego") {
+						for(int i=0;i<codigosSesion.size();i++) {
+							rs = st.executeQuery(consultaJuego+codigosSesion.get(i));
+							while(rs.next()) {
+								numeroRetiradas += rs.getInt(1);
+								numeroPerdidas += rs.getInt(2);
+								numeroGanadas += rs.getInt(3);
+								turnVisto += rs.getInt(4);
+								riverVisto += rs.getInt(5);
+								flopVisto += rs.getInt(6);
+							}
+						}
+						
+						//añade datos
+						datos.addValue(totalManos, "Número manos", "Total");
+						datos.addValue(numeroGanadas, "Número ganadas", "Total");
+						datos.addValue(numeroPerdidas, "Número perdidas", "Total");
+						datos.addValue(numeroRetiradas, "Número retiradas", "Total");
+						datos.addValue(turnVisto, "Turn visto", "Total");
+						datos.addValue(riverVisto, "River visto", "Total");
+						datos.addValue(flopVisto, "Flop visto", "Total");
+						//crea la grafica
+						grafica = ChartFactory.createBarChart("Estadisticas de juego totales", "Datos", "Total", datos,PlotOrientation.VERTICAL,true,true,false);
+
+						//la añade al panel
+						ChartPanel panelGrafica = new ChartPanel(grafica);
+							JFrame graficos = new JFrame("Grafico");
+								graficos.getContentPane().add(panelGrafica);
+								graficos.pack();
+								graficos.setVisible(true);
+								graficos.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					}
+					else if(tabla == "cash") {
+						//añade datos
+						 XYSeries series1 = new XYSeries("Ganancias x 100 manos");
+						 XYSeries series2 = new XYSeries("Apuesta media");
+						for(int i=0;i<codigosSesion.size();i++) {
+							rs = st.executeQuery(consultaCash+codigosSesion.get(i));
+							while(rs.next()) {
+								series1.add(codigosSesion.get(i).floatValue(),rs.getFloat(1));
+								series2.add(codigosSesion.get(i).floatValue(),rs.getFloat(2));
+							}
+						}
+					     XYSeriesCollection dataset = new XYSeriesCollection();
+					     	dataset.addSeries(series1);
+					     	dataset.addSeries(series2);
+					     	
+					     	JFreeChart chart = ChartFactory.createXYLineChart(
+					                "Estadísticas cash totales",
+					                "Sesiones", // Etiqueta Coordenada X
+					                "Cantidad", // Etiqueta Coordenada Y
+					                dataset,
+					                PlotOrientation.VERTICAL,
+					                true, 
+					                false,
+					                false
+					        );
+
+					        // Mostramos la grafica en pantalla
+					        ChartFrame frame = new ChartFrame("Grafica cash total", chart);
+					        frame.pack();
+					        frame.setVisible(true);
+					        
+					}
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+				
 				
 			}
 }
