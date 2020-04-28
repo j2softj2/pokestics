@@ -11,6 +11,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
@@ -431,23 +433,24 @@ public class VisualizadorGraficas extends JDialog {
 					st = con.createStatement();
 					rs = st.executeQuery("SELECT manosanalizadas,flopvisto,riverjugado,ganadas,perdidas FROM jugadores WHERE nombre = ' "+jugador+"'");
 					
-					while(rs.next()) {
-						datos.addValue(rs.getInt(1), "Total manos", "Manos analizadas");
-						datos.addValue(rs.getInt(2), "Flop visto", "Flop visto");
-						datos.addValue(rs.getInt(3), "River jugado", "River jugado");
-						datos.addValue(rs.getInt(4), "Ganadas", "Ganadas");
-						datos.addValue(rs.getInt(5), "Perdidas", "Perdidas");
-					}
-					//crea la grafica
-					grafica = ChartFactory.createBarChart("Estadisticas de Jugadores", "Datos", "Total", datos,PlotOrientation.VERTICAL,true,true,false);
+						while(rs.next()) {
+							datos.addValue(rs.getInt(1), "Total manos", "Manos analizadas");
+							datos.addValue(rs.getInt(2), "Flop visto", "Flop visto");
+							datos.addValue(rs.getInt(3), "River jugado", "River jugado");
+							datos.addValue(rs.getInt(4), "Ganadas", "Ganadas");
+							datos.addValue(rs.getInt(5), "Perdidas", "Perdidas");
+							
+						}
+						//crea la grafica
+						grafica = ChartFactory.createBarChart("Estadisticas de Jugadores", "Datos", "Total", datos,PlotOrientation.VERTICAL,true,true,false);
 
-					//la añade al panel
-					ChartPanel panelGrafica = new ChartPanel(grafica);
-						JFrame graficos = new JFrame("Grafico");
-							graficos.getContentPane().add(panelGrafica);
-							graficos.pack();
-							graficos.setVisible(true);
-							graficos.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						//la añade al panel
+						ChartPanel panelGrafica = new ChartPanel(grafica);
+							JFrame graficos = new JFrame("Grafico");
+								graficos.getContentPane().add(panelGrafica);
+								graficos.pack();
+								graficos.setVisible(true);
+								graficos.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 							
 				} catch (SQLException e) {
 					System.out.println(e.getMessage());

@@ -72,6 +72,14 @@ public class Principal extends JFrame {
  //conexion a la base de datos
 	
 	static Connection conexion = Inicio.getConexion();
+	private JTextField campoUsuario;
+	private JTextField campoSesion;
+	private JTextField campoCash;
+	private JTextField campoManos;
+	private JTextField campoFlop;
+	private JTextField campoTurn;
+	private JTextField campoRiver;
+	private JTextField campoGanadas;
 
 	public File getArchivo() {
 		return archivo;
@@ -476,6 +484,94 @@ public class Principal extends JFrame {
 		btnNewButton.setBounds(453, 585, 169, 150);
 		contentPanel.add(btnNewButton);
 		
+		JLabel etUsuario = new JLabel("Usuario");
+		etUsuario.setForeground(Color.WHITE);
+		etUsuario.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
+		etUsuario.setBounds(87, 82, 68, 24);
+		contentPanel.add(etUsuario);
+		
+		JLabel etSesion = new JLabel("Sesi\u00F3n");
+		etSesion.setForeground(Color.WHITE);
+		etSesion.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
+		etSesion.setBounds(251, 82, 60, 24);
+		contentPanel.add(etSesion);
+		
+		JLabel etCash = new JLabel("Cash");
+		etCash.setForeground(Color.WHITE);
+		etCash.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
+		etCash.setBounds(427, 82, 50, 24);
+		contentPanel.add(etCash);
+		
+		JLabel etTotalManos = new JLabel("Total de manos");
+		etTotalManos.setForeground(Color.WHITE);
+		etTotalManos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
+		etTotalManos.setBounds(567, 82, 123, 24);
+		contentPanel.add(etTotalManos);
+		
+		JLabel etFlop = new JLabel("Flop vistos");
+		etFlop.setForeground(Color.WHITE);
+		etFlop.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
+		etFlop.setBounds(69, 231, 101, 24);
+		contentPanel.add(etFlop);
+		
+		JLabel etTurn = new JLabel("Turn vistos");
+		etTurn.setForeground(Color.WHITE);
+		etTurn.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
+		etTurn.setBounds(233, 231, 101, 24);
+		contentPanel.add(etTurn);
+		
+		JLabel etRiver = new JLabel("River visto");
+		etRiver.setForeground(Color.WHITE);
+		etRiver.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
+		etRiver.setBounds(417, 231, 101, 24);
+		contentPanel.add(etRiver);
+		
+		JLabel etGanadas = new JLabel("Ganadas");
+		etGanadas.setForeground(Color.WHITE);
+		etGanadas.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
+		etGanadas.setBounds(577, 231, 101, 24);
+		contentPanel.add(etGanadas);
+		
+		campoUsuario = new JTextField();
+		campoUsuario.setBounds(45, 116, 144, 38);
+		contentPanel.add(campoUsuario);
+		campoUsuario.setColumns(10);
+		
+		campoSesion = new JTextField();
+		campoSesion.setColumns(10);
+		campoSesion.setBounds(216, 116, 144, 38);
+		contentPanel.add(campoSesion);
+		
+		campoCash = new JTextField();
+		campoCash.setColumns(10);
+		campoCash.setBounds(386, 116, 144, 38);
+		contentPanel.add(campoCash);
+		
+		campoManos = new JTextField();
+		campoManos.setColumns(10);
+		campoManos.setBounds(556, 116, 144, 38);
+		contentPanel.add(campoManos);
+		
+		campoFlop = new JTextField();
+		campoFlop.setColumns(10);
+		campoFlop.setBounds(45, 277, 144, 38);
+		contentPanel.add(campoFlop);
+		
+		campoTurn = new JTextField();
+		campoTurn.setColumns(10);
+		campoTurn.setBounds(216, 279, 144, 38);
+		contentPanel.add(campoTurn);
+		
+		campoRiver = new JTextField();
+		campoRiver.setColumns(10);
+		campoRiver.setBounds(386, 279, 144, 38);
+		contentPanel.add(campoRiver);
+		
+		campoGanadas = new JTextField();
+		campoGanadas.setColumns(10);
+		campoGanadas.setBounds(556, 279, 144, 38);
+		contentPanel.add(campoGanadas);
+		
 		JMenuBar barraMenu = new JMenuBar();
 		barraMenu.setBackground(new Color(255, 255, 255));
 		setJMenuBar(barraMenu);
@@ -488,26 +584,26 @@ public class Principal extends JFrame {
 		menuArchivo.setSelectedIcon(null);
 		barraMenu.add(menuArchivo);
 		
-		JMenuItem menuItemCerrar = new JMenuItem("Cerrar");
+		JMenuItem menuItemCerrar = new JMenuItem("Cerrar sesi\u00F3n");
 		menuItemCerrar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK));
-		//cierra la ventana
+		//cierra la ventana y vuelve a inicio
 		menuItemCerrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Inicio.ocultar(true);
+			}
+		});
+		menuItemCerrar.setBackground(Color.WHITE);
+		menuItemCerrar.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
+		menuArchivo.add(menuItemCerrar);
+		//cierra la aplicación
+		JMenuItem mntmSalir = new JMenuItem("Salir");
+		mntmSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cerrarAplicacion();
 			}
 		});
-		//realizar lectura del historial
-		JMenuItem menuItemIniciarEscaneo = new JMenuItem("Leer historial");
-		menuArchivo.add(menuItemIniciarEscaneo);
-		menuItemIniciarEscaneo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//leeHistorialesNoLeidos();
-			}
-		});
-		menuItemIniciarEscaneo.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
-		menuItemCerrar.setBackground(Color.WHITE);
-		menuItemCerrar.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
-		menuArchivo.add(menuItemCerrar);
+		mntmSalir.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
+		menuArchivo.add(mntmSalir);
 		
 		JMenu menuConfiguracion = new JMenu("Configuraci\u00F3n");
 		menuConfiguracion.setIcon(new ImageIcon(Principal.class.getResource("/botones/configuracion10x10.png")));

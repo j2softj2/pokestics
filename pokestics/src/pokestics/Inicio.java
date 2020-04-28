@@ -52,7 +52,7 @@ public class Inicio {
 	}
 
 	private Image imagenFondo = new ImageIcon(getClass().getResource("/imagenesFondo/logoLetras800.png")).getImage();
-	private JFrame frmPokestics;
+	private static JFrame frmPokestics;
 	private JTextField campoUsuario;
 	private JTextField campoPass;
 
@@ -155,6 +155,7 @@ public class Inicio {
 				String pass = campoPass.getText();
 					if(usuario.equals("superusuario")){usuario = "postgres";}
 				conexionBaseDatos(usuario,pass);
+				frmPokestics.setVisible(false);
 			}
 		});
 		botonEntrar.setSelectedIcon(null);
@@ -209,5 +210,11 @@ public class Inicio {
 				JOptionPane.showMessageDialog(null, "Error al conectar a la base de datos" + e);
 				//System.out.println("Error al conectar a la base de datos " + e);
 			}
+	}
+	
+	//metodo para ocultar o mostrar la ventana inicio( true visible false no visible)
+	
+	public static void ocultar(boolean estado) {
+		frmPokestics.setVisible(estado);
 	}
 }
