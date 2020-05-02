@@ -42,6 +42,7 @@ import javax.swing.KeyStroke;
 import java.awt.event.InputEvent;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
@@ -73,13 +74,14 @@ public class Principal extends JFrame {
 	
 	static Connection conexion = Inicio.getConexion();
 	private JTextField campoUsuario;
-	private JTextField campoSesion;
 	private JTextField campoCash;
 	private JTextField campoManos;
 	private JTextField campoFlop;
 	private JTextField campoTurn;
 	private JTextField campoRiver;
 	private JTextField campoGanadas;
+	private JTextField campoApuestaMedia;
+	private JTextField campoRetiradas;
 
 	public File getArchivo() {
 		return archivo;
@@ -113,10 +115,34 @@ public class Principal extends JFrame {
 			public void windowClosed(WindowEvent e) {
 				
 				cerrarConexion(conexion);
+				Inicio.ocultar(false);
 			}
 			@Override
 			public void windowOpened(WindowEvent e) {
 				leeHistorialesNoLeidos();
+				
+					
+					//ejecucion cada 5 segundos
+					Timer timer = new Timer (5000, new ActionListener ()
+					{
+					    public void actionPerformed(ActionEvent e)
+					    {
+							//actualiza datos sesion actual
+							DatosHistorial leer = new DatosHistorial(new File(buscaHistorialNuevo()));
+								ArrayList<String> datos = new ArrayList<String>(leer.datosSesion());
+								campoUsuario.setText(Inicio.getUsuario());
+								campoCash.setText(datos.get(0));
+								campoApuestaMedia.setText(datos.get(1));
+								campoFlop.setText(datos.get(2));
+								campoTurn.setText(datos.get(3));
+								campoRiver.setText(datos.get(4));
+								campoGanadas.setText(datos.get(5));
+								campoRetiradas.setText(datos.get(6));
+								campoManos.setText(datos.get(7));
+					     }
+					});
+					timer.start();
+					
 			}
 		});
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -490,17 +516,11 @@ public class Principal extends JFrame {
 		etUsuario.setBounds(87, 82, 68, 24);
 		contentPanel.add(etUsuario);
 		
-		JLabel etSesion = new JLabel("Sesi\u00F3n");
-		etSesion.setForeground(Color.WHITE);
-		etSesion.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
-		etSesion.setBounds(251, 82, 60, 24);
-		contentPanel.add(etSesion);
-		
-		JLabel etCash = new JLabel("Cash");
-		etCash.setForeground(Color.WHITE);
-		etCash.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
-		etCash.setBounds(427, 82, 50, 24);
-		contentPanel.add(etCash);
+		JLabel etStack = new JLabel("Stack");
+		etStack.setForeground(Color.WHITE);
+		etStack.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
+		etStack.setBounds(349, 81, 50, 24);
+		contentPanel.add(etStack);
 		
 		JLabel etTotalManos = new JLabel("Total de manos");
 		etTotalManos.setForeground(Color.WHITE);
@@ -529,48 +549,84 @@ public class Principal extends JFrame {
 		JLabel etGanadas = new JLabel("Ganadas");
 		etGanadas.setForeground(Color.WHITE);
 		etGanadas.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
-		etGanadas.setBounds(577, 231, 101, 24);
+		etGanadas.setBounds(588, 231, 76, 24);
 		contentPanel.add(etGanadas);
 		
 		campoUsuario = new JTextField();
+		campoUsuario.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
+		campoUsuario.setHorizontalAlignment(SwingConstants.CENTER);
+		campoUsuario.setText(Inicio.getUsuario());
 		campoUsuario.setBounds(45, 116, 144, 38);
 		contentPanel.add(campoUsuario);
 		campoUsuario.setColumns(10);
 		
-		campoSesion = new JTextField();
-		campoSesion.setColumns(10);
-		campoSesion.setBounds(216, 116, 144, 38);
-		contentPanel.add(campoSesion);
-		
 		campoCash = new JTextField();
+		campoCash.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
+		campoCash.setHorizontalAlignment(SwingConstants.CENTER);
 		campoCash.setColumns(10);
-		campoCash.setBounds(386, 116, 144, 38);
+		campoCash.setBounds(298, 115, 144, 38);
 		contentPanel.add(campoCash);
 		
 		campoManos = new JTextField();
+		campoManos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
+		campoManos.setHorizontalAlignment(SwingConstants.CENTER);
 		campoManos.setColumns(10);
 		campoManos.setBounds(556, 116, 144, 38);
 		contentPanel.add(campoManos);
 		
 		campoFlop = new JTextField();
+		campoFlop.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
+		campoFlop.setHorizontalAlignment(SwingConstants.CENTER);
 		campoFlop.setColumns(10);
 		campoFlop.setBounds(45, 277, 144, 38);
 		contentPanel.add(campoFlop);
 		
 		campoTurn = new JTextField();
+		campoTurn.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
+		campoTurn.setHorizontalAlignment(SwingConstants.CENTER);
 		campoTurn.setColumns(10);
 		campoTurn.setBounds(216, 279, 144, 38);
 		contentPanel.add(campoTurn);
 		
 		campoRiver = new JTextField();
+		campoRiver.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
+		campoRiver.setHorizontalAlignment(SwingConstants.CENTER);
 		campoRiver.setColumns(10);
 		campoRiver.setBounds(386, 279, 144, 38);
 		contentPanel.add(campoRiver);
 		
 		campoGanadas = new JTextField();
+		campoGanadas.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
+		campoGanadas.setHorizontalAlignment(SwingConstants.CENTER);
 		campoGanadas.setColumns(10);
-		campoGanadas.setBounds(556, 279, 144, 38);
+		campoGanadas.setBounds(554, 279, 144, 38);
 		contentPanel.add(campoGanadas);
+		
+		JLabel etApuestaMedia = new JLabel("Apuesta media");
+		etApuestaMedia.setForeground(Color.WHITE);
+		etApuestaMedia.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
+		etApuestaMedia.setBounds(138, 396, 130, 24);
+		contentPanel.add(etApuestaMedia);
+		
+		JLabel etRetiradas = new JLabel("Retiradas");
+		etRetiradas.setForeground(Color.WHITE);
+		etRetiradas.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 16));
+		etRetiradas.setBounds(472, 396, 85, 24);
+		contentPanel.add(etRetiradas);
+		
+		campoApuestaMedia = new JTextField();
+		campoApuestaMedia.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
+		campoApuestaMedia.setHorizontalAlignment(SwingConstants.CENTER);
+		campoApuestaMedia.setColumns(10);
+		campoApuestaMedia.setBounds(124, 435, 144, 38);
+		contentPanel.add(campoApuestaMedia);
+		
+		campoRetiradas = new JTextField();
+		campoRetiradas.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
+		campoRetiradas.setHorizontalAlignment(SwingConstants.CENTER);
+		campoRetiradas.setColumns(10);
+		campoRetiradas.setBounds(442, 435, 144, 38);
+		contentPanel.add(campoRetiradas);
 		
 		JMenuBar barraMenu = new JMenuBar();
 		barraMenu.setBackground(new Color(255, 255, 255));
@@ -716,23 +772,38 @@ public class Principal extends JFrame {
 							int inicio;
 							inicio = linea.indexOf("-");
 							rutaCarpeta = linea.substring(inicio+3);
-							br.close();
+							
 						}
 					}
+					br.close();
 		}catch (IOException e) {
 			System.out.print(e.getMessage());
 		}
 		
 		File directorio = new File(rutaCarpeta);
 			File[] listaArchivos = directorio.listFiles();
+			//cuenta los archivos que no son de torneos
+			int elementos =0;
+			for(int i=0; i<listaArchivos.length;i++) {
+				if(listaArchivos[i].getName().contains("EUR"))elementos++;
+			}
+		//crea un nuevo array donde se guardan los archivo que no son de torneos
+			File[] listaArchivosSinTorneos = new File[elementos];
+			int pos=0;
+			for(int i=0;i<listaArchivos.length;i++) {
+				if(listaArchivos[i].getName().contains("EUR")) {
+					listaArchivosSinTorneos[pos] = listaArchivos[i];
+					pos++;
+				}
+			}
 			   //array donde se guardaran todas las fechas de modificacion de los archivos
-			long[] fecha = new long[listaArchivos.length];
+			long[] fecha = new long[listaArchivosSinTorneos.length];
 			//convierte a fecha
-			Date[] fechaDate = new Date[listaArchivos.length];
+			Date[] fechaDate = new Date[listaArchivosSinTorneos.length];
 			
 			//obtiene le fecha
-			for(int i=0; i<listaArchivos.length;i++) {
-				fecha[i] = listaArchivos[i].lastModified();
+			for(int i=0; i<listaArchivosSinTorneos.length;i++) {
+				fecha[i] = listaArchivosSinTorneos[i].lastModified();
 				fechaDate[i] = new Date(fecha[i]);
 			}
 			//obtiene el mas nuevo
@@ -744,9 +815,9 @@ public class Principal extends JFrame {
 			}
 			//consigue el nombre del archivo que tiene esa fecha 
 			String nombreUltimoArchivo ="" ;
-			for(int i=0;i<listaArchivos.length;i++) {
-				if(listaArchivos[i].lastModified() == menor.getTime()) {
-					nombreUltimoArchivo = listaArchivos[i].getName();
+			for(int i=0;i<listaArchivosSinTorneos.length;i++) {
+				if(listaArchivosSinTorneos[i].lastModified() == menor.getTime()) {
+					nombreUltimoArchivo = listaArchivosSinTorneos[i].getName();
 				}
 			}
 			return rutaCarpeta+"/"+nombreUltimoArchivo;
@@ -770,6 +841,7 @@ public class Principal extends JFrame {
 				bw.close();
 				ok = true;
 			}
+			bw.close();
 			br.close();
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
@@ -859,4 +931,6 @@ public class Principal extends JFrame {
 		
 		return nombreCompleto;
 	}
+	
+	
 }

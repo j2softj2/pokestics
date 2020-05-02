@@ -3,6 +3,7 @@ package pokestics;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -11,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -531,6 +533,8 @@ public class DatosHistorial {
 			insertarSesionJuego(sesionActual,flopVisto,riverJugado,turnVisto,numeroRetiradas);
 			insertarObtiene(sesionActual);
 			insertarBank();
+			br.close();
+			fr.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -886,11 +890,127 @@ public class DatosHistorial {
 				
 				//insert en la tabla
 				st.executeUpdate("INSERT INTO bankroll VALUES('"+nombreUsuario+"','"+cash+"','"+sesionActual+"','"+fechaDate+"','"+manosJugadas+"','"+diferencia+"')");
-					
+				
+				
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 
 			}
+		
+	}
+	
+	
+	public ArrayList<String> datosSesion() {
+		ArrayList <String> listaDatos = new ArrayList<>(); 
+		InputStreamReader fr;
+		BufferedReader br;
+		String linea, stack = "";
+		Float apuestaMedia,apuestas = 0.0f;
+		int flopVisto = 0,turnVisto = 0,riverVisto = 0,ganadas = 0,retiradas = 0,totalManos = 0;
+		int posInicio,posFinal;
+		try {
+		fr = new InputStreamReader(new FileInputStream(this.archivo),"UTF-8");
+		br = new BufferedReader(fr);
+		while((linea=br.readLine())!=null) {
+			//obtiene el stack
+			if(linea.contains("Asiento") && linea.contains(Inicio.getUsuario()) && linea.contains("€") && linea.contains("muestra") == false && linea.contains("recaudó") == false) {
+				posInicio = linea.indexOf("(")+1;
+				posFinal = linea.indexOf(")");
+				stack = linea.substring(posInicio,posFinal);
+			}
+			//obtiene apuesta media
+			else if((linea.contains("apuesta") || linea.contains("sube") || linea.contains("iguala")) && linea.contains(Inicio.getUsuario()) && linea.contains("igualada") == false) {
+				if(linea.contains("apuesta")) {
+					if(linea.contains("all-in")) {
+						posInicio = linea.lastIndexOf("apuesta")+9;
+						posFinal = linea.lastIndexOf("€")-1;
+						apuestas += Float.parseFloat(linea.substring(posInicio,posFinal));
+					}
+					else {
+						posInicio = linea.lastIndexOf("a")+2;
+						posFinal = linea.lastIndexOf("€")-1;
+						apuestas += Float.parseFloat(linea.substring(posInicio,posFinal));
+					}
+					
+				}
+				else if(linea.contains("sube")) {
+					if(linea.contains("all-in")) {
+						posInicio = linea.lastIndexOf(" a ")+5;
+						posFinal = linea.lastIndexOf("€")-1;
+						apuestas += Float.parseFloat(linea.substring(posInicio,posFinal));
+					}
+					else {
+						posInicio = linea.lastIndexOf("a")+1;
+						posFinal = linea.lastIndexOf("€")-1;
+						apuestas += Float.parseFloat(linea.substring(posInicio,posFinal));
+					}
+					
+				}
+				else {
+					if(linea.contains("all-in")) {
+						posInicio = linea.lastIndexOf("iguala")+7;
+						posFinal = linea.lastIndexOf("€")-1;
+						apuestas += Float.parseFloat(linea.substring(posInicio,posFinal));
+					}
+					else {
+						posInicio = linea.lastIndexOf("a")+1;
+						posFinal = linea.lastIndexOf("€")-1;
+						apuestas += Float.parseFloat(linea.substring(posInicio,posFinal));
+					}
+					
+				}
+			}
+			//obtiene flop visto
+			else if(linea.contains("se retiró en el Flop") && linea.contains(Inicio.getUsuario())) {
+				flopVisto += 1;
+			}
+			//obtiene turn visto
+			else if(linea.contains("se retiró en el Turn") && linea.contains(Inicio.getUsuario())) {
+				flopVisto += 1;
+				turnVisto += 1;
+			}
+			//obtiene river visto
+			else if(linea.contains("se retiró en el River") && linea.contains(Inicio.getUsuario())) {
+				flopVisto += 1;
+				turnVisto += 1;
+				riverVisto += 1;
+			}
+			//obtiene ganadas
+			else if(linea.contains(Inicio.getUsuario()) && linea.contains("ganó")) {
+				ganadas += 1;
+			}
+			//obtiene retiradas
+			else if(linea.contains(Inicio.getUsuario()) && linea.contains("retiró")) {
+				retiradas += 1;
+			}
+			//obtiene total de manos
+			if(linea.contains("Mano n.º")) {
+				totalManos += 1;
+			}
+
+		}
+		br.close();
+		apuestaMedia = apuestas/(float)totalManos;
+		listaDatos.add(stack);
+		listaDatos.add(String.valueOf(apuestaMedia));
+		listaDatos.add(String.valueOf(flopVisto));
+		listaDatos.add(String.valueOf(turnVisto));
+		listaDatos.add(String.valueOf(riverVisto));
+		listaDatos.add(String.valueOf(ganadas));
+		listaDatos.add(String.valueOf(retiradas));
+		listaDatos.add(String.valueOf(totalManos));
+		
+		for(int i=0;i<listaDatos.size();i++) {
+			System.out.println(listaDatos.get(i));
+		}
+		
+		
+		
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return listaDatos;
 		
 	}
 	
