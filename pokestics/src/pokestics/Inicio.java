@@ -2,6 +2,7 @@ package pokestics;
 
 import java.awt.EventQueue;
 
+
 import javax.swing.JFrame;
 import java.awt.Dimension;
 import java.awt.Color;
@@ -26,6 +27,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
+/**
+ * Clase Inicio, la cual es la primera ventana que se abre al ejecutar la aplicación,
+ * en ella se establece la conexion a la base de datos con el usuario introducido o en su
+ * defecto como observador. 
+ * En caso de ser administrador abrira la vetana de administrador y en caso contrario la ventana
+ * principal de la aplicación.
+ * @author rafa
+ *
+ */
+
 public class Inicio {
 
 	/**
@@ -39,18 +50,22 @@ public class Inicio {
 	public static Connection getConexion() {
 		return conexion;
 	}
-	
+	/**
+	 * Usuario que establece la sesion
+	 */
 	private static String usuario;
 	
-	
+	/**
+	 * metodo getter del atributo usuario
+	 * @return usuario
+	 */
 	public static String getUsuario() {
 		return usuario;
 	}
-
-	public static void setUsuario(String usuario) {
-		usuario = usuario;
-	}
-
+	
+	/**
+	 * atributo con la imagen de fondo para la ventana de Inicio
+	 */
 	private Image imagenFondo = new ImageIcon(getClass().getResource("/imagenesFondo/logoLetras800.png")).getImage();
 	private static JFrame frmPokestics;
 	private JTextField campoUsuario;
@@ -89,7 +104,6 @@ public class Inicio {
 		frmPokestics.setIconImage(Toolkit.getDefaultToolkit().getImage(Inicio.class.getResource("/imagenesFondo/logoSimple.png")));
 		frmPokestics.setContentPane(new JPanelFondo(imagenFondo));
 		frmPokestics.setResizable(false);
-		//frmPokestics.getContentPane().setBackground(new Color(60, 179, 113));
 		frmPokestics.getContentPane().setLayout(null);
 		
 		
@@ -136,8 +150,14 @@ public class Inicio {
 		etObservador.setBackground(new Color(0, 100, 0));
 		etObservador.setBounds(251, 353, 173, 34);
 		frmPokestics.getContentPane().add(etObservador);
-		
 		JButton botonObservador = new JButton("");
+		//entra como observador
+		botonObservador.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				conexionBaseDatos("observador","observador");
+				
+			}
+		});
 		botonObservador.setAlignmentX(Component.CENTER_ALIGNMENT);
 		botonObservador.setBorderPainted(false);
 		botonObservador.setIcon(new ImageIcon(Inicio.class.getResource("/botones/botonObservador.png")));
@@ -147,7 +167,7 @@ public class Inicio {
 		botonObservador.setBackground(new Color(255, 255, 255));
 		botonObservador.setBounds(277, 416, 121, 21);
 		frmPokestics.getContentPane().add(botonObservador);
-		/*accion boton entrar*/
+		/*accion boton entrar, obtiene datos de los campos de usuario y contraseña y utiliza el metodo conexionBaseDatos*/
 		JButton botonEntrar = new JButton("");
 		botonEntrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -171,7 +191,12 @@ public class Inicio {
 		frmPokestics.setBounds(100, 100, 693, 500);
 		frmPokestics.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	
+	/**
+	 * Metodo conexionBaseDatos que establece la conexion con la base de datos y abre la ventana correspondiente
+	 * al usuario o superusuario.
+	 * @param usuario usuario de la base de datos
+	 * @param pass contraseña del usuario
+	 */
 	public static void conexionBaseDatos(String usuario, String pass) {
 		//registro del driver
 		try {
@@ -187,14 +212,13 @@ public class Inicio {
 				conexion = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pokestics",usuario,pass);
 					if(usuario.equals("postgres")) usuario = "superusuario";
 				JOptionPane.showMessageDialog(null, "Conectado a la base de datos como "+usuario);
-				//abre la ventana principal de la aplicacion para usuarios normales o la de administrador en caso de ser el admin
+		//abre la ventana principal de la aplicacion para usuarios normales o la de administrador en caso de ser el admin
 				if(usuario.equals("superusuario")) {
 					Administrador adm = new Administrador();
 						adm.setMinimumSize(new Dimension(1200,800));
 						adm.setLocationRelativeTo(null);
 						adm.pack();
-						adm.setVisible(true);
-						
+						adm.setVisible(true);						
 				}
 				else {
 					Principal p = new Principal();
@@ -203,17 +227,17 @@ public class Inicio {
 						p.setLocationRelativeTo(null);
 						p.setVisible(true);		
 						
-				}
-				
-					
+				}	
 			} catch (SQLException e) {
 				JOptionPane.showMessageDialog(null, "Error al conectar a la base de datos" + e);
-				//System.out.println("Error al conectar a la base de datos " + e);
+				
 			}
 	}
 	
-	//metodo para ocultar o mostrar la ventana inicio( true visible false no visible)
-	
+	/**
+	 * Metodo para mostrar u ocultar la ventana de Inicio (Mostrar-true/Ocultar-false)
+	 * @param estado true o false
+	 */
 	public static void ocultar(boolean estado) {
 		frmPokestics.setVisible(estado);
 	}

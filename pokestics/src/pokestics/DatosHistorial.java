@@ -121,11 +121,8 @@ public class DatosHistorial {
 					posFinal = posInicio + 12;
 					fecha = linea.substring(posInicio+1, posFinal);
 					//inserta en bd
-					if(boteTotal != 0){
-						System.out.println(limite+fecha+nombre1+nombre2+nombre3+nombre4+nombre5+nombre6+nombre7+nombre8+nombre9+nombre10+cartasPropias+posicion+boteTotal+"  "+apuestaTotal+"   "+comision+"  "+ganancia+"  "+stack);					
-						
+					if(boteTotal != 0){						
 						insertarManos(cartasPropias,posicion,boteTotal,resultado,cg,cp,apuestaTotal,ganancia,perdida,limite,stack);
-						
 					}
 					
 					//reinicia valores
@@ -211,12 +208,6 @@ public class DatosHistorial {
 							posFinal = linea.indexOf("€");
 							stack = Float.parseFloat(linea.substring(posInicio+1, posFinal-1));
 						}
-						/*else {
-							posInicio = linea.indexOf("(");
-							posFinal = linea.indexOf(")");
-							stack = Float.parseFloat(linea.substring(posInicio+1, posFinal-10));
-						}
-						*/
 					
 				}
 				else if(linea.contains("Asiento 1")&& linea.contains("fichas")) {
@@ -977,6 +968,9 @@ public class DatosHistorial {
 			}
 			//obtiene ganadas
 			else if(linea.contains(Inicio.getUsuario()) && linea.contains("ganó")) {
+				flopVisto += 1;
+				turnVisto += 1;
+				riverVisto += 1;
 				ganadas += 1;
 			}
 			//obtiene retiradas

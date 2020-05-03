@@ -50,7 +50,6 @@ public class Administrador extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField campoUsuario;
-	private JTextField campoUsuarioBorrarBd;
 	private JTextField campoUsuarioCrear;
 	private JTextField campoContraseña;
 	private JTextField campoStackInicial;
@@ -76,12 +75,18 @@ public class Administrador extends JDialog {
 	 * Create the dialog.
 	 */
 	public Administrador() {
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("Administrador");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Administrador.class.getResource("/imagenesFondo/logoSimple.png")));
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				cerrarConexion(conexion);
+				Inicio.ocultar(true);
+			}
+			@Override
+			public void windowOpened(WindowEvent e) {
+				Inicio.ocultar(false);
 			}
 		});
 		setModalityType(ModalityType.APPLICATION_MODAL);
@@ -97,22 +102,22 @@ public class Administrador extends JDialog {
 		etBorrarUsuario.setForeground(Color.WHITE);
 		etBorrarUsuario.setBackground(new Color(0, 100, 0));
 		etBorrarUsuario.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 20));
-		etBorrarUsuario.setBounds(10, 11, 164, 42);
+		etBorrarUsuario.setBounds(10, 51, 164, 42);
 		contentPanel.add(etBorrarUsuario);
 		
 		JLabel etUsuario = new JLabel("Usuario");
 		etUsuario.setForeground(Color.WHITE);
 		etUsuario.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 15));
-		etUsuario.setBounds(10, 64, 72, 35);
+		etUsuario.setBounds(10, 131, 72, 35);
 		contentPanel.add(etUsuario);
 		
 		JSeparator separardorBorrar = new JSeparator();
 		separardorBorrar.setForeground(Color.WHITE);
-		separardorBorrar.setBounds(10, 51, 155, 2);
+		separardorBorrar.setBounds(10, 103, 155, 2);
 		contentPanel.add(separardorBorrar);
 		
 		campoUsuario = new JTextField();
-		campoUsuario.setBounds(92, 64, 155, 26);
+		campoUsuario.setBounds(92, 138, 155, 26);
 		contentPanel.add(campoUsuario);
 		campoUsuario.setColumns(10);
 		
@@ -141,48 +146,8 @@ public class Administrador extends JDialog {
 		});
 		botonBorrarUsuario.setBackground(Color.WHITE);
 		botonBorrarUsuario.setIcon(new ImageIcon(Administrador.class.getResource("/botones/borrar.png")));
-		botonBorrarUsuario.setBounds(282, 64, 155, 26);
+		botonBorrarUsuario.setBounds(282, 140, 155, 26);
 		contentPanel.add(botonBorrarUsuario);
-		
-		JLabel etBorrarBaseDatos = new JLabel("Borrar base de datos");
-		etBorrarBaseDatos.setForeground(Color.WHITE);
-		etBorrarBaseDatos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 20));
-		etBorrarBaseDatos.setBackground(new Color(0, 100, 0));
-		etBorrarBaseDatos.setBounds(10, 110, 237, 42);
-		contentPanel.add(etBorrarBaseDatos);
-		
-		JSeparator separadorBorrarBd = new JSeparator();
-		separadorBorrarBd.setForeground(Color.WHITE);
-		separadorBorrarBd.setBounds(10, 150, 211, 2);
-		contentPanel.add(separadorBorrarBd);
-		
-		JLabel etUsuarioBd = new JLabel("Usuario");
-		etUsuarioBd.setForeground(Color.WHITE);
-		etUsuarioBd.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 15));
-		etUsuarioBd.setBounds(10, 163, 72, 35);
-		contentPanel.add(etUsuarioBd);
-		
-		campoUsuarioBorrarBd = new JTextField();
-		campoUsuarioBorrarBd.setColumns(10);
-		campoUsuarioBorrarBd.setBounds(92, 163, 155, 26);
-		contentPanel.add(campoUsuarioBorrarBd);
-		
-		JButton botonBorrarBd = new JButton("");
-		botonBorrarBd.setIcon(new ImageIcon(Administrador.class.getResource("/botones/borrar.png")));
-		botonBorrarBd.setBackground(Color.WHITE);
-		botonBorrarBd.setBounds(282, 163, 155, 26);
-		contentPanel.add(botonBorrarBd);
-		
-		JLabel etFecha = new JLabel("Fecha");
-		etFecha.setForeground(Color.WHITE);
-		etFecha.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 15));
-		etFecha.setBounds(10, 212, 72, 35);
-		contentPanel.add(etFecha);
-		
-		JSpinner spinnerDia = new JSpinner();
-		spinnerDia.setModel(new SpinnerDateModel(new Date(1581202800000L), new Date(949618837000L), new Date(3474658800000L), Calendar.DAY_OF_YEAR));
-		spinnerDia.setBounds(92, 221, 98, 20);
-		contentPanel.add(spinnerDia);
 		
 		JLabel etCrearUsuario = new JLabel("Crear usuario");
 		etCrearUsuario.setForeground(Color.WHITE);
@@ -251,7 +216,6 @@ public class Administrador extends JDialog {
 				}
 				
 				String creacionUsuario = "CREATE USER "+usuario+" WITH PASSWORD '"+ contraseña +"'";
-				String creacionInvitado = "CREATE USER "+usuario; 
 				String privilegiosObservador = "GRANT SELECT ON TABLE usuario,juega,sesion,manos,obtiene,estadisticasJuego,"
 						+ "estadisticasCash,juegan,jugadores,bankroll TO "+usuario;
 				String privilegiosUsuario = "GRANT SELECT,INSERT,UPDATE ON TABLE usuario,juega,sesion,manos,obtiene,estadisticasJuego,"
@@ -267,7 +231,7 @@ public class Administrador extends JDialog {
 					try {
 						st = conexion.createStatement();
 					if(tipo.equals("Invitado") && usuario!=null){
-						st.executeUpdate(creacionInvitado);
+						st.executeUpdate(creacionUsuario);
 						st.executeUpdate(revocarTodo);
 						st.executeUpdate(privilegiosObservador);
 						st.executeUpdate(insertarUsuario);
@@ -317,11 +281,24 @@ public class Administrador extends JDialog {
 		contentPanel.add(separardor2);
 		
 		JTextArea campoConsulta = new JTextArea();
-		campoConsulta.setText("Introduzca modificaci\u00F3n de la base de datos en lenguaje SQL\r\n");
-		campoConsulta.setBounds(640, 71, 346, 399);
+		campoConsulta.setText("Introduzca modificaci\u00F3n de la base de datos en lenguaje SQL \r\n\u00A1Aviso importante!\r\nSolo utilizar en caso de poseer conocimientos sobre SQL\r\n");
+		campoConsulta.setBounds(640, 71, 379, 399);
 		contentPanel.add(campoConsulta);
-		
+		//ejecuta la consulta introducida
 		JButton button_1 = new JButton("");
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Connection con = Inicio.getConexion();
+				Statement st;
+				
+				try {
+					st = con.createStatement();
+					st.executeUpdate(campoConsulta.getText());
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(null,e1.getMessage());
+				}
+			}
+		});
 		button_1.setIcon(new ImageIcon(Administrador.class.getResource("/botones/modificar.png")));
 		button_1.setBackground(Color.WHITE);
 		button_1.setBounds(741, 500, 155, 26);

@@ -43,34 +43,10 @@ public class VisualizadorDatos extends JDialog {
 	 * Create the dialog.
 	 */
 	public VisualizadorDatos(int codigoSesion) {
-		/*setBounds(100, 100, 837, 552);
-		getContentPane().setLayout(null);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setBounds(0, 0, 823, 515);
-		//scrollPane.setPreferredSize(new Dimension(300, 300));
-		scrollPane.setBackground(Color.LIGHT_GRAY);
-		
-		getContentPane().add(scrollPane);
-		
-		table = new JTable();
-		table.setRowSelectionAllowed(false);
-		table.setFont(new Font("DejaVu Serif Condensed", Font.PLAIN, 12));
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"CARTAS", "GANADA/PERDIDA", "CG", "CP", "BOTE", "POSICI\u00D3N", "APUESTA", "PERDIDA", "GANANCIA"
-			}
-		));
-		scrollPane.setViewportView(table);
-		*/
-		
 		setBounds(100, 100, 837, 552);
 		getContentPane().setLayout(null);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setBounds(0, 0, 823, 515);
-		//scrollPane.setPreferredSize(new Dimension(300, 300));
 		scrollPane.setBackground(Color.LIGHT_GRAY);
 		
 		getContentPane().add(scrollPane);
@@ -124,7 +100,6 @@ public class VisualizadorDatos extends JDialog {
 		getContentPane().setLayout(null);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setBounds(0, 0, 899, 560);
-		//scrollPane.setPreferredSize(new Dimension(300, 300));
 		scrollPane.setBackground(Color.LIGHT_GRAY);
 		
 		getContentPane().add(scrollPane);
@@ -152,15 +127,7 @@ public class VisualizadorDatos extends JDialog {
 		
 		//rellena tabla
 		
-		setFilas(modelo);
-		
-		/*table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"CARTAS", "GANADA/PERDIDA", "CG", "CP", "BOTE", "POSICI\u00D3N", "APUESTA", "PERDIDA", "GANANCIA"
-			}
-		));*/
+		setFilas(modelo);		
 		scrollPane.setViewportView(table);
 	}
 	

@@ -57,6 +57,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.Toolkit;
 import javax.swing.UIManager;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Principal extends JFrame {
 
@@ -111,38 +113,48 @@ public class Principal extends JFrame {
 	public Principal() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Principal.class.getResource("/imagenesFondo/logoSimple.png")));
 		addWindowListener(new WindowAdapter() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+				leeHistorialesNoLeidos();	
+				//ejecucion cada 10 segundos
+					if(Inicio.getUsuario()!="observador") {
+						Timer timer = new Timer (10000, new ActionListener ()
+						{
+						    public void actionPerformed(ActionEvent e)
+						    {
+								//actualiza datos sesion actual
+								
+						    	try{
+						    		DatosHistorial leer = new DatosHistorial(new File(buscaHistorialNuevo()));
+									ArrayList<String> datos = new ArrayList<String>(leer.datosSesion());
+									campoUsuario.setText(Inicio.getUsuario());
+									campoCash.setText(datos.get(0));
+									campoApuestaMedia.setText(datos.get(1));
+									campoFlop.setText(datos.get(2));
+									campoTurn.setText(datos.get(3));
+									campoRiver.setText(datos.get(4));
+									campoGanadas.setText(datos.get(5));
+									campoRetiradas.setText(datos.get(6));
+									campoManos.setText(datos.get(7));
+						    	}
+						    	catch(Exception e2) {
+						    		System.out.print(e2.getMessage());
+						    	}
+						     }
+						});
+						timer.start();
+						
+					}
+					
+					
+					
+			}
 			@Override
 			public void windowClosed(WindowEvent e) {
 				
 				cerrarConexion(conexion);
-				Inicio.ocultar(false);
-			}
-			@Override
-			public void windowOpened(WindowEvent e) {
-				leeHistorialesNoLeidos();
-				
-					
-					//ejecucion cada 5 segundos
-					Timer timer = new Timer (5000, new ActionListener ()
-					{
-					    public void actionPerformed(ActionEvent e)
-					    {
-							//actualiza datos sesion actual
-							DatosHistorial leer = new DatosHistorial(new File(buscaHistorialNuevo()));
-								ArrayList<String> datos = new ArrayList<String>(leer.datosSesion());
-								campoUsuario.setText(Inicio.getUsuario());
-								campoCash.setText(datos.get(0));
-								campoApuestaMedia.setText(datos.get(1));
-								campoFlop.setText(datos.get(2));
-								campoTurn.setText(datos.get(3));
-								campoRiver.setText(datos.get(4));
-								campoGanadas.setText(datos.get(5));
-								campoRetiradas.setText(datos.get(6));
-								campoManos.setText(datos.get(7));
-					     }
-					});
-					timer.start();
-					
+				Inicio.ocultar(true);
 			}
 		});
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -393,67 +405,10 @@ public class Principal extends JFrame {
 		etListadoDatos.setForeground(Color.WHITE);
 		etListadoDatos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		etListadoDatos.setBounds(110, 599, 102, 31);
-		contentPanel.add(etListadoDatos);
-		
+		contentPanel.add(etListadoDatos);		
 		JComboBox comboBoxListadoSesion = new JComboBox();
-		
-		//inserta en el comboBox el listado de sesiones
-		
-		Connection con = Inicio.getConexion();
-		
-		Statement st;
-		ResultSet rs;
-		ArrayList<Integer> codigosSesiones = new ArrayList<>();
-		ArrayList<Date> fechaSesiones = new ArrayList<>();
-		ArrayList<String> muestra = new ArrayList<>();
-		
-		
-		if(Inicio.getUsuario() == "invitado") {
-			
-			try {
-				st = con.createStatement();
-				rs = st.executeQuery("SELECT codigo,fecha FROM sesion");
-					while(rs.next()) {
-						codigosSesiones.add(rs.getInt(1));
-						fechaSesiones.add(rs.getDate(2));
-					}
-				//inserta en codigo y fecha en un array para mostrar
-					for(int i=0;i<codigosSesiones.size();i++) {
-						muestra.add(codigosSesiones.get(i).toString() + "--" + fechaSesiones.get(i).toString());
-					}
-				//inserta en el combobox
-					for(int i=0;i<muestra.size();i++) {
-						comboBoxListadoSesion.addItem(muestra.get(i));
-					}
-					
-			} catch (SQLException e1) {
-				System.out.println(e1.getMessage());
+		insertaComboBox(comboBoxListadoSesion);
 
-			}
-		}
-		else {
-			try {
-				st = con.createStatement();
-				rs = st.executeQuery("SELECT codigo,fecha FROM sesion WHERE usuario = '"+consultaNombre(Inicio.getUsuario())+"'");
-					while(rs.next()) {
-						codigosSesiones.add(rs.getInt(1));
-						fechaSesiones.add(rs.getDate(2));
-					}
-				//inserta en codigo y fecha en un array para mostrar
-					for(int i=0;i<codigosSesiones.size();i++) {
-						muestra.add(codigosSesiones.get(i).toString() + "--" + fechaSesiones.get(i).toString());
-					}
-				//inserta en el combobox
-					for(int i=0;i<muestra.size();i++) {
-						comboBoxListadoSesion.addItem(muestra.get(i));
-					}
-					
-			} catch (SQLException e1) {
-				System.out.println(e1.getMessage());
-			}
-		}
-		
-		
 		comboBoxListadoSesion.setBounds(54, 640, 214, 31);
 		contentPanel.add(comboBoxListadoSesion);
 		//muestra la ventana con la tabla de datos por sesion
@@ -645,7 +600,9 @@ public class Principal extends JFrame {
 		//cierra la ventana y vuelve a inicio
 		menuItemCerrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				cerrarConexion(Inicio.getConexion());
 				Inicio.ocultar(true);
+				cerrarAplicacion();
 			}
 		});
 		menuItemCerrar.setBackground(Color.WHITE);
@@ -695,8 +652,23 @@ public class Principal extends JFrame {
 		menuItemHistorial.setBackground(Color.WHITE);
 		menuItemHistorial.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		menuConfiguracion.add(menuItemHistorial);
-		
+		//abre la ventana del selector de mesa
 		JMenu menuSelectorMesa = new JMenu("Selector de mesa");
+		menuSelectorMesa.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				SelectorMesa sm = new SelectorMesa();
+				sm.setMinimumSize(new Dimension(800,500));
+				sm.setLocationRelativeTo(null);
+				sm.pack();
+				sm.setVisible(true);
+			}
+		});
+		menuSelectorMesa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		menuSelectorMesa.setIcon(new ImageIcon(Principal.class.getResource("/botones/seleccionarMesa.png")));
 		menuSelectorMesa.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		barraMenu.add(menuSelectorMesa);
@@ -925,11 +897,71 @@ public class Principal extends JFrame {
 			}
 			
 		} catch (SQLException e) {
-			// TODO Bloque catch generado automáticamente
 			e.printStackTrace();
 		}
 		
 		return nombreCompleto;
+	}
+	
+	
+	//inserta en comboBox sesiones para tabla datos
+	
+	private void insertaComboBox(JComboBox box) {
+		//inserta en el comboBox el listado de sesiones
+		
+				Connection con = Inicio.getConexion();
+				
+				Statement st;
+				ResultSet rs;
+				ArrayList<Integer> codigosSesiones = new ArrayList<>();
+				ArrayList<Date> fechaSesiones = new ArrayList<>();
+				ArrayList<String> muestra = new ArrayList<>();
+				
+				
+				if(Inicio.getUsuario() == "invitado") {
+					
+					try {
+						st = con.createStatement();
+						rs = st.executeQuery("SELECT codigo,fecha FROM sesion");
+							while(rs.next()) {
+								codigosSesiones.add(rs.getInt(1));
+								fechaSesiones.add(rs.getDate(2));
+							}
+						//inserta en codigo y fecha en un array para mostrar
+							for(int i=0;i<codigosSesiones.size();i++) {
+								muestra.add(codigosSesiones.get(i).toString() + "--" + fechaSesiones.get(i).toString());
+							}
+						//inserta en el combobox
+							for(int i=0;i<muestra.size();i++) {
+								box.addItem(muestra.get(i));
+							}
+							
+					} catch (SQLException e1) {
+						System.out.println(e1.getMessage());
+
+					}
+				}
+				else {
+					try {
+						st = con.createStatement();
+						rs = st.executeQuery("SELECT codigo,fecha FROM sesion WHERE usuario = '"+consultaNombre(Inicio.getUsuario())+"'");
+							while(rs.next()) {
+								codigosSesiones.add(rs.getInt(1));
+								fechaSesiones.add(rs.getDate(2));
+							}
+						//inserta en codigo y fecha en un array para mostrar
+							for(int i=0;i<codigosSesiones.size();i++) {
+								muestra.add(codigosSesiones.get(i).toString() + "--" + fechaSesiones.get(i).toString());
+							}
+						//inserta en el combobox
+							for(int i=0;i<muestra.size();i++) {
+								box.addItem(muestra.get(i));
+							}
+							
+					} catch (SQLException e1) {
+						System.out.println(e1.getMessage());
+					}
+				}
 	}
 	
 	
