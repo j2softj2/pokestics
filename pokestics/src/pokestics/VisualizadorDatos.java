@@ -19,6 +19,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Ventana en la que se muestra una tabla con los datos de las manos de la sesion pasada por parametro
+ * @author rafa
+ *
+ */
 public class VisualizadorDatos extends JDialog {
 	private final JScrollPane scrollPane = new JScrollPane();
 	private JTable table;
@@ -130,7 +135,10 @@ public class VisualizadorDatos extends JDialog {
 		setFilas(modelo);		
 		scrollPane.setViewportView(table);
 	}
-	
+	/**
+	 * Metodo que rellena la tabla con la consulta de la base de datos
+	 * @param modelo Model de la tabla
+	 */
 	private void setFilas(DefaultTableModel modelo) {
 		Connection con = Inicio.getConexion();
 		

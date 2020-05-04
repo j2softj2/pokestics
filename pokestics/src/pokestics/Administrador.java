@@ -1,8 +1,6 @@
 package pokestics;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -15,11 +13,8 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Dialog.ModalExclusionType;
-import java.awt.Dialog.ModalityType;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -27,13 +22,9 @@ import java.sql.Statement;
 
 import javax.swing.KeyStroke;
 import java.awt.event.InputEvent;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerDateModel;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +36,12 @@ import java.awt.event.WindowEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Toolkit;
-
+/**
+ * Clase que crea la ventana del administrador de la aplicación desde la que se puede crear usuarios en la base de datos,
+ * borrarlos o realizar consultar mas elaboradas.
+ * @author Rafael Jimenez Villarreal
+ *
+ */
 public class Administrador extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
@@ -54,7 +50,9 @@ public class Administrador extends JDialog {
 	private JTextField campoContraseña;
 	private JTextField campoStackInicial;
 	
-	
+	/**
+	 * Atributo con la conexion a la base de datos obtenida de la ventana Inicio
+	 */
 	static Connection conexion = Inicio.getConexion();
 	private JTextField campoNombreCompleto;
 
@@ -78,12 +76,18 @@ public class Administrador extends JDialog {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("Administrador");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Administrador.class.getResource("/imagenesFondo/logoSimple.png")));
+		/**
+		 * Metodo que reacciona al cerrar la ventana cerrando la conexion a la base de datos y mostrando la ventana Inicio
+		 */
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				cerrarConexion(conexion);
 				Inicio.ocultar(true);
 			}
+			/**
+			 * Metodo que reacciona ocultando la ventana Inicio cuando se abre la ventana
+			 */
 			@Override
 			public void windowOpened(WindowEvent e) {
 				Inicio.ocultar(false);
@@ -122,16 +126,20 @@ public class Administrador extends JDialog {
 		campoUsuario.setColumns(10);
 		
 		JButton botonBorrarUsuario = new JButton("");
-		//borra usuario introducido
+		/**
+		 * Borra el usuario introducido revocando permisos anteriormente
+		 */
 		botonBorrarUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				Statement st;
 				String usuario = campoUsuario.getText();
 				String revocarSecuencias = "REVOKE ALL ON SEQUENCE secuencia_man, secuencia_se, secuencia_us FROM "+usuario;
+				//aviso
 				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de borrar al usuario "+usuario+"?", "Advertencia",JOptionPane.YES_NO_OPTION);
 					if(respuesta == 0) {
 						try {
+							//revoca permisos y elimina al usuario
 							st = conexion.createStatement();
 							st.executeUpdate("REVOKE ALL PRIVILEGES ON TABLE USUARIO,JUEGA,MANOS,ESTADISTICASJUEGO,ESTADISTICASCASH,OBTIENE,JUGADORES,JUEGAN,BANKROLL,SESION FROM "+usuario);
 							st.executeUpdate(revocarSecuencias);
@@ -190,8 +198,11 @@ public class Administrador extends JDialog {
 		comboBoxRol.setBounds(113, 457, 155, 26);
 		contentPanel.add(comboBoxRol);
 		
-		JButton button = new JButton("");
-		button.addActionListener(new ActionListener() {
+		JButton botonCrear = new JButton("");
+		/**
+		 * Crea un nuevo usuario de dos tipos posibles, invitado o usuario normal, obtiene los datos introducidos y los crea en la base de datos
+		 */
+		botonCrear.addActionListener(new ActionListener() {
 			//obtencion de la fecha actual
 			Calendar calendario = new GregorianCalendar();
 			int dia = calendario.get(Calendar.DAY_OF_MONTH);
@@ -209,6 +220,7 @@ public class Administrador extends JDialog {
 				String combinacion = "[0-9]{1,10}.[0-9]{1,2}";
 				Pattern p = Pattern.compile(combinacion);
 				Matcher m = p.matcher(campoStackInicial.getText());
+				//comprueba el formato introducido
 				if(m.matches()) {
 					if(Double.parseDouble(campoStackInicial.getText())>0){
 						bankrol = Double.parseDouble(campoStackInicial.getText());
@@ -246,7 +258,7 @@ public class Administrador extends JDialog {
 						st.executeUpdate(insertarBankrol);
 					}
 					else {
-						JOptionPane.showMessageDialog(null,"Es necesario rellenar los datos para cada tipo de usuario (Invitado solo usuario)");
+						JOptionPane.showMessageDialog(null,"Es necesario rellenar los datos para cada tipo de usuario");
 					}
 				JOptionPane.showMessageDialog(null,"Usuario creado correctamente");
 					}
@@ -257,10 +269,10 @@ public class Administrador extends JDialog {
 				
 			}
 		});
-		button.setIcon(new ImageIcon(Administrador.class.getResource("/botones/crear.png")));
-		button.setBackground(Color.WHITE);
-		button.setBounds(282, 338, 155, 26);
-		contentPanel.add(button);
+		botonCrear.setIcon(new ImageIcon(Administrador.class.getResource("/botones/crear.png")));
+		botonCrear.setBackground(Color.WHITE);
+		botonCrear.setBounds(282, 338, 155, 26);
+		contentPanel.add(botonCrear);
 		
 		JLabel etModificar = new JLabel("Modificar BDD");
 		etModificar.setForeground(Color.WHITE);
@@ -284,9 +296,9 @@ public class Administrador extends JDialog {
 		campoConsulta.setText("Introduzca modificaci\u00F3n de la base de datos en lenguaje SQL \r\n\u00A1Aviso importante!\r\nSolo utilizar en caso de poseer conocimientos sobre SQL\r\n");
 		campoConsulta.setBounds(640, 71, 379, 399);
 		contentPanel.add(campoConsulta);
-		//ejecuta la consulta introducida
-		JButton button_1 = new JButton("");
-		button_1.addActionListener(new ActionListener() {
+		//ejecuta la consulta introducida en el campo de texto
+		JButton botonModificarBd = new JButton("");
+		botonModificarBd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Connection con = Inicio.getConexion();
 				Statement st;
@@ -299,10 +311,10 @@ public class Administrador extends JDialog {
 				}
 			}
 		});
-		button_1.setIcon(new ImageIcon(Administrador.class.getResource("/botones/modificar.png")));
-		button_1.setBackground(Color.WHITE);
-		button_1.setBounds(741, 500, 155, 26);
-		contentPanel.add(button_1);
+		botonModificarBd.setIcon(new ImageIcon(Administrador.class.getResource("/botones/modificar.png")));
+		botonModificarBd.setBackground(Color.WHITE);
+		botonModificarBd.setBounds(741, 500, 155, 26);
+		contentPanel.add(botonModificarBd);
 		
 		JLabel etStackInicial = new JLabel("Bankroll");
 		etStackInicial.setForeground(Color.WHITE);
@@ -374,7 +386,9 @@ public class Administrador extends JDialog {
 		menuItemAcerca.setBackground(Color.WHITE);
 		menuAyuda.add(menuItemAcerca);
 	}
-	
+	/**
+	 * cierra la ventana
+	 */
 	private void cerrarAplicacion() {
 		this.dispose();
 	}

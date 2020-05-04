@@ -23,6 +23,11 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * Clase que abre una ventana en la que se introducen los datos de dos mesas diferentes para obtener la mejor mesa para jugar
+ * @author Rafael Jimenez Villarreal
+ *
+ */
 public class SelectorMesa extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
@@ -75,12 +80,6 @@ public class SelectorMesa extends JDialog {
 		campoBote1 = new JTextField();
 		campoBote1.setHorizontalAlignment(SwingConstants.CENTER);
 		campoBote1.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 14));
-		campoBote1.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				
-			}
-		});
 		campoBote1.setBounds(119, 119, 96, 39);
 		contentPanel.add(campoBote1);
 		campoBote1.setColumns(10);

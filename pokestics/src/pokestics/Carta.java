@@ -1,7 +1,7 @@
 package pokestics;
 /**
- * Clase que representa una carta
- * @author Rafael Jimënez Villarreal
+ * Clase que representa una carta de la baraja de poker
+ * @author Rafael Jiménez Villarreal
  *
  */
 public class Carta {
@@ -45,7 +45,11 @@ public class Carta {
 	public void setValor(String valor) {
 		this.valor = valor;
 	}
-	
+	/**
+	 * Constructor de la clase carta con parametros
+	 * @param palo Representa el palo 
+	 * @param valor Representa el valor
+	 */
 	public Carta(String palo, String valor) {
 		this.palo = palo;
 		this.valor =  valor;

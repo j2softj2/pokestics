@@ -1,7 +1,7 @@
 package pokestics;
 /**
  * Clase que realiza el calculo de probabilidades de los datos obtenidos con la calculadora
- * de probabilidades.
+ * de probabilidades. Dependiendo del momento de la partida y de los datos introducidos.
  * @author Rafael Jiménez Villarreal
  *
  */
@@ -108,7 +108,7 @@ public class Calculo {
 	}
 	
 	/**
-	 * Constructor de la clase Calculo 
+	 * Constructor de la clase Calculo con parametros
 	 * @param cartaPropia1 Carta del jugador
 	 * @param cartaPropia2 Carta del jugador
 	 * @param cartaComunitaria1 Carta comunitaria 1
@@ -135,11 +135,17 @@ public class Calculo {
 		this.apuesta = apuesta;
 		this.bote = bote;
 	}
-	
+	/**
+	 * Constructor de la clase calculo sin parametros
+	 */
 	public Calculo() {
 		
 	}
 
+	/**
+	 * Metodo que calcula la probabilidad de obtener la mejor mano posible a partir de las cartas dadas.
+	 * @return La probabilidad de las mejores manos posibles
+	 */
 	
 	public String CalculoProbabilidadMano() {
 		//variable en la que se especifica momento de la partida
@@ -225,7 +231,10 @@ public class Calculo {
 			
 		return pMano;	
 	}
-	
+	/**
+	 * Calcula el riesgo de la apuesta a partir de la posición, el bote, la apuesta a realizar y las cartas obtenidas.
+	 * @return Nivel de riesgo. Bajo, medio o alto
+	 */
 	public String calcularRiesgo() {
 		int nivelRiesgo = 0;//indicara el nivel de riesgo (1-9)
 		String riesgo = "";

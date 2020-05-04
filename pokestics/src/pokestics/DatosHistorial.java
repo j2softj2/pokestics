@@ -3,7 +3,6 @@ package pokestics;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -16,8 +15,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+/**
+ * Clase que obtiene los datos del archivo del historial de manos y los inserta en la base de datos y en caso de
+ *  ser el ultimo los pasa a la ventana principal
+ * @author Rafael Jimenez Villarreal
+ *
+ */
 public class DatosHistorial {
+	/**
+	 * Atributo archivo que representa el archivo del historial de manos
+	 */
 	private File archivo;
+	/**
+	 * atributo que indica el usuario actual
+	 */
 	private String usuario;
 
 	public File getArchivo() {
@@ -36,15 +47,24 @@ public class DatosHistorial {
 		this.usuario = usuario;
 	}
 
+	/**
+	 * Constructor con parametros de la clase DatosHistorial
+	 * @param archivo archivo a leer del historial
+	 */
 	public DatosHistorial(File archivo) {
 		super();
 		this.archivo = archivo;
 	}
+	/**
+	 * Constructor de la clase DatosHIstorial sin parametros
+	 */
 	public DatosHistorial() {
 		
 	}
 	
-	
+	/**
+	 * Atributo con la sesion actual(codigo)
+	 */
 	private int sesionActual;
 	
 	public int getSesionActual() {
@@ -55,14 +75,18 @@ public class DatosHistorial {
 		this.sesionActual = sesionActual;
 	}
 	
-	//conexion a la base de datos
+	/**
+	 * conexion a la base de datos
+	 */
 	
 	Connection con = Inicio.getConexion();
 	
 	
 	
 	
-	
+	/**
+	 * Metodo que va obteniendo los datos necesarios para la base de datos e insertandolos leyendo el archivo linea por linea.
+	 */
 	public void lecturaHistorial() {
 		//inserta la sesion
 		insertarSesion();
@@ -73,18 +97,18 @@ public class DatosHistorial {
 		//inserta en la tabla juega		
 		insertarJuega(usuario);
 		//
-		int flopVisto = 0;
-		int riverJugado = 0;
-		int turnVisto = 0;
-		int numeroRetiradas = 0;
+		int flopVisto = 0;//numero de flop vistos
+		int riverJugado = 0;//numero de river visto
+		int turnVisto = 0;//numero de turn visto
+		int numeroRetiradas = 0;//numero de veces que se retira
 		InputStreamReader fr;
 		BufferedReader br;
 		String linea;
-		int posInicio=0;
-		int posFinal = 0;
-		String limite="";
-		String fecha="";
-		String nombre1="";
+		int posInicio=0;//posicion de inicio de la que obtener datos
+		int posFinal = 0;//posicion final de la que obtener datos en la linea
+		String limite="";//limite
+		String fecha="";//fecha de la sesion
+		String nombre1="";//nombre de los jugadores
 		String nombre2="";
 		String nombre3="";
 		String nombre4="";
@@ -94,19 +118,19 @@ public class DatosHistorial {
 		String nombre8="";
 		String nombre9="";
 		String nombre10="";
-		String cartasPropias="";
-		String posicion="";
-		boolean cp = false;
-		boolean cg = false;
-		String resultado= "";
-		int asientoDealer = 0;
-		float boteTotal = 0;
-		float apuestaTotal = 0;
-		float apuesta = 0;
-		float ganancia = 0;
-		float comision= 0;
-		float stack = 0;
-		float perdida = 0;
+		String cartasPropias="";//cartas propias
+		String posicion="";//posicion propia
+		boolean cp = false;//pone ciega pequeña
+		boolean cg = false;//pone ciega grande
+		String resultado= "";//resultado de la mano
+		int asientoDealer = 0;//el asiento que tiene el dealer
+		float boteTotal = 0;//bote total de la mano
+		float apuestaTotal = 0;//apuesta total de la mano
+		float apuesta = 0;//apuesta
+		float ganancia = 0;//ganancia de la mano
+		float comision= 0;//comision que se lleva la sala
+		float stack = 0;//stack del jugador
+		float perdida = 0;//perdida de la mano
 		try {
 			fr = new InputStreamReader(new FileInputStream(this.archivo),"UTF-8");
 			br = new BufferedReader(fr);
@@ -120,7 +144,7 @@ public class DatosHistorial {
 					posInicio = linea.indexOf("-");
 					posFinal = posInicio + 12;
 					fecha = linea.substring(posInicio+1, posFinal);
-					//inserta en bd
+					//inserta en bd la mano leida
 					if(boteTotal != 0){						
 						insertarManos(cartasPropias,posicion,boteTotal,resultado,cg,cp,apuestaTotal,ganancia,perdida,limite,stack);
 					}
@@ -147,12 +171,15 @@ public class DatosHistorial {
 					 nombre9="";
 					 nombre10="";
 				}
+				//comprueba si pones ciega pequeña
 				else if(linea.contains(usuario) && linea.contains("ciega pequeña")){
 					cp = true;
 				}
+				//comprueba si pones ciega grande
 				else if(linea.contains(usuario) && linea.contains("ciega grande")){
 					cg = true;
-				}				
+				}	
+				//obtiene el asiento del dealer
 				else if(linea.contains("n.º")) {
 					posInicio = linea.indexOf("º");
 					posFinal = posInicio+3;
@@ -160,15 +187,12 @@ public class DatosHistorial {
 						asientoDealer = Integer.parseInt(numeroAsientoDealer);
 						
 				}
+				//obtiene el asiento y la posicion en la que estas a partir de este
 				else if(linea.contains(usuario) && linea.contains("fichas") && linea.contains("recompra") == false) {
 					if(linea.contains("€")) {
 						posInicio = linea.indexOf("o")+2;
 						posFinal = linea.indexOf("o")+3;
 					}
-					/*else{
-						posInicio = linea.indexOf("o")+2;
-						posFinal = linea.indexOf("o")+3;
-					}*/
 					String asiento = linea.substring(posInicio,posFinal);
 					int asientoN = Integer.parseInt(asiento);
 						if(asientoN == asientoDealer) {
@@ -203,13 +227,14 @@ public class DatosHistorial {
 						else {
 							posicion = "X";
 						}
+						//obtiene el stack
 						if(linea.contains("€")) {
 							posInicio = linea.indexOf("(");
 							posFinal = linea.indexOf("€");
 							stack = Float.parseFloat(linea.substring(posInicio+1, posFinal-1));
 						}
 					
-				}
+				}//inserta jugadores contrarios en la base de datos 
 				else if(linea.contains("Asiento 1")&& linea.contains("fichas")) {
 					posInicio = linea.indexOf(":");
 					posFinal = linea.indexOf("(");
@@ -300,12 +325,15 @@ public class DatosHistorial {
 					insertarManoAnalizada(nombre10);
 					insertarJuegan(nombre10,sesionActual);
 				}
+				//obtiene las cartas propias
 				else if(linea.contains("Repartidas")) {
 					posInicio = linea.indexOf("[");
 					posFinal = linea.lastIndexOf("]");
 					cartasPropias = linea.substring(posInicio+1, posFinal);
 				}
+				//obtiene la apuesta-igualada de apuesta o subida
 				else if(linea.contains("iguala") | linea.contains("apuesta") | linea.contains("sube") && linea.contains(usuario) && !linea.contains("igualada")){
+					//en caso de ser all-in
 					if(linea.contains("€") && !linea.contains("all-in")) {
 						if(linea.contains("sube")) {
 							posInicio = linea.indexOf("€");
@@ -318,6 +346,7 @@ public class DatosHistorial {
 							apuesta = Float.parseFloat(linea.substring(posInicio+2, posFinal-1));
 						}
 					}
+					//en caso de no ser all-in
 					else {
 						if(linea.contains("sube")) {
 							posInicio = linea.indexOf("€");
@@ -337,9 +366,11 @@ public class DatosHistorial {
 					}
 					
 				}
+				//comprueba si se gana la mano
 				else if(linea.contains("bote principal") && linea.contains(usuario)) {
 					resultado = "Ganada";
 				}
+				//obtiene el bote total 
 				else if(linea.contains("Bote total")) {
 					if(linea.contains("€")) {
 						posInicio = linea.indexOf("l")+1;
@@ -520,6 +551,7 @@ public class DatosHistorial {
 				if(resultado.equals("Ganada"))ganancia = boteTotal - apuestaTotal - comision;
 				else {ganancia = 0; perdida = apuestaTotal;}
 			}
+			//inserta datos en la base de datos
 			insertarSesionCash(sesionActual);
 			insertarSesionJuego(sesionActual,flopVisto,riverJugado,turnVisto,numeroRetiradas);
 			insertarObtiene(sesionActual);
@@ -534,14 +566,20 @@ public class DatosHistorial {
 	}
 	
 	//metodos para insertar en la base de datos
+	
+	/**
+	 * Metodo que inserta la sesion en la base de datos
+	 */
 	private void insertarSesion() {
 		try {
 			Date fechaDate;
 			String fecha;
+			//fecha actual
 			Calendar fechaCal = new GregorianCalendar();
 			int dia= fechaCal.get(Calendar.DATE);
 			int mes = fechaCal.get(Calendar.MONTH)+1;
 			int año = fechaCal.get(Calendar.YEAR);
+			//usuario
 			String usuario = Inicio.getUsuario();
 				fecha = año + "-" + mes + "-" + dia;
 				fechaDate = Date.valueOf(fecha);
@@ -549,10 +587,12 @@ public class DatosHistorial {
 				//consulta la sesion creada justo antes
 				Statement st = con.createStatement();
 				ResultSet rs = st.executeQuery("SELECT nombre FROM usuario WHERE usuariosala = '"+usuario+"'");
+				//obtiene el nombre completo del usuario
 				String nombreCompleto = "";
 				while(rs.next()) {
 					nombreCompleto = rs.getString(1);
 				}
+				//realiza insercion
 			PreparedStatement pst = con.prepareStatement("INSERT INTO sesion(fecha,usuario) VALUES (?,?)");
 				pst.setDate(1, fechaDate);
 				pst.setString(2,nombreCompleto);
@@ -561,6 +601,21 @@ public class DatosHistorial {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+	/**
+	 * Metodo que realiza la insercion en la base de datos de la mano leida
+	 * @param cartas cartas propias
+	 * @param posicion posicion propia
+	 * @param bote bote de la mano
+	 * @param resultado Resultado ganada o perdida(False perdida, true ganada)
+	 * @param cg Pone ciega grande
+	 * @param cp Pone ciega pequeña
+	 * @param apuesta Apuesta realizada
+	 * @param ganancia Ganancia de la mano
+	 * @param perdida Perdida de la mano
+	 * @param limite Limite de la mesa
+	 * @param stack Stack del jugador
+	 */
 	private void insertarManos(String cartas ,String posicion, float bote, String resultado, boolean cg, boolean cp,float apuesta,float ganancia,float perdida,String limite, float stack) {
 		try {
 			//consulta la sesion creada justo antes
@@ -591,7 +646,10 @@ public class DatosHistorial {
 		}
 	}
 	
-	
+	/**
+	 * Metodo que realiza insercion en la tabla juega
+	 * @param usuario Usuario actual
+	 */
 	private void insertarJuega(String usuario) {
 		String insertar = "INSERT INTO juega (codigouser, codigosesion) VALUES (?,?)";
 		int codigoSesion = 0;
@@ -610,7 +668,7 @@ public class DatosHistorial {
 			while(rs2.next()) {
 				codigoUsuario=rs2.getInt(1);
 			}
-			//
+			//realiza la insercion
 			PreparedStatement pst = con.prepareStatement(insertar);
 				pst.setInt(1, codigoUsuario);
 				pst.setInt(2, codigoSesion);
@@ -620,7 +678,11 @@ public class DatosHistorial {
 		}
 	}
 	
-	//inserta jugador
+	/**
+	 * Inserta un jugador en la tabla jugadores de la base de datos
+	 * @param nombre Nombre del jugador
+	 * @return True en caso de existir o false en caso de no existir
+	 */
 	private boolean insertarJugadores(String nombre) {
 		//comprueba si existe el jugador en la base de datos
 		boolean existe = false;
@@ -644,7 +706,10 @@ public class DatosHistorial {
 		return existe;
 	}
 	
-	//inserta mano analizada en tabla jugadores
+	/**
+	 * Metodo que inserta una mano analizada al jugador contrario
+	 * @param nombre Jugador contrario
+	 */
 	private void insertarManoAnalizada(String nombre) {
 		
 		Statement st;
@@ -657,7 +722,10 @@ public class DatosHistorial {
 			
 	}
 	
-	//inserta flop visto en tabla jugadores al jugador
+	/**
+	 * Inserta un flop visto en la tabla jugadores
+	 * @param nombre Nombre del jugador
+	 */
 	private void insertarFlopVisto(String nombre) {
 		Statement st;
 		try {
@@ -668,7 +736,10 @@ public class DatosHistorial {
 		}
 	}
 	
-	//inserta river jugado en la tabla jugadores
+	/**
+	 * Inserta un river jugado en la tabla jugadores del jugador pasado
+	 * @param nombre Nombre del jugador
+	 */
 	private void insertarRiverJugado(String nombre) {
 		Statement st;
 		try {
@@ -679,7 +750,10 @@ public class DatosHistorial {
 		}
 	}
 	
-	//inserta partida gana en tabla jugadores
+	/**
+	 * Inserta una partida ganada en la tabla jugadores
+	 * @param nombre Nombre del jugador
+	 */
 	private void insertarGanadasJugadores(String nombre) {
 		Statement st;
 		try {
@@ -689,7 +763,10 @@ public class DatosHistorial {
 			System.out.println(e.getMessage());
 		}
 	}
-	//inserta partida perdida en tabla jugadores
+	/**
+	 * Inserta una partida perdida en la tabla jugadores
+	 * @param nombre Nombre del jguador
+	 */
 	private void insertarPerdidaJugadores(String nombre) {
 		Statement st;
 		try {
@@ -699,12 +776,12 @@ public class DatosHistorial {
 			System.out.println(e.getMessage());
 		}
 	}
-	//inserta jugador y sesion en la tabla juegan
+	/**
+	 * Inserta en la tabla juegan
+	 * @param nombre Nombre del jugador
+	 * @param codigoSesion Sesion en la que juega
+	 */
 	private void insertarJuegan(String nombre,int codigoSesion){
-		
-		//int codigoSesion = 0;
-		
-		//consulta codigo sesion
 		//consulta la sesion creada justo antes
 		Statement st;
 		try {
@@ -721,7 +798,10 @@ public class DatosHistorial {
 	}
 	
 	
-	//consulta la sesion
+	/**
+	 * Consulta la sesion actual
+	 * @return Codigo de la sesion actual
+	 */
 	private int consultaSesion() {
 		int sesion=0;
 		//consulta la sesion creada justo antes
@@ -739,7 +819,10 @@ public class DatosHistorial {
 		return sesion;
 	}
 	
-	//inserta sesion en la tabla estadisticascash
+	/**
+	 * Inserta en la tabla sesionCash 
+	 * @param sesion Codigo de la sesion
+	 */
 	private void insertarSesionCash(int sesion) {
 		Statement st;
 		ResultSet rs;
@@ -777,7 +860,14 @@ public class DatosHistorial {
 		}
 		
 	}
-	
+	/**
+	 * MEtodo que inserta en la tabla sesionJuego
+	 * @param sesion sesion actual
+	 * @param flopVisto numero de flop vistos
+	 * @param riverJugado numero de river jugados
+	 * @param turnVisto Numero de turn vistos
+	 * @param numeroRetiradas Numero de manos retiradas
+	 */
 	private void insertarSesionJuego(int sesion,int flopVisto, int riverJugado, int turnVisto, int numeroRetiradas) {
 		
 		Statement st;
@@ -803,8 +893,10 @@ public class DatosHistorial {
 	}
 	
 	
-	//inserta en la tabla obtiene
-	
+	/**
+	 * Inserta en la tabla obtiene
+	 * @param sesion codigo sesion actual
+	 */
 	private void insertarObtiene(int sesion) {
 		
 		int codigoJuego = 0;
@@ -833,7 +925,9 @@ public class DatosHistorial {
 	}
 	
 	
-	//insertar en la tabla bankroll
+	/**
+	 * Metodo que inserta en la tabla bankroll
+	 */
 	
 	private void insertarBank() {
 			Statement st;
@@ -890,7 +984,10 @@ public class DatosHistorial {
 		
 	}
 	
-	
+	/**
+	 * Metodo que devuelve un arraylist con los datos de la sesion actual para mostrar en la ventana principal
+	 * @return ArrayList con los datos de la sesion actual obtenidos del historial
+	 */
 	public ArrayList<String> datosSesion() {
 		ArrayList <String> listaDatos = new ArrayList<>(); 
 		InputStreamReader fr;
@@ -984,6 +1081,7 @@ public class DatosHistorial {
 
 		}
 		br.close();
+		//añade los datos al ArrayList
 		apuestaMedia = apuestas/(float)totalManos;
 		listaDatos.add(stack);
 		listaDatos.add(String.valueOf(apuestaMedia));

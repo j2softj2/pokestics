@@ -37,6 +37,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.awt.event.ActionEvent;
 
+/**
+ * Ventana que da la opcion de mostrar diferentes graficos con los datos de la base de datos
+ * @author Rafael Jimenez Villarreal
+ *
+ */
 public class VisualizadorGraficas extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
@@ -223,7 +228,10 @@ public class VisualizadorGraficas extends JDialog {
 		contentPanel.add(botonCashTotal);
 	}
 	
-	//inserta las sesiones del usuario ( codigo y fecha)
+	/**
+	 * Metodo que inserta en el ComboBox la sesiones disponibles para realizar los graficos
+	 * @param box JComboBox en el que insertar los datos
+	 */
 	private void obtenerSesionesJuego(JComboBox box) {
 		Statement st;
 		ResultSet rs;
@@ -233,8 +241,8 @@ public class VisualizadorGraficas extends JDialog {
 			ArrayList<Date> fechaSesiones = new ArrayList<>();
 			ArrayList<String> muestra = new ArrayList<>();
 			
-			
-			if(this.usuario == "invitado") {
+			//en caso de observador
+			if(this.usuario == "observador") {
 					st = con.createStatement();
 					rs = st.executeQuery("SELECT codigo,fecha FROM sesion");
 						while(rs.next()) {
@@ -250,6 +258,7 @@ public class VisualizadorGraficas extends JDialog {
 							box.addItem(muestra.get(i));
 						}
 			}
+			//en caso de usuario normal
 			else {
 				
 					st = con.createStatement();
@@ -274,7 +283,10 @@ public class VisualizadorGraficas extends JDialog {
 	}
 	
 	
-	//consulta nombre completo usuario
+	/**
+	 * MEtodo que consulta el nombre completo del usuario
+	 * @return Nombre completo del usuario
+	 */
 		private String consultaNombre() {
 			Connection con = Inicio.getConexion();
 			Statement st;
@@ -297,8 +309,10 @@ public class VisualizadorGraficas extends JDialog {
 			return nombreCompleto;
 		}
 		
-	//realiza consulta en la tabla estadisticasJuego
-		
+		/**
+		 * Metodo que genera la grafica de la tabla etadisticasjuego a partir de la sesion pasada
+		 * @param sesion Sesion a partir de la que se genera el grafico
+		 */
 		private void insertarGraficaJuego(int sesion) {
 			
 			Statement st;
@@ -306,11 +320,11 @@ public class VisualizadorGraficas extends JDialog {
 			JFreeChart grafica;
 			DefaultCategoryDataset datos = new DefaultCategoryDataset();
 			int totalManos = 0;
-			
+			//consulta de los datos
 			try {
 				st = con.createStatement();
 				rs = st.executeQuery("SELECT flopvisto,rivervisto,turnvisto,numeroganadas,numeroperdidas,numeroretiradas FROM estadisticasjuego WHERE sesion = "+sesion);
-				
+				//se añaden los datos obtenidos al arrayList
 				while(rs.next()) {
 					datos.addValue(rs.getInt(1), "Flop", "Flop visto");
 					datos.addValue(rs.getInt(2), "River", "River visto");
@@ -319,7 +333,7 @@ public class VisualizadorGraficas extends JDialog {
 					datos.addValue(rs.getInt(5), "Perdidas", "Número perdidas");
 					datos.addValue(rs.getInt(6), "Retiradas", "Número retiradas");
 				}
-				
+				//obtiene el total de manos
 				rs = st.executeQuery("SELECT COUNT(numero) FROM manos WHERE sesion = "+sesion);
 					while(rs.next()) {
 						totalManos = rs.getInt(1);
@@ -346,15 +360,17 @@ public class VisualizadorGraficas extends JDialog {
 		
 		
 		
-		//realiza consulta en la tabla estadisticasJuego
-			
+		/**
+		 * Metodo que genera la grafica de la tabla estadisticascash a partir de la sesion pasada
+		 * @param sesion Sesion a partir de la que se genera la grafica
+		 */
 			private void insertarGraficaCash(int sesion) {
 				
 				Statement st;
 				ResultSet rs;
 				JFreeChart grafica;
 				DefaultCategoryDataset datos = new DefaultCategoryDataset();;
-				
+				//realiza la consulta
 				try {
 					st = con.createStatement();
 					rs = st.executeQuery("SELECT ganancias100manos,apuestamedia FROM estadisticascash WHERE sesion = "+sesion);
@@ -382,8 +398,10 @@ public class VisualizadorGraficas extends JDialog {
 			}
 			
 			
-			//realiza consulta en la tabla bankroll
-			
+			/**
+			 * Realiza la grafica de la tabla bankroll a partir de la sesion pasada
+			 * @param sesion Sesion a partir de la que se genera la grafica
+			 */
 			private void insertarGraficaBankroll(int sesion) {
 				
 				Statement st;
@@ -392,6 +410,7 @@ public class VisualizadorGraficas extends JDialog {
 				DefaultCategoryDataset datos = new DefaultCategoryDataset();
 				
 				try {
+					//realiza la consulta de datos
 					st = con.createStatement();
 					rs = st.executeQuery("SELECT cash,manosjugadas,diferencia FROM bankroll WHERE sesion = "+sesion);
 					
@@ -420,8 +439,10 @@ public class VisualizadorGraficas extends JDialog {
 			
 			
 			
-//realiza consulta en la tabla estadisticasJuego
-			
+			/**
+			 * Realiza la grafica de la tabla jugadores
+			 * @param jugador Jugador del que se obtiene los datos
+			 */
 			private void insertarGraficaJugadores(String jugador) {
 				
 				Statement st;
@@ -430,9 +451,10 @@ public class VisualizadorGraficas extends JDialog {
 				DefaultCategoryDataset datos = new DefaultCategoryDataset();
 				
 				try {
+					//realiza la consulta
 					st = con.createStatement();
 					rs = st.executeQuery("SELECT manosanalizadas,flopvisto,riverjugado,ganadas,perdidas FROM jugadores WHERE nombre = ' "+jugador+"'");
-					
+					//añade datos
 						while(rs.next()) {
 							datos.addValue(rs.getInt(1), "Total manos", "Manos analizadas");
 							datos.addValue(rs.getInt(2), "Flop visto", "Flop visto");
@@ -458,8 +480,10 @@ public class VisualizadorGraficas extends JDialog {
 				
 			}
 			
-		//realiza consulta y crea grafica del total de la tabla estadisticasjuego y estadisticascash
-			
+		/**
+		 * Realiza la grafica de la tabla estadisticascash o estadisticasjuego del total de sesiones
+		 * @param tabla Tabla sobre la que realizar la grafica
+		 */
 			private void estadisticasTotales(String tabla) {
 				
 				Statement st;
@@ -475,6 +499,7 @@ public class VisualizadorGraficas extends JDialog {
 				float ganancias100manos = 0;
 				float apuestaMedia = 0;
 				int totalManos = 0;
+				//consultas
 				String consultaSesiones = "SELECT codigo FROM sesion WHERE usuario = '"+consultaNombre()+"'";
 				String consultaJuego = "SELECT SUM(numeroretiradas),SUM(numeroperdidas),SUM(numeroganadas),SUM(turnvisto),SUM(rivervisto),SUM(flopvisto) FROM estadisticasjuego WHERE sesion = ";
 				String consultaCash = "SELECT SUM(ganancias100manos),SUM(apuestamedia) FROM estadisticascash WHERE sesion = ";

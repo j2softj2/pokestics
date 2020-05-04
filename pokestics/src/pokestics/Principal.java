@@ -60,6 +60,12 @@ import javax.swing.UIManager;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * Clase Principal en la que se muestra los datos de la sesion actual, se encuentra la calculadora de probabilidades,
+ * y se tiene acceso a las tablas de datos y graficas. Es la ventana principal del programa desde la que se administra todo.
+ * @author Rafael Jimenez Villarreal
+ *
+ */
 public class Principal extends JFrame {
 
 	
@@ -68,12 +74,17 @@ public class Principal extends JFrame {
 	private JTextField campoBote;
 	private JTextField campoProbMano;
 	private JTextField campoRiesgo;
+	/**
+	 * atributo que indica el archivo del historial de manos.
+	 */
 	private File archivo;
 	
 	
 	
- //conexion a la base de datos
-	
+
+	/**
+	 * Atributo con la conexion a la base de datos obtenida desde la ventana Inicio
+	 */
 	static Connection conexion = Inicio.getConexion();
 	private JTextField campoUsuario;
 	private JTextField campoCash;
@@ -111,11 +122,17 @@ public class Principal extends JFrame {
 	 * Create the dialog.
 	 */
 	public Principal() {
+		//establece el icono
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Principal.class.getResource("/imagenesFondo/logoSimple.png")));
 		addWindowListener(new WindowAdapter() {
-			
+			/**
+			 * Cuando se abre la ventana lee los historiales que no hayan sido leidos y se guardan en la base de datos,
+			 * una vez hecho esto cada 10 segundos y siempre que el usuario no sea observador obtiene los datos de la sesion en curso
+			 * (por defecto el ultimo archivo) y los muestra actualizando cada 10 segundos
+			 */
 			@Override
 			public void windowOpened(WindowEvent e) {
+				//lee historiales
 				leeHistorialesNoLeidos();	
 				//ejecucion cada 10 segundos
 					if(Inicio.getUsuario()!="observador") {
@@ -126,7 +143,9 @@ public class Principal extends JFrame {
 								//actualiza datos sesion actual
 								
 						    	try{
+						    		//lee los datos del ultimo historial
 						    		DatosHistorial leer = new DatosHistorial(new File(buscaHistorialNuevo()));
+						    		//realiza una copia 
 									ArrayList<String> datos = new ArrayList<String>(leer.datosSesion());
 									campoUsuario.setText(Inicio.getUsuario());
 									campoCash.setText(datos.get(0));
@@ -150,6 +169,9 @@ public class Principal extends JFrame {
 					
 					
 			}
+			/**
+			 * Cuando se realiza la accion de cerrar la ventana se cierra la conexion a la base de datos y muestra la ventana Inicio
+			 */
 			@Override
 			public void windowClosed(WindowEvent e) {
 				
@@ -323,7 +345,9 @@ public class Principal extends JFrame {
 		botonCalcular.setIcon(new ImageIcon(Principal.class.getResource("/botones/calculadora.png")));
 		botonCalcular.addActionListener(new ActionListener() {
 			
-			//boton calcular inicia el calculo de probabilidades
+			/**
+			 * Accion a realiar al pulsar el boton de calcular en la calculadora
+			 */
 			public void actionPerformed(ActionEvent e) {
 				//obtiene el valor del comboBox 1
 				String cartacomboBoxP1 = obtenerDatosCartacomboBox(comboBoxCartaPropia1);
@@ -411,15 +435,20 @@ public class Principal extends JFrame {
 
 		comboBoxListadoSesion.setBounds(54, 640, 214, 31);
 		contentPanel.add(comboBoxListadoSesion);
-		//muestra la ventana con la tabla de datos por sesion
+		/**
+		 * Muestra la ventana de la tabla de datos una vez seleccionada una sesion y presionado el boton
+		 */
 		JButton botonMostrarDatos = new JButton("");
 		botonMostrarDatos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				//codigo de la sesion
 				int codigoSesion;
+				//texto
 				String textoCombo = comboBoxListadoSesion.getSelectedItem().toString();
+				//donde se cortara el texto para obtener la sesion
 				int lugarCortar = textoCombo.indexOf("-");
 				codigoSesion = Integer.parseInt(textoCombo.substring(0,lugarCortar));
+				//abre la ventana con los datos de la sesion seleccionada
 				VisualizadorDatos vd = new VisualizadorDatos(codigoSesion);
 				vd.setMinimumSize(new Dimension(980,600));
 				vd.setLocationRelativeTo(null);
@@ -431,7 +460,6 @@ public class Principal extends JFrame {
 		botonMostrarDatos.setContentAreaFilled(false);
 		botonMostrarDatos.setSelectedIcon(new ImageIcon(Principal.class.getResource("/botones/cuadricula.png")));
 		botonMostrarDatos.setIcon(new ImageIcon(Principal.class.getResource("/botones/cuadricula.png")));
-		//botonMostrarDatos.setBackground(Color.white);
 		botonMostrarDatos.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		botonMostrarDatos.setForeground(Color.BLACK);
 		botonMostrarDatos.setBounds(131, 681, 60, 41);
@@ -447,9 +475,10 @@ public class Principal extends JFrame {
 		etMostrarGrafica.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 20));
 		etMostrarGrafica.setBounds(450, 552, 174, 31);
 		contentPanel.add(etMostrarGrafica);
-		
-		//muestra la ventana de graficas
 		JButton btnNewButton = new JButton("");
+		/**
+		 * Muestra la ventana de graficas al realizar la accion del boton mostrarGrafica
+		 */
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				VisualizadorGraficas vg = new VisualizadorGraficas();
@@ -627,12 +656,16 @@ public class Principal extends JFrame {
 		JMenuItem menuItemHistorial = new JMenuItem("Ruta historial de manos ");
 		menuItemHistorial.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//ventana del buscador
 				JFileChooser buscador = new JFileChooser();
 					buscador.showOpenDialog(contentPanel);
+					//variable donde se guardara la ruta del archivo
 					String direccion;
+					//obtencion de la ruta del archivo en caso de existir
 						if(buscador.getSelectedFile().exists()) {
 							archivo = buscador.getSelectedFile();
 							direccion = archivo.getParent();
+							//guarda la ruta en el archivo de configuracion
 							guardaRutaEnArchivo(direccion);
 							if(archivo!=null) {
 								if(guardaNombreEnArchivo(new File(buscaHistorialNuevo()))==true) {
@@ -689,15 +722,17 @@ public class Principal extends JFrame {
 		menuItemAcerca.setBackground(Color.WHITE);
 		menuAyuda.add(menuItemAcerca);
 	}
-	
+	/**
+	 * Metodo que cierra la ventana
+	 */
 	private void cerrarAplicacion() {
 		this.dispose();
 		
 	}
 	/**
 	 * Devuelve el texto de la carta en el JComboBox
-	 * @param comboBox
-	 * @return
+	 * @param comboBox del que obtener los datos
+	 * @return datos del item del combobbox
 	 */
 	private String obtenerDatosCartacomboBox(JComboBox combobox) {
 		String textocomboBox = (String)combobox.getSelectedItem();
@@ -706,17 +741,28 @@ public class Principal extends JFrame {
 			}
 			return textocomboBox;
 	}
-	
+	/**
+	 * Metodo que obtiene el valor de la carta
+	 * @param textoCarta carta de la que obtener el valor
+	 * @return valor de la carta
+	 */
 	private String obtenerValor(String textoCarta) {
 		String valor = textoCarta.substring(0, 1);
 			return valor;
 	}
-	
+	/**
+	 * Metodo que obtiene el palo de la carta
+	 * @param textoCarta carta de la que obtener el palo
+	 * @return palo de la carta en cadena de texto
+	 */
 	private String obtenerPalo(String textoCarta) {
 		String palo = textoCarta.substring(1);
 			return palo;
 	}
-	
+	/**
+	 * Metodo que guarda la ruta para la posterior obtencion de los historiales
+	 * @param path ruta del archivo seleccionado
+	 */
 	private void guardaRutaEnArchivo(String path){
 		File archivoConfiguracion = new File("pokestics/Archivos/conf.txt");
 			//lee del fichero la ruta de la carpeta que contiene los historiales
@@ -732,12 +778,16 @@ public class Principal extends JFrame {
 			}
 	}
 	
-	//no usar por ahora
+	/**
+	 * Metodo que busca el historial mas reciente para utilizarlo en la obtencion de los datos para la ventana principal
+	 * @return ruta del ultimo archivo
+	 */
 	private String buscaHistorialNuevo() {
 		File archivoConfiguracion = new File("pokestics/Archivos/conf.txt");
 		String linea;
 		String rutaCarpeta = null;
 		try {
+			//obtiene la ruta desde el archivo de configuracion
 			BufferedReader br = new BufferedReader(new FileReader(archivoConfiguracion));
 					while((linea = br.readLine())!=null) {
 						if(linea.contains("historial")) {
@@ -751,7 +801,7 @@ public class Principal extends JFrame {
 		}catch (IOException e) {
 			System.out.print(e.getMessage());
 		}
-		
+		// obtiene todos los archivos de historiales
 		File directorio = new File(rutaCarpeta);
 			File[] listaArchivos = directorio.listFiles();
 			//cuenta los archivos que no son de torneos
@@ -795,11 +845,16 @@ public class Principal extends JFrame {
 			return rutaCarpeta+"/"+nombreUltimoArchivo;
 			
 	}
-	
+	/**
+	 * Metodo que guarda el nombre del archivo leido en el archivo de historiales leidos
+	 * @param archivo -archivo leido
+	 * @return true en caso de escribir o false en caso de existir ya el archivo
+	 */
 	private static boolean guardaNombreEnArchivo(File archivo) {
 		boolean ok = false;
 		File historialLeidos = new File("pokestics/Archivos/HistorialesLeidos.txt");
 		try {
+			//lee el archivo de historiales leidoss
 			BufferedWriter bw = new BufferedWriter(new FileWriter(historialLeidos,true));
 			BufferedReader br = new BufferedReader(new FileReader(historialLeidos));
 			String linea = "";
@@ -807,6 +862,7 @@ public class Principal extends JFrame {
 				while((linea = br.readLine())!=null) {
 					if(linea.contains(archivo.getName())) escribir = false;
 				}
+				//en caso de no existir se escribe el nombre del archivo
 			if(escribir == true) {
 				bw.newLine();
 				bw.append(archivo.getName());
@@ -820,14 +876,17 @@ public class Principal extends JFrame {
 		}
 		return ok;
 	}
-	
+	/**
+	 * Metodo que lee los historiales que no hayan sido leidos
+	 */
 	private static void leeHistorialesNoLeidos() {
-		File rutaArchivoConf;
-		File rutaHistoriales = null;
+		File rutaArchivoConf;// ruta del archivo de configuracion
+		File rutaHistoriales = null;//ruta de los historiales
 		BufferedReader br;
 		String linea;
 		
 		rutaArchivoConf = new File("pokestics/Archivos/conf.txt");
+		//obtiene la ruta del archivo de configuracion
 			try {
 				br = new BufferedReader(new FileReader(rutaArchivoConf));
 					while((linea = br.readLine())!=null) {
@@ -869,7 +928,7 @@ public class Principal extends JFrame {
 	}
 	
 	/**
-	 * Cerrar conexion a base de datos
+	 * Metodo que cierra la conexion a la base de datos
 	 */
 	private static void cerrarConexion(Connection con) {
 		try {
@@ -881,14 +940,18 @@ public class Principal extends JFrame {
 		}
 	}
 	
-	//consulta nombre completo usuario
+	/**
+	 * MEtodo que consulta el nombre completo del usuario en la base de datos
+	 * @param usuario- usuario(alias en la sala de poker) del que obtener el nombre
+	 * @return el nombre completo en una cadena de texto
+	 */
 	private String consultaNombre(String usuario) {
 		Connection con = Inicio.getConexion();
 		Statement st;
 		ResultSet rs;
 		String nombreCompleto = "";
 		
-		
+		//realiza la consulta dl nombre completo
 		try {
 			st = con.createStatement();
 			rs = st.executeQuery("SELECT nombre FROM usuario WHERE usuariosala = '"+usuario+"'");
@@ -904,8 +967,10 @@ public class Principal extends JFrame {
 	}
 	
 	
-	//inserta en comboBox sesiones para tabla datos
-	
+	/**
+	 * Metodo que inserta en el combobox de datos las sesiones para seleccionar una, insertando la fecha y el codigo de la sesion
+	 * @param box El comboBox al que insertar los datos
+	 */
 	private void insertaComboBox(JComboBox box) {
 		//inserta en el comboBox el listado de sesiones
 		
@@ -917,9 +982,9 @@ public class Principal extends JFrame {
 				ArrayList<Date> fechaSesiones = new ArrayList<>();
 				ArrayList<String> muestra = new ArrayList<>();
 				
-				
-				if(Inicio.getUsuario() == "invitado") {
-					
+				//en caso de ser el observador se obtienen todos
+				if(Inicio.getUsuario() == "observador") {
+					//obtiene los codios y fechas
 					try {
 						st = con.createStatement();
 						rs = st.executeQuery("SELECT codigo,fecha FROM sesion");
@@ -941,6 +1006,7 @@ public class Principal extends JFrame {
 
 					}
 				}
+				// en caso de ser un usuario normal se realiza por usuario
 				else {
 					try {
 						st = con.createStatement();

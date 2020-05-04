@@ -241,4 +241,30 @@ public class Inicio {
 	public static void ocultar(boolean estado) {
 		frmPokestics.setVisible(estado);
 	}
+	
+	
+	private void crearBaseDatos() {
+		String usuario = "";
+		String pass = "";
+		String puerto = "";
+		
+		try {
+			Class.forName("org.postgresql.Driver");
+		}
+		catch(ClassNotFoundException ex) {
+			JOptionPane.showMessageDialog(null, "Error al registrar el driver de PostreSQL: "+ ex);
+		}
+		//conexion usando usuario y pass
+		
+			try {
+				//conecta con la base de datos
+				
+				conexion = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pokestics",usuario,pass);
+			}
+			catch(Exception ex1) {
+				JOptionPane.showMessageDialog(null, "Error al registrar el driver de PostreSQL: "+ ex1);
+	}
+	
+	
+	}
 }

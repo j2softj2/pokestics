@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 /**
  * Clase que representa la mano de cartas
  * @author Rafael Jimënez Villarreal
@@ -154,6 +155,10 @@ public class Mano {
 		this.carta4 = carta4;
 		this.carta5 = carta5;
 	}
+	/**
+	 * Metodo que comprueba la mano ligada con las cartas propias y las comunitarias
+	 * @return Mano ligada
+	 */
 	public String compruebaManoLigada(){
 		
 		String mano = "";
