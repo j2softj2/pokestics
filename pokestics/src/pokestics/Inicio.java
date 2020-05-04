@@ -22,9 +22,15 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
 
 /**
@@ -209,7 +215,7 @@ public class Inicio {
 		//conexion usando usuario y pass
 		
 			try {
-				conexion = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pokestics",usuario,pass);
+				conexion = DriverManager.getConnection("jdbc:postgresql://localhost:"+obtenerPuerto()+"/pokestics",usuario,pass);
 					if(usuario.equals("postgres")) usuario = "superusuario";
 				JOptionPane.showMessageDialog(null, "Conectado a la base de datos como "+usuario);
 		//abre la ventana principal de la aplicacion para usuarios normales o la de administrador en caso de ser el admin
@@ -247,6 +253,9 @@ public class Inicio {
 		String usuario = "";
 		String pass = "";
 		String puerto = "";
+		Statement st;
+		ResultSet rs = null;
+		boolean existe = false;
 		
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -257,14 +266,211 @@ public class Inicio {
 		//conexion usando usuario y pass
 		
 			try {
-				//conecta con la base de datos
-				
-				conexion = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pokestics",usuario,pass);
+				//conecta con postgres			
+				conexion = DriverManager.getConnection("jdbc:postgresql://localhost:"+this.obtenerPuerto()+"/pokestics",this.obtenerUsuario(),this.obtenerPass());
+				//comprueba si existe la base de datos pokestics comprobando si se creo la tabla sesion
+				st = conexion.createStatement();
+				st.executeQuery("SELECT * FROM pg_tables WHERE tablename=sesion");
+			if(rs.first() == true) existe = true;
+			
+			//si no existe crea la base de datos
+			st.execute("CREATE DATABASE pokestics" + 
+					"    WITH " + 
+					"    OWNER = postgres" + 
+					"    ENCODING = 'UTF8'" + 
+					"    LC_COLLATE = 'Spanish_Spain.1252'" + 
+					"    LC_CTYPE = 'Spanish_Spain.1252'" + 
+					"    TABLESPACE = pg_default" + 
+					"    CONNECTION LIMIT = -1;" + 
+					"");
+			//inserta secuencias de incremento de codigos
+			st.execute("CREATE SEQUENCE secuencia_man" + 
+					"    START WITH 0" + 
+					"    INCREMENT BY 1" + 
+					"    MINVALUE 0" + 
+					"    NO MAXVALUE" + 
+					"    CACHE 1;");
+			st.execute("CREATE SEQUENCE secuencia_se" + 
+					"    START WITH 0" + 
+					"    INCREMENT BY 1" + 
+					"    MINVALUE 0" + 
+					"    NO MAXVALUE" + 
+					"    CACHE 1;");
+			st.execute("\r\n" + 
+					"CREATE SEQUENCE public.secuencia_us" + 
+					"    START WITH 0" + 
+					"    INCREMENT BY 1" + 
+					"    MINVALUE 0" + 
+					"    NO MAXVALUE" + 
+					"    CACHE 1;");
+			
+			//inserta tablas
+			st.execute("CREATE TABLE usuario (" + 
+					"    codigo int DEFAULT nextval('public.secuencia_us'::regclass) NOT NULL," + 
+					"    nombre varchar," + 
+					"    usuariosala varchar" + 
+					");"
+					+ "CREATE TABLE SESION (" + 
+					"	codigo int PRIMARY KEY DEFAULT nextval('public.secuencia_se'::regclass) NOT NULL," + 
+					"	fecha date,"+ 
+					"	usuario varchar REFERENCES USUARIO (nombre)" + 
+					");" + 
+					"CREATE TABLE JUEGA (" + 
+					"	codigoUser int  REFERENCES USUARIO (codigo)," + 
+					"	codigoSesion int  REFERENCES SESION (codigo)," + 
+					"	PRIMARY KEY (codigoUser,codigoSesion)" + 
+					");" + 
+					"CREATE TABLE MANOS (" + 
+					"	numero int PRIMARY KEY DEFAULT nextval('public.secuencia_man'::regclass) NOT NULL," + 
+					"	cartas varchar," + 
+					"	pos varchar," + 
+					"	bote double precision," + 
+					"	resultado varchar," + 
+					"	cg boolean," + 
+					"	cp boolean," + 
+					"	apuesta double precision," + 
+					"	ganancia double precision," + 
+					"	perdida double precision," + 
+					"	limite varchar," + 
+					"	stack double precision," + 
+					"	sesion int REFERENCES SESION (codigo)" + 
+					");" + 
+					"CREATE TABLE ESTADISTICASJUEGO (" + 
+					"	sesion int UNIQUE REFERENCES SESION (codigo)," + 
+					"	flopVisto int," + 
+					"	riverVisto int," + 
+					"	turnVisto int," + 
+					"	numeroGanadas int," + 
+					"	numeroPerdidas int," + 
+					"	numeroRetiradas int	" + 
+					");" + 
+					"CREATE TABLE ESTADISTICASCASH (" + 
+					"	sesion int UNIQUE REFERENCES SESION (codigo)," +
+					"	ganancias100Manos double precision," + 
+					"	apuestaMedia double precision" + 
+					");" + 
+					"CREATE TABLE OBTIENE (" + 
+					"	codigo int REFERENCES SESION (codigo)," + 
+					"	sesion int REFERENCES ESTADISTICASJUEGO (sesion)," + 
+					"	sesionCash int REFERENCES ESTADISTICASCASH (sesion)," + 
+					"	PRIMARY KEY(codigo,sesion,sesionCash)" + 
+					");" + 
+					"CREATE TABLE JUGADORES (" + 
+					"	nombre varchar UNIQUE PRIMARY KEY," + 
+					"	manosAnalizadas int," + 
+					"	flopVisto int," + 
+					"	riverJugado int," + 
+					"	ganadas int," + 
+					"	perdidas int" + 
+					");" + 
+					"" + 
+					"CREATE TABLE JUEGAN (" + 
+					"	nombre varchar REFERENCES JUGADORES (nombre)," + 
+					"	codigo int REFERENCES SESION (codigo)," + 
+					"	PRIMARY KEY (nombre,codigo)" + 
+					");" + 
+					"CREATE TABLE BANKROLL (" + 
+					"	usuario varchar REFERENCES USUARIO (nombre)," + 
+					"    cash double precision," + 
+					"    sesion int REFERENCES SESION (codigo)," + 
+					"	fecha date," + 
+					"	manosJugadas int," + 
+					"	diferencia double precision" + 
+					");" );
+			
 			}
+			
 			catch(Exception ex1) {
 				JOptionPane.showMessageDialog(null, "Error al registrar el driver de PostreSQL: "+ ex1);
 	}
 	
 	
+	}
+	
+	/**
+	 * Obtiene el puerto de conexion a la base de datos desde el archivo de configuracion
+	 * @return Cadena de texto con el valor del puerto de conexion
+	 */
+	private static String obtenerPuerto() {
+		
+		File archivoConfiguracion = new File("pokestics/Archivos/conf.txt");
+		String linea;
+		String puerto = "";
+		
+		try {
+			//obtiene el puerto del archivo de configuracion
+			BufferedReader br = new BufferedReader(new FileReader(archivoConfiguracion));
+					while((linea = br.readLine())!=null) {
+						if(linea.contains("Puerto")) {
+							int inicio;
+							inicio = linea.indexOf("-");
+							puerto = linea.substring(inicio+3);	
+						}
+					}
+					br.close();
+		}catch (IOException e) {
+			System.out.print(e.getMessage());
+		}
+		
+		return puerto;
+		
+	}
+	
+	/**
+	 * Obtiene el usuario de conexion a la base de datos desde el archivo de configuracion
+	 * @return Cadena de texto con el valor del usuario de conexion
+	 */
+	private String obtenerUsuario() {
+		
+		File archivoConfiguracion = new File("pokestics/Archivos/conf.txt");
+		String linea;
+		String usuarioConexion = "";
+		
+		try {
+			//obtiene el puerto del archivo de configuracion
+			BufferedReader br = new BufferedReader(new FileReader(archivoConfiguracion));
+					while((linea = br.readLine())!=null) {
+						if(linea.contains("datos")) {
+							int inicio;
+							inicio = linea.indexOf("-");
+							usuarioConexion = linea.substring(inicio+3);	
+						}
+					}
+					br.close();
+		}catch (IOException e) {
+			System.out.print(e.getMessage());
+		}
+		
+		return usuarioConexion;
+		
+	}
+	
+	/**
+	 * Obtiene la contraseña de conexion a la base de datos desde el archivo de configuracion
+	 * @return Cadena de texto con el valor de la contraseña de conexion
+	 */
+	private String obtenerPass() {
+		
+		File archivoConfiguracion = new File("pokestics/Archivos/conf.txt");
+		String linea;
+		String pass = "";
+		
+		try {
+			//obtiene el puerto del archivo de configuracion
+			BufferedReader br = new BufferedReader(new FileReader(archivoConfiguracion));
+					while((linea = br.readLine())!=null) {
+						if(linea.contains("administrador")) {
+							int inicio;
+							inicio = linea.indexOf("-");
+							pass = linea.substring(inicio+3);	
+						}
+					}
+					br.close();
+		}catch (IOException e) {
+			System.out.print(e.getMessage());
+		}
+		
+		return pass;
+		
 	}
 }
