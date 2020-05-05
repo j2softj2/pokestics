@@ -14,10 +14,13 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Dialog.ModalExclusionType;
@@ -444,6 +447,7 @@ public class Principal extends JFrame {
 				//codigo de la sesion
 				int codigoSesion;
 				//texto
+				if(comboBoxListadoSesion.getItemCount()!=0) {
 				String textoCombo = comboBoxListadoSesion.getSelectedItem().toString();
 				//donde se cortara el texto para obtener la sesion
 				int lugarCortar = textoCombo.indexOf("-");
@@ -454,6 +458,7 @@ public class Principal extends JFrame {
 				vd.setLocationRelativeTo(null);
 				vd.pack();
 				vd.setVisible(true);
+				}
 			}
 		});
 		botonMostrarDatos.setBorder(null);
@@ -691,7 +696,7 @@ public class Principal extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				SelectorMesa sm = new SelectorMesa();
-				sm.setMinimumSize(new Dimension(800,500));
+				sm.setMinimumSize(new Dimension(600,600));
 				sm.setLocationRelativeTo(null);
 				sm.pack();
 				sm.setVisible(true);
@@ -711,8 +716,23 @@ public class Principal extends JFrame {
 		menuAyuda.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		menuAyuda.setBackground(Color.WHITE);
 		barraMenu.add(menuAyuda);
-		
+		//muestra el manual de ayuda
 		JMenuItem menuItemManual = new JMenuItem("Manual de ayuda");
+		menuItemManual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+					//abre el archivo html que inicia la ayuda
+					try {
+						File ayuda = new File ("pokestics/Ayuda2.chm");
+						Desktop.getDesktop().open(ayuda);
+							//abre en pdf
+							ayuda = new File ("pokestics/Ayuda.pdf");
+							Desktop.getDesktop().open(ayuda);
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(null, "No fue posible abrir la ayuda");
+					}
+			}
+		});
 		menuItemManual.setFont(new Font("DejaVu Serif Condensed", Font.BOLD, 12));
 		menuItemManual.setBackground(Color.WHITE);
 		menuAyuda.add(menuItemManual);

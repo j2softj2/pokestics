@@ -125,12 +125,13 @@ public class VisualizadorGraficas extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				//obtencion sesion
 				int codigoSesion;
+				if(comboBoxJuego.getItemCount()!=0) {
 				String textoCombo = comboBoxJuego.getSelectedItem().toString();
 				int lugarCortar = textoCombo.indexOf("-");
 				codigoSesion = Integer.parseInt(textoCombo.substring(0,lugarCortar));
 				//realiza consulta
 				insertarGraficaJuego(codigoSesion);
-				
+				}
 			}
 		});
 		botonJuego.setBorder(null);
@@ -144,11 +145,13 @@ public class VisualizadorGraficas extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				//obtencion sesion
 				int codigoSesion;
+				if(comboBoxCash.getItemCount()!=0) {
 				String textoCombo = comboBoxCash.getSelectedItem().toString();
 				int lugarCortar = textoCombo.indexOf("-");
 				codigoSesion = Integer.parseInt(textoCombo.substring(0,lugarCortar));
 				//realiza consulta
 				insertarGraficaCash(codigoSesion);
+				}
 			}
 		});
 		botonCash.setBorder(null);
@@ -178,11 +181,13 @@ public class VisualizadorGraficas extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				//obtencion sesion
 				int codigoSesion;
+				if(comboBoxBankroll.getItemCount()!=0) {
 				String textoCombo = comboBoxBankroll.getSelectedItem().toString();
 				int lugarCortar = textoCombo.indexOf("-");
 				codigoSesion = Integer.parseInt(textoCombo.substring(0,lugarCortar));
 				//realiza consulta
 				insertarGraficaBankroll(codigoSesion);
+				}
 			}
 		});
 		botonBankroll.setBorder(null);
